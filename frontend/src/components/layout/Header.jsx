@@ -22,13 +22,8 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-black/5 bg-cvc-paper/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <NavLink to="/" className="flex items-center gap-2 font-bold tracking-tight">
-          <span className="flex h-2.5 w-8 overflow-hidden rounded-full">
-            <span className="flex-1 bg-cvc-amber" />
-            <span className="flex-1 bg-cvc-cyan" />
-            <span className="flex-1 bg-cvc-crimson" />
-          </span>
-          CVC
+        <NavLink to="/" className="flex items-center">
+          <img src="/logo.svg" alt="Colourful Visual Communication" className="h-9 w-auto" />
         </NavLink>
 
         <nav className="hidden items-center gap-8 md:flex">
