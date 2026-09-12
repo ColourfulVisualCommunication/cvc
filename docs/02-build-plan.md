@@ -4,7 +4,7 @@ Each phase ends in something deployed and usable. Estimates assume part-time bui
 
 ---
 
-## Phase 1 — Foundation · ~3 days · **current**
+## Phase 1 — Foundation · ~3 days · **shipped**
 
 **Ships:** a live URL serving database content through the API.
 
@@ -17,7 +17,7 @@ Each phase ends in something deployed and usable. Estimates assume part-time bui
 - [x] Supabase Postgres connected in every environment — no SQLite fallback
 - [x] `flask db init` / `migrate` / `upgrade` — first real migration (`services`, `admin_users`)
 - [x] Admin login: `AdminUser` model, JWT in an httpOnly cookie, protected `/auth/me`, `flask create-admin` CLI
-- [ ] Deploy all three pieces to Render + Netlify, confirm the live health check
+- [x] Deploy all three pieces to Render + Netlify, confirm the live health check — `https://cvc-api.onrender.com/api/v1/health`
 
 *Learning: how React and Flask are two separate programs talking over HTTP; why secrets never go in Git; what a migration actually does.*
 
