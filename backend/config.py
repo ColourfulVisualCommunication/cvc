@@ -26,16 +26,11 @@ class Config:
     SQLALCHEMY_DATABASE_URI = _require("DATABASE_URL")
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    JWT_TOKEN_LOCATION = ["cookies"]
-    JWT_COOKIE_SECURE = os.environ.get("FLASK_ENV") == "production"
-    # The frontend (Netlify) and API (Render) are different registrable
-    # domains, so this is a genuinely cross-site request from the browser's
-    # point of view. SameSite=Lax cookies are never sent on cross-site
-    # fetch()/XHR — only on top-level navigations — so the admin cookie would
-    # silently fail to attach after login. SameSite=None requires Secure,
-    # which is already true in production; local dev stays Lax since the
-    # Vite proxy makes API calls same-origin there.
-    JWT_COOKIE_SAMESITE = "None" if JWT_COOKIE_SECURE else "Lax"
+    # Authorization header, not a cookie — the frontend (Netlify) and API
+    # (Render) are different registrable domains, so a cookie set by one is
+    # invisible to JS on the other and cross-site cookie rules get in the
+    # way regardless. See app/api/auth.py for the full reasoning.
+    JWT_TOKEN_LOCATION = ["headers"]
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=12)
 
     # Comma-separated list of origins allowed to call the API.

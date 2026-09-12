@@ -1,14 +1,17 @@
 """Admin auth. The one login in this system — see CLAUDE.md rule 4:
 everyone else reaches the platform through signed links, never a password.
+
+Token travels as an Authorization: Bearer header, not a cookie. The
+frontend (Netlify) and API (Render) are different registrable domains, so
+a cookie set by one is invisible to JS running on the other — the CSRF
+double-submit cookie pattern Flask-JWT-Extended defaults to simply cannot
+work across that boundary. A bearer header sidesteps both problems: it
+isn't restricted by cross-site cookie rules, and it isn't vulnerable to
+CSRF in the first place, since browsers never attach custom headers to a
+forged cross-site request the way they do cookies.
 """
 from flask import jsonify, request
-from flask_jwt_extended import (
-    create_access_token,
-    get_jwt_identity,
-    jwt_required,
-    set_access_cookies,
-    unset_jwt_cookies,
-)
+from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
 
 from ..extensions import db
 from ..models import AdminUser
@@ -28,16 +31,8 @@ def login():
     if user is None:
         return jsonify(error="unauthorized", message="Invalid email or password"), 401
 
-    response = jsonify(user.to_dict())
-    set_access_cookies(response, create_access_token(identity=str(user.id)))
-    return response
-
-
-@api_v1.post("/auth/logout")
-def logout():
-    response = jsonify(message="Logged out")
-    unset_jwt_cookies(response)
-    return response
+    token = create_access_token(identity=str(user.id))
+    return jsonify(access_token=token, **user.to_dict())
 
 
 @api_v1.get("/auth/me")

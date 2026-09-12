@@ -32,14 +32,16 @@ def test_me_requires_login(client):
     assert client.get("/api/v1/auth/me").status_code == 401
 
 
-def test_login_sets_cookie_and_me_works(client):
+def test_login_returns_token_and_me_works_with_it(client):
     login = client.post(
         "/api/v1/auth/login", json={"email": TEST_EMAIL, "password": TEST_PASSWORD}
     )
     assert login.status_code == 200
     assert login.json["email"] == TEST_EMAIL
+    token = login.json["access_token"]
+    assert token
 
-    me = client.get("/api/v1/auth/me")
+    me = client.get("/api/v1/auth/me", headers={"Authorization": f"Bearer {token}"})
     assert me.status_code == 200
     assert me.json["email"] == TEST_EMAIL
 
@@ -51,7 +53,6 @@ def test_wrong_password_is_rejected(client):
     assert res.status_code == 401
 
 
-def test_logout_clears_the_session(client):
-    client.post("/api/v1/auth/login", json={"email": TEST_EMAIL, "password": TEST_PASSWORD})
-    client.post("/api/v1/auth/logout")
-    assert client.get("/api/v1/auth/me").status_code == 401
+def test_bogus_token_is_rejected(client):
+    res = client.get("/api/v1/auth/me", headers={"Authorization": "Bearer not-a-real-token"})
+    assert res.status_code == 422 or res.status_code == 401
