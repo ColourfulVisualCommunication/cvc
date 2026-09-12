@@ -1,0 +1,32 @@
+# Secrets — never commit these
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+*.db
+*.sqlite3
+instance/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Windows "downloaded from the internet" metadata (WSL surfaces these as files)
+*:Zone.Identifier
+
+# Editors & OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Uploads (client files live in object storage, not the repo)
+backend/uploads/

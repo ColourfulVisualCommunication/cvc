@@ -1,0 +1,10 @@
+"""API v1. One blueprint per resource, registered here.
+
+Routes stay thin: validate input, call a service, shape the response.
+Business logic belongs in app/services/.
+"""
+from flask import Blueprint
+
+api_v1 = Blueprint("api_v1", __name__)
+
+from . import auth, health, services  # noqa: E402,F401
