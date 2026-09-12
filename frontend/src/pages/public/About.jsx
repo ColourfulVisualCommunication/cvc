@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
-import Seo from "../../components/Seo.jsx";
+import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 
 export default function About() {
   return (
@@ -12,6 +12,7 @@ export default function About() {
         title="About"
         path="/about"
         description="CVC is run by Njoroge from Ndeiya, Limuru — one person doing both brand identity and full-stack development."
+        jsonLd={localBusinessJsonLd}
       />
 
       <section className="px-6 pb-16 pt-24 sm:pt-32">
