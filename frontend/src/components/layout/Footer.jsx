@@ -6,14 +6,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="flex flex-col justify-between gap-8 sm:flex-row">
           <div>
-            <div className="flex items-center gap-2 font-bold tracking-tight">
-              <span className="flex h-2.5 w-8 overflow-hidden rounded-full">
-                <span className="flex-1 bg-cvc-amber" />
-                <span className="flex-1 bg-cvc-cyan" />
-                <span className="flex-1 bg-cvc-crimson" />
-              </span>
-              CVC
-            </div>
+            <img src="/logo.svg" alt="Colourful Visual Communication" className="h-12 w-auto" />
             <p className="mt-3 max-w-xs text-sm text-cvc-muted">
               From Idea to Action. From Action to Reality.
             </p>
