@@ -7,6 +7,7 @@ import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo from "../../components/Seo.jsx";
+import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 function formatPrice(s) {
   if (!s.price_cents) return "Quoted after a short call";
@@ -24,7 +25,8 @@ export default function ServiceDetail() {
     setNotFound(false);
     getService(slug)
       .then(setService)
-      .catch(() => setNotFound(true));
+      .catch(() => setNotFound(true))
+      .finally(markPrerenderReady);
   }, [slug]);
 
   if (notFound) {

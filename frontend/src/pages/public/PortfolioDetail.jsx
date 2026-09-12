@@ -7,6 +7,7 @@ import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo from "../../components/Seo.jsx";
+import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 export default function PortfolioDetail() {
   const { slug } = useParams();
@@ -18,7 +19,8 @@ export default function PortfolioDetail() {
     setNotFound(false);
     getPortfolioProject(slug)
       .then(setProject)
-      .catch(() => setNotFound(true));
+      .catch(() => setNotFound(true))
+      .finally(markPrerenderReady);
   }, [slug]);
 
   if (notFound) {

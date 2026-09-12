@@ -6,6 +6,7 @@ import { getPost } from "../../api/client.js";
 import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import Seo from "../../components/Seo.jsx";
+import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 export default function BlogPost() {
   const { slug } = useParams();
@@ -17,7 +18,8 @@ export default function BlogPost() {
     setNotFound(false);
     getPost(slug)
       .then(setPost)
-      .catch(() => setNotFound(true));
+      .catch(() => setNotFound(true))
+      .finally(markPrerenderReady);
   }, [slug]);
 
   if (notFound) {

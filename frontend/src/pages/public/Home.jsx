@@ -7,6 +7,7 @@ import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
+import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 export default function Home() {
   const [services, setServices] = useState([]);
@@ -14,9 +15,11 @@ export default function Home() {
   const [testimonials, setTestimonials] = useState([]);
 
   useEffect(() => {
-    listServices().then((s) => setServices((s.items ?? []).slice(0, 3))).catch(() => {});
-    listPortfolio().then((p) => setPortfolio(p.items ?? [])).catch(() => {});
-    listTestimonials().then((t) => setTestimonials(t.items ?? [])).catch(() => {});
+    Promise.allSettled([
+      listServices().then((s) => setServices((s.items ?? []).slice(0, 3))),
+      listPortfolio().then((p) => setPortfolio(p.items ?? [])),
+      listTestimonials().then((t) => setTestimonials(t.items ?? [])),
+    ]).then(markPrerenderReady);
   }, []);
 
   return (

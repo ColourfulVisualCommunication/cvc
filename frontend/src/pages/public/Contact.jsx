@@ -1,11 +1,15 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 
 import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
+import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 export default function Contact() {
+  useEffect(markPrerenderReady, []);
+
   return (
     <>
       <Seo

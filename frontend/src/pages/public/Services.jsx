@@ -6,6 +6,7 @@ import { listServices } from "../../api/client.js";
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import Seo from "../../components/Seo.jsx";
+import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 const TIER_LABELS = {
   0: "A place to start",
@@ -32,7 +33,7 @@ export default function Services() {
   const [services, setServices] = useState([]);
 
   useEffect(() => {
-    listServices().then((s) => setServices(s.items ?? [])).catch(() => {});
+    listServices().then((s) => setServices(s.items ?? [])).catch(() => {}).finally(markPrerenderReady);
   }, []);
 
   const byTier = services.reduce((acc, s) => {

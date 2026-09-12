@@ -3,17 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Fallback only, for the instant before react-helmet-async mounts (or
+         if JS fails entirely) — every route sets its own real title/meta/OG
+         via <Seo>, so nothing else belongs here. A static description/OG tag
+         here would sit alongside Helmet's without being replaced (Helmet
+         only manages tags it injected itself), producing duplicates. -->
     <title>CVC — Colourful Visual Communication</title>
-    <meta
-      name="description"
-      content="Strategic creative and digital development. CVC helps businesses, organizations and events move from idea to functioning reality."
-    />
-    <meta property="og:title" content="CVC — Colourful Visual Communication" />
-    <meta
-      property="og:description"
-      content="From Idea to Action. From Action to Reality."
-    />
-    <meta property="og:type" content="website" />
   </head>
   <body>
     <div id="root"></div>
