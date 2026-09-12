@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+/* Tailwind v4 takes its design tokens from CSS. Colours are read straight
+   from the CVC logo — use these rather than arbitrary hex values. */
+@theme {
+  --color-cvc-amber: #fab216;
+  --color-cvc-cyan: #45bbeb;
+  --color-cvc-crimson: #ed3162;
+  --color-cvc-grey: #999999;
+
+  --color-cvc-ink: #16181a;
+  --color-cvc-muted: #5c6469;
+  --color-cvc-paper: #fcfcfb;
+}
+
+html {
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background: var(--color-cvc-paper);
+  color: var(--color-cvc-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
