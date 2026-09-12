@@ -33,9 +33,25 @@ export default function BlogPost() {
 
   if (!post) return <div className="py-32" />;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.excerpt,
+    image: post.cover_image_url,
+    datePublished: post.published_at,
+    author: { "@type": "Organization", name: "Colourful Visual Communication" },
+  };
+
   return (
     <>
-      <Seo title={post.title} path={`/blog/${post.slug}`} description={post.excerpt} image={post.cover_image_url} />
+      <Seo
+        title={post.title}
+        path={`/blog/${post.slug}`}
+        description={post.excerpt}
+        image={post.cover_image_url}
+        jsonLd={jsonLd}
+      />
 
       <article className="px-6 pb-20 pt-24 sm:pt-32">
         <Container className="max-w-2xl">

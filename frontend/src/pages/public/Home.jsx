@@ -6,7 +6,7 @@ import { listServices, listPortfolio, listTestimonials } from "../../api/client.
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
-import Seo from "../../components/Seo.jsx";
+import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 
 export default function Home() {
   const [services, setServices] = useState([]);
@@ -21,7 +21,7 @@ export default function Home() {
 
   return (
     <>
-      <Seo path="/" />
+      <Seo path="/" jsonLd={localBusinessJsonLd} />
 
       <section className="px-6 pb-20 pt-24 sm:pt-32">
         <Container>

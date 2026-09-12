@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
-import Seo from "../../components/Seo.jsx";
+import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 
 export default function Contact() {
   return (
@@ -12,6 +12,7 @@ export default function Contact() {
         title="Contact"
         path="/contact"
         description="Reach CVC on WhatsApp, phone, or email. Ndeiya, Limuru, Kenya."
+        jsonLd={localBusinessJsonLd}
       />
 
       <section className="px-6 pb-24 pt-24 sm:pt-32">

@@ -40,9 +40,25 @@ export default function ServiceDetail() {
 
   if (!service) return <div className="py-32" />;
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: service.name,
+    description: service.summary,
+    provider: { "@type": "LocalBusiness", name: "Colourful Visual Communication" },
+    areaServed: "Kenya",
+    ...(service.price_cents && {
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "KES",
+        price: service.price_cents / 100,
+      },
+    }),
+  };
+
   return (
     <>
-      <Seo title={service.name} path={`/services/${service.slug}`} description={service.summary} />
+      <Seo title={service.name} path={`/services/${service.slug}`} description={service.summary} jsonLd={jsonLd} />
 
       <section className="px-6 pb-16 pt-24 sm:pt-32">
         <Container className="max-w-2xl">
