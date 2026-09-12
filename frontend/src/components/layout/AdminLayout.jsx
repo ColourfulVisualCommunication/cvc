@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { useAuth } from "../../admin/AuthContext.jsx";
+import Logo from "../ui/Logo.jsx";
 
 const LINKS = [
   { to: "/admin", label: "Dashboard", end: true, icon: LayoutDashboard },
@@ -32,7 +33,7 @@ function SidebarContent({ onNavigate }) {
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center px-5 py-6">
-        <img src="/logo.svg" alt="Colourful Visual Communication" className="h-9 w-auto" />
+        <Logo />
       </div>
 
       <nav className="flex-1 space-y-1 px-3">
@@ -107,7 +108,7 @@ export default function AdminLayout() {
 
       <div className="lg:pl-64">
         <header className="flex items-center justify-between border-b border-black/5 px-5 py-4 lg:hidden">
-          <img src="/logo.svg" alt="Colourful Visual Communication" className="h-7 w-auto" />
+          <Logo />
           <button
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
