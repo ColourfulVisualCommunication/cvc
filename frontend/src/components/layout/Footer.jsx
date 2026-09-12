@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="flex flex-col justify-between gap-8 sm:flex-row">
           <div>
-            <img src="/logo.svg" alt="Colourful Visual Communication" className="h-12 w-auto" />
+            <img src="/logo.svg" alt="Colourful Visual Communication" className="h-20 w-auto" />
             <p className="mt-3 max-w-xs text-sm text-cvc-muted">
               From Idea to Action. From Action to Reality.
             </p>
