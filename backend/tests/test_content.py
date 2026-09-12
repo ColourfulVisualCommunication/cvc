@@ -14,31 +14,25 @@ class TestConfig(Config):
 
 
 class AuthedClient:
-    """Wraps the test client so every mutating request carries the CSRF
-    header Flask-JWT-Extended requires alongside the cookie (see auth.py) —
-    without this, every admin POST/PATCH/DELETE gets a 401."""
+    """Wraps the test client so every request carries the bearer token from
+    login — auth travels as an Authorization header, not a cookie (see
+    app/api/auth.py for why)."""
 
-    def __init__(self, test_client):
+    def __init__(self, test_client, token):
         self._client = test_client
-
-    def _csrf_headers(self):
-        cookie = self._client.get_cookie("csrf_access_token")
-        return {"X-CSRF-TOKEN": cookie.value} if cookie else {}
+        self._headers = {"Authorization": f"Bearer {token}"}
 
     def get(self, *args, **kwargs):
-        return self._client.get(*args, **kwargs)
+        return self._client.get(*args, headers=self._headers, **kwargs)
 
     def post(self, *args, **kwargs):
-        kwargs["headers"] = {**kwargs.get("headers", {}), **self._csrf_headers()}
-        return self._client.post(*args, **kwargs)
+        return self._client.post(*args, headers=self._headers, **kwargs)
 
     def patch(self, *args, **kwargs):
-        kwargs["headers"] = {**kwargs.get("headers", {}), **self._csrf_headers()}
-        return self._client.patch(*args, **kwargs)
+        return self._client.patch(*args, headers=self._headers, **kwargs)
 
     def delete(self, *args, **kwargs):
-        kwargs["headers"] = {**kwargs.get("headers", {}), **self._csrf_headers()}
-        return self._client.delete(*args, **kwargs)
+        return self._client.delete(*args, headers=self._headers, **kwargs)
 
 
 @pytest.fixture
@@ -51,11 +45,11 @@ def client():
         db.session.commit()
 
         test_client = app.test_client()
-        test_client.post(
+        login = test_client.post(
             "/api/v1/auth/login", json={"email": TEST_EMAIL, "password": TEST_PASSWORD}
         )
 
-        yield AuthedClient(test_client)
+        yield AuthedClient(test_client, login.json["access_token"])
 
         PortfolioProject.query.filter_by(slug="test-project").delete()
         Post.query.filter_by(slug="test-post").delete()

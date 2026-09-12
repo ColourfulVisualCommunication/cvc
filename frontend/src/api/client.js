@@ -3,32 +3,25 @@
  * directly — one place to change the base URL, handle errors, or add auth.
  */
 const BASE = import.meta.env.VITE_API_URL || "/api/v1";
+const TOKEN_KEY = "cvc_admin_token";
 
-function readCookie(name) {
-  const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
-  return match ? decodeURIComponent(match[1]) : null;
-}
+// The frontend and API are different domains, so auth travels as a Bearer
+// token (set on login, read from storage on every request) rather than a
+// cookie — see backend/app/api/auth.py for why.
+export const getToken = () => localStorage.getItem(TOKEN_KEY);
+export const setToken = (token) => localStorage.setItem(TOKEN_KEY, token);
+export const clearToken = () => localStorage.removeItem(TOKEN_KEY);
 
 async function request(path, options = {}) {
-  const method = options.method || "GET";
   const headers = { ...options.headers };
 
-  // Flask-JWT-Extended's cookie auth requires this on every mutating request
-  // once logged in — the cookie itself is httpOnly, this one deliberately
-  // isn't, so JS can read it and prove the request came from this site.
-  if (method !== "GET") {
-    const csrf = readCookie("csrf_access_token");
-    if (csrf) headers["X-CSRF-TOKEN"] = csrf;
-  }
+  const token = getToken();
+  if (token) headers["Authorization"] = `Bearer ${token}`;
   if (!(options.body instanceof FormData)) {
     headers["Content-Type"] = "application/json";
   }
 
-  const response = await fetch(`${BASE}${path}`, {
-    credentials: "include", // sends the admin auth cookie
-    ...options,
-    headers,
-  });
+  const response = await fetch(`${BASE}${path}`, { ...options, headers });
 
   const body = await response.json().catch(() => ({}));
 
@@ -93,5 +86,4 @@ export const uploadMedia = (file) => api.upload("/admin/media", file);
 
 // Auth
 export const login = (email, password) => api.post("/auth/login", { email, password });
-export const logout = () => api.post("/auth/logout");
 export const me = () => api.get("/auth/me");
