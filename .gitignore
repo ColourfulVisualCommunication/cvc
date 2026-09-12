@@ -4,6 +4,7 @@
 .env.*.local
 .env.*
 !.env.example
+cookies.txt
 
 # Python
 __pycache__/

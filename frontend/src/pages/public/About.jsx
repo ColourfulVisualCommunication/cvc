@@ -1,0 +1,83 @@
+import { motion } from "framer-motion";
+
+import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
+import Container from "../../components/ui/Container.jsx";
+import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
+import Seo from "../../components/Seo.jsx";
+
+export default function About() {
+  return (
+    <>
+      <Seo
+        title="About"
+        path="/about"
+        description="CVC is run by Njoroge from Ndeiya, Limuru — one person doing both brand identity and full-stack development."
+      />
+
+      <section className="px-6 pb-16 pt-24 sm:pt-32">
+        <Container>
+          <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-2xl">
+            <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
+              About
+            </motion.p>
+            <motion.h1 variants={fadeUp} className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+              One person, two disciplines most agencies split in two.
+            </motion.h1>
+            <motion.p variants={fadeUp} className="mt-6 text-lg text-cvc-muted">
+              CVC — Colourful Visual Communication — is a strategic creative and
+              digital development agency based in Ndeiya, Limuru, Kenya. Founded
+              and run by Njoroge, who does both brand identity and full-stack
+              development.
+            </motion.p>
+          </motion.div>
+        </Container>
+      </section>
+
+      <section className="border-t border-black/5 px-6 py-16">
+        <Container className="max-w-2xl">
+          <motion.div {...revealOnce} variants={stagger(0.1)}>
+            <motion.h2 variants={fadeUp} className="text-2xl font-bold tracking-tight">
+              The moat
+            </motion.h2>
+            <motion.p variants={fadeUp} className="mt-4 text-cvc-muted">
+              Most brand designers in the market cannot build. Most developers
+              cannot brand. That combination — one person who can define how a
+              business looks and then actually build the site or app that carries
+              it — is what CVC sells.
+            </motion.p>
+          </motion.div>
+        </Container>
+      </section>
+
+      <section className="border-t border-black/5 px-6 py-16">
+        <Container className="max-w-2xl">
+          <motion.div {...revealOnce} variants={stagger(0.1)}>
+            <motion.h2 variants={fadeUp} className="text-2xl font-bold tracking-tight">
+              How work reaches us
+            </motion.h2>
+            <motion.p variants={fadeUp} className="mt-4 text-cvc-muted">
+              Almost every client arrives through a relationship — a meeting, a
+              WhatsApp message, a phone call from a referral, a friend. We keep
+              it that simple: no chatbots, no sales funnel. A conversation,
+              a scope, a quote, a deposit, the work, and delivery once it's
+              paid for.
+            </motion.p>
+          </motion.div>
+        </Container>
+      </section>
+
+      <section className="border-t border-black/5 px-6 py-20 text-center">
+        <Container>
+          <motion.div {...revealOnce}>
+            <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">
+              Talk to us directly on WhatsApp.
+            </h2>
+            <div className="mt-8">
+              <WhatsAppCTA />
+            </div>
+          </motion.div>
+        </Container>
+      </section>
+    </>
+  );
+}

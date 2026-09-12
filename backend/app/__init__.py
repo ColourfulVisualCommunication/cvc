@@ -4,6 +4,7 @@ Flask is created inside a function rather than at import time so that tests can
 build an app with different config, and so nothing runs on import.
 """
 import click
+import cloudinary
 from flask import Flask, jsonify
 
 from config import get_config
@@ -22,6 +23,12 @@ def create_app(config_object=None):
         app,
         resources={r"/api/*": {"origins": app.config["CORS_ORIGINS"]}},
         supports_credentials=True,
+    )
+    cloudinary.config(
+        cloud_name=app.config["CLOUDINARY_CLOUD_NAME"],
+        api_key=app.config["CLOUDINARY_API_KEY"],
+        api_secret=app.config["CLOUDINARY_API_SECRET"],
+        secure=True,
     )
 
     # Models must be imported before migrations can see them.
