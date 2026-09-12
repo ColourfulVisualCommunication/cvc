@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
 
+import Logo from "../ui/Logo.jsx";
+
 export default function Footer() {
   return (
     <footer className="border-t border-black/5 bg-cvc-paper">
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="flex flex-col justify-between gap-8 sm:flex-row">
           <div>
-            <img src="/logo.svg" alt="Colourful Visual Communication" className="h-20 w-auto" />
+            <Logo />
             <p className="mt-3 max-w-xs text-sm text-cvc-muted">
               From Idea to Action. From Action to Reality.
             </p>

@@ -128,13 +128,16 @@ export default function Home() {
       </section>
 
       {testimonials.length > 0 && (
-        <section className="border-t border-black/5 px-6 py-20">
+        <section className="bg-cvc-crimson px-6 py-20">
           <Container>
-            <motion.div {...revealOnce} variants={stagger(0.1)} className="grid gap-6 sm:grid-cols-2">
+            <motion.p {...revealOnce} className="font-mono text-xs uppercase tracking-[0.18em] text-white/70">
+              What clients say
+            </motion.p>
+            <motion.div {...revealOnce} variants={stagger(0.1)} className="mt-8 grid gap-6 sm:grid-cols-2">
               {testimonials.slice(0, 4).map((t) => (
-                <motion.blockquote key={t.id} variants={fadeUp} className="rounded-2xl border border-black/10 p-6">
-                  <p className="text-cvc-ink">&ldquo;{t.quote}&rdquo;</p>
-                  <footer className="mt-4 text-sm text-cvc-muted">
+                <motion.blockquote key={t.id} variants={fadeUp} className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
+                  <p className="text-lg font-medium leading-snug text-white">&ldquo;{t.quote}&rdquo;</p>
+                  <footer className="mt-4 text-sm text-white/70">
                     {t.client_name}
                     {t.client_role && <> · {t.client_role}</>}
                   </footer>
