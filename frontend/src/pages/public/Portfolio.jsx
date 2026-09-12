@@ -7,12 +7,13 @@ import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo from "../../components/Seo.jsx";
+import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 export default function Portfolio() {
   const [items, setItems] = useState(null);
 
   useEffect(() => {
-    listPortfolio().then((p) => setItems(p.items ?? [])).catch(() => setItems([]));
+    listPortfolio().then((p) => setItems(p.items ?? [])).catch(() => setItems([])).finally(markPrerenderReady);
   }, []);
 
   return (

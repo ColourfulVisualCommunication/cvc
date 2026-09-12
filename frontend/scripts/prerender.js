@@ -1,0 +1,159 @@
+/**
+ * Build-time prerender: after `vite build`, boot the built app under a
+ * static server, visit every public route in headless Chrome, and replace
+ * each route's shell with the fully-rendered HTML (including react-helmet's
+ * title/meta/OG/JSON-LD). Crawlers and link-unfurlers that don't execute JS
+ * (WhatsApp, Twitter, Facebook) then see real content instead of the bare
+ * SPA shell. See CLAUDE.md's SEO section.
+ *
+ * Content routes (service/portfolio/blog slugs) are discovered live from
+ * the API at build time, so a rebuild always prerenders whatever actually
+ * exists — nothing hardcoded to fall out of sync.
+ *
+ * This never touches client/admin routes (/admin/*) — those are
+ * deliberately excluded and must stay unindexed regardless.
+ */
+import { spawn } from "node:child_process";
+import { mkdir, writeFile } from "node:fs/promises";
+import { fileURLToPath } from "node:url";
+import path from "node:path";
+import puppeteer from "puppeteer";
+
+const PORT = 4173;
+const ORIGIN = `http://localhost:${PORT}`;
+const API_URL = process.env.VITE_API_URL || "http://localhost:5000/api/v1";
+const ROOT = path.dirname(fileURLToPath(import.meta.url)) + "/..";
+const DIST = path.resolve(ROOT, "dist");
+
+const STATIC_ROUTES = ["/", "/about", "/process", "/services", "/work", "/blog", "/contact"];
+
+async function fetchSlugs(endpoint) {
+  try {
+    // Generous timeout: Render's free tier spins down when idle and can take
+    // 30-60s+ to cold-start on the first request after inactivity.
+    const res = await fetch(`${API_URL}${endpoint}`, { signal: AbortSignal.timeout(90000) });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.items || []).map((item) => item.slug);
+  } catch (err) {
+    console.warn(`Could not fetch ${endpoint} for prerendering (${err.message}) — skipping those routes.`);
+    return [];
+  }
+}
+
+async function discoverRoutes() {
+  const [services, portfolio, posts] = await Promise.all([
+    fetchSlugs("/services"),
+    fetchSlugs("/portfolio"),
+    fetchSlugs("/posts"),
+  ]);
+  return [
+    ...STATIC_ROUTES,
+    ...services.map((s) => `/services/${s}`),
+    ...portfolio.map((s) => `/work/${s}`),
+    ...posts.map((s) => `/blog/${s}`),
+  ];
+}
+
+function startServer() {
+  return new Promise((resolve, reject) => {
+    // detached so it gets its own process group — `npx vite preview` spawns
+    // a further child for the actual server, so killing just the wrapper
+    // process on cleanup leaves that grandchild (and the port) behind.
+    const proc = spawn("npx", ["vite", "preview", "--port", String(PORT), "--strictPort"], {
+      cwd: ROOT,
+      stdio: ["ignore", "pipe", "pipe"],
+      detached: true,
+    });
+    const timer = setTimeout(() => reject(new Error("vite preview did not start in time")), 20000);
+    const onData = (data) => {
+      if (data.toString().includes("Local:")) {
+        clearTimeout(timer);
+        proc.stdout.off("data", onData);
+        resolve(proc);
+      }
+    };
+    proc.stdout.on("data", onData);
+    proc.stderr.on("data", (d) => process.stderr.write(d));
+    proc.on("error", reject);
+  });
+}
+
+function stopServer(proc) {
+  try {
+    process.kill(-proc.pid, "SIGTERM");
+  } catch {
+    proc.kill("SIGTERM");
+  }
+}
+
+function routeToFile(route) {
+  if (route === "/") return path.join(DIST, "index.html");
+  return path.join(DIST, route.replace(/^\//, ""), "index.html");
+}
+
+// Framer Motion's whileInView animations only fire once an element actually
+// crosses into the viewport. A single tall viewport misses long pages, so
+// scroll the whole page first to trigger every reveal before capturing.
+async function scrollToBottom(page) {
+  await page.evaluate(async () => {
+    await new Promise((resolve) => {
+      let total = 0;
+      const step = 400;
+      const timer = setInterval(() => {
+        window.scrollBy(0, step);
+        total += step;
+        if (total >= document.body.scrollHeight) {
+          clearInterval(timer);
+          resolve();
+        }
+      }, 80);
+    });
+  });
+  await new Promise((r) => setTimeout(r, 300)); // let in-flight transitions settle
+}
+
+async function main() {
+  console.log("Discovering routes to prerender...");
+  const routes = await discoverRoutes();
+  console.log(`Prerendering ${routes.length} routes:`, routes);
+
+  const server = await startServer();
+  const browser = await puppeteer.launch({
+    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu"],
+  });
+
+  try {
+    for (const route of routes) {
+      const page = await browser.newPage();
+      await page.setViewport({ width: 1280, height: 1600 });
+      await page.goto(`${ORIGIN}${route}`, { waitUntil: "networkidle0", timeout: 30000 });
+      // networkidle0 alone isn't reliable here: JS parsing/mounting has zero
+      // network activity, so the idle-timer can already have elapsed before
+      // React even starts its data fetch, capturing the loading state
+      // instead of the real content. Wait for the app's own explicit signal
+      // (see src/lib/prerenderReady.js) instead, with networkidle0 as the
+      // floor and a generous timeout as the ceiling if something's stuck.
+      await page
+        .waitForFunction("window.__PRERENDER_READY__ === true", { timeout: 15000 })
+        .catch(() => console.warn(`  ! ${route} never signalled ready — capturing whatever's there`));
+      await scrollToBottom(page);
+      const html = await page.content();
+      const file = routeToFile(route);
+      await mkdir(path.dirname(file), { recursive: true });
+      await writeFile(file, `<!doctype html>\n${html}`);
+      await page.close();
+      console.log(`  ✓ ${route} -> ${path.relative(DIST, file)}`);
+    }
+  } finally {
+    await browser.close();
+    stopServer(server);
+  }
+
+  console.log("Prerendering complete.");
+}
+
+main().catch((err) => {
+  console.error("Prerendering failed:", err);
+  process.exit(1);
+});

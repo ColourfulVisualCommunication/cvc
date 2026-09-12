@@ -6,12 +6,13 @@ import { listPosts } from "../../api/client.js";
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import Seo from "../../components/Seo.jsx";
+import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 export default function Blog() {
   const [posts, setPosts] = useState(null);
 
   useEffect(() => {
-    listPosts().then((p) => setPosts(p.items ?? [])).catch(() => setPosts([]));
+    listPosts().then((p) => setPosts(p.items ?? [])).catch(() => setPosts([])).finally(markPrerenderReady);
   }, []);
 
   return (
