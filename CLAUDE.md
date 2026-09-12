@@ -94,7 +94,7 @@ These were in an earlier, much larger plan. Each was cut for a reason:
 
 ## Build phases
 
-Current position: **Phase 1**. See `docs/04-build-plan.md` for full detail.
+Current position: **Phase 1 shipped** — live at `https://cvc-api.onrender.com`, DB-backed (`/api/v1/health`, `/api/v1/services`), admin login working. **Phase 2 next.** See `docs/02-build-plan.md` for full detail.
 
 | # | Phase | Ships |
 |---|---|---|

@@ -18,7 +18,7 @@ export default function Home() {
     Promise.all([health(), listServices()])
       .then(([h, s]) => {
         setStatus(h);
-        setServices(s.items);
+        setServices(s.items ?? []);
       })
       .catch((e) => setError(e.message));
   }, []);
