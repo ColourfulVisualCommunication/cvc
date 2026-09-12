@@ -22,6 +22,7 @@ import Dashboard from "./pages/admin/Dashboard.jsx";
 import PortfolioAdmin from "./pages/admin/Portfolio.jsx";
 import PostsAdmin from "./pages/admin/Posts.jsx";
 import TestimonialsAdmin from "./pages/admin/Testimonials.jsx";
+import ClientLogosAdmin from "./pages/admin/ClientLogos.jsx";
 
 export default function App() {
   return (
@@ -47,6 +48,7 @@ export default function App() {
             <Route path="portfolio" element={<PortfolioAdmin />} />
             <Route path="posts" element={<PostsAdmin />} />
             <Route path="testimonials" element={<TestimonialsAdmin />} />
+            <Route path="clients" element={<ClientLogosAdmin />} />
           </Route>
         </Route>
       </Routes>

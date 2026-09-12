@@ -14,5 +14,18 @@ def upload_media():
     if file is None:
         return jsonify(error="bad_request", message="No file provided"), 400
 
+    # Optional, comma-separated extension whitelist (e.g. "svg,png") — most
+    # uploads (portfolio photos, avatars) accept anything Cloudinary handles,
+    # but some content types (client logos) need to restrict format.
+    formats = request.form.get("formats")
+    if formats:
+        allowed = {f.strip().lower() for f in formats.split(",") if f.strip()}
+        ext = file.filename.rsplit(".", 1)[-1].lower() if "." in file.filename else ""
+        if ext not in allowed:
+            return jsonify(
+                error="bad_request",
+                message=f"Only {', '.join(sorted(allowed))} files are allowed",
+            ), 400
+
     media = media_service.upload(file)
     return jsonify(media.to_dict()), 201

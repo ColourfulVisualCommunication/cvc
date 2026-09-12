@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Briefcase, FileText, Quote, Plus } from "lucide-react";
+import { Briefcase, FileText, Quote, Building2, Plus } from "lucide-react";
 
-import { adminListPortfolio, adminListPosts, adminListTestimonials } from "../../api/client.js";
+import {
+  adminListPortfolio,
+  adminListPosts,
+  adminListTestimonials,
+  adminListClientLogos,
+} from "../../api/client.js";
 
 const SECTIONS = [
   {
@@ -29,6 +34,14 @@ const SECTIONS = [
     newHref: "/admin/testimonials",
     color: "bg-cvc-crimson/15 text-cvc-crimson",
   },
+  {
+    key: "clients",
+    label: "Client logos",
+    icon: Building2,
+    fetch: adminListClientLogos,
+    newHref: "/admin/clients",
+    color: "bg-cvc-grey/20 text-cvc-grey",
+  },
 ];
 
 export default function Dashboard() {
@@ -52,7 +65,7 @@ export default function Dashboard() {
       <h1 className="text-2xl font-bold tracking-tight text-cvc-ink">Dashboard</h1>
       <p className="mt-1 text-sm text-cvc-muted">What's live on the site right now.</p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {SECTIONS.map((s, i) => {
           const Icon = s.icon;
           const count = counts?.[i];

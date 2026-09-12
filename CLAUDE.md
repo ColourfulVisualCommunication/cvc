@@ -109,7 +109,7 @@ Current position: **Phase 1 shipped** — live at `https://cvc-api.onrender.com`
 
 Phase 2 matters most and ships early on purpose — it is what protects referrals.
 
-## Data model — 16 tables
+## Data model — 16 tables, plus one added since
 
 **People & pipeline:** `admin_user` · `lead` · `client`
 **Selling:** `service` · `quote` · `quote_item`
@@ -117,6 +117,12 @@ Phase 2 matters most and ships early on purpose — it is what protects referral
 **Work:** `project` · `deliverable` · `approval`
 **Content:** `portfolio_project` · `post` · `testimonial` · `media`
 **Plumbing:** `email_log`
+
+**Added beyond the original 16:** `client_logo` — the public "clients we
+work with" strip on the homepage. Deliberately not folded into the future
+`client` table (People & Pipeline) — that one is for people with
+projects/invoices, a later-phase concept; this is just a logo + name for
+display, nothing more.
 
 `payment` carries a **unique constraint on the provider transaction reference** — that constraint is the idempotency guarantee. A retried M-Pesa callback must never produce a second payment row or a second receipt email.
 

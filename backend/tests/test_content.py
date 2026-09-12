@@ -2,7 +2,7 @@ import pytest
 
 from app import create_app
 from app.extensions import db
-from app.models import AdminUser, PortfolioProject, Post, Testimonial
+from app.models import AdminUser, ClientLogo, PortfolioProject, Post, Testimonial
 from config import Config
 
 TEST_EMAIL = "pytest-content-admin@example.com"
@@ -54,6 +54,7 @@ def client():
         PortfolioProject.query.filter_by(slug="test-project").delete()
         Post.query.filter_by(slug="test-post").delete()
         Testimonial.query.filter_by(client_name="Test Client").delete()
+        ClientLogo.query.filter_by(name="Test Co").delete()
         db.session.delete(AdminUser.query.filter_by(email=TEST_EMAIL).first())
         db.session.commit()
 
@@ -114,3 +115,32 @@ def test_testimonial_crud_round_trip(client):
     assert not any(
         t["client_name"] == "Test Client" for t in client.get("/api/v1/testimonials").json["items"]
     )
+
+
+def test_client_logo_crud_and_publish_gate(client):
+    create = client.post(
+        "/api/v1/admin/client-logos",
+        json={"name": "Test Co", "logo_url": "https://example.com/logo.svg", "published": False},
+    )
+    assert create.status_code == 201
+    logo_id = create.json["id"]
+
+    assert not any(c["name"] == "Test Co" for c in client.get("/api/v1/client-logos").json["items"])
+
+    client.patch(f"/api/v1/admin/client-logos/{logo_id}", json={"published": True})
+    assert any(c["name"] == "Test Co" for c in client.get("/api/v1/client-logos").json["items"])
+
+    client.delete(f"/api/v1/admin/client-logos/{logo_id}")
+    assert not any(c["name"] == "Test Co" for c in client.get("/api/v1/client-logos").json["items"])
+
+
+def test_media_upload_rejects_disallowed_format(client):
+    from io import BytesIO
+
+    fake_jpeg = (BytesIO(b"not a real file"), "photo.jpg")
+    res = client.post(
+        "/api/v1/admin/media",
+        data={"file": fake_jpeg, "formats": "svg,png"},
+        content_type="multipart/form-data",
+    )
+    assert res.status_code == 400

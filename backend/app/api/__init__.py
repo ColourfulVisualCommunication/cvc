@@ -7,4 +7,13 @@ from flask import Blueprint
 
 api_v1 = Blueprint("api_v1", __name__)
 
-from . import auth, health, media, portfolio, posts, services, testimonials  # noqa: E402,F401
+from . import (  # noqa: E402,F401
+    auth,
+    client_logos,
+    health,
+    media,
+    portfolio,
+    posts,
+    services,
+    testimonials,
+)
