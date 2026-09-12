@@ -6,6 +6,7 @@ import {
   Briefcase,
   FileText,
   Quote,
+  Building2,
   LogOut,
   Menu,
   X,
@@ -19,6 +20,7 @@ const LINKS = [
   { to: "/admin/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/admin/posts", label: "Blog", icon: FileText },
   { to: "/admin/testimonials", label: "Testimonials", icon: Quote },
+  { to: "/admin/clients", label: "Client logos", icon: Building2 },
 ];
 
 function SidebarContent({ onNavigate }) {

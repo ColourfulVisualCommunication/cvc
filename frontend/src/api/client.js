@@ -44,9 +44,10 @@ export const api = {
   post: (path, data) => request(path, { method: "POST", body: JSON.stringify(data) }),
   patch: (path, data) => request(path, { method: "PATCH", body: JSON.stringify(data) }),
   delete: (path) => request(path, { method: "DELETE" }),
-  upload: (path, file) => {
+  upload: (path, file, formats) => {
     const form = new FormData();
     form.append("file", file);
+    if (formats) form.append("formats", formats);
     return request(path, { method: "POST", body: form });
   },
 };
@@ -81,8 +82,16 @@ export const adminCreateTestimonial = (data) => api.post("/admin/testimonials", 
 export const adminUpdateTestimonial = (id, data) => api.patch(`/admin/testimonials/${id}`, data);
 export const adminDeleteTestimonial = (id) => api.delete(`/admin/testimonials/${id}`);
 
+// Client logos
+export const listClientLogos = () => api.get("/client-logos");
+export const adminListClientLogos = () => api.get("/admin/client-logos");
+export const adminCreateClientLogo = (data) => api.post("/admin/client-logos", data);
+export const adminUpdateClientLogo = (id, data) => api.patch(`/admin/client-logos/${id}`, data);
+export const adminDeleteClientLogo = (id) => api.delete(`/admin/client-logos/${id}`);
+
 // Media
 export const uploadMedia = (file) => api.upload("/admin/media", file);
+export const uploadLogo = (file) => api.upload("/admin/media", file, "svg,png");
 
 // Auth
 export const login = (email, password) => api.post("/auth/login", { email, password });

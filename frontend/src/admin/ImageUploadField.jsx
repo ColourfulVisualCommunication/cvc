@@ -1,8 +1,14 @@
 import { useState } from "react";
 
-import { uploadMedia } from "../api/client.js";
+import { uploadMedia, ApiError } from "../api/client.js";
 
-export default function ImageUploadField({ label, value, onChange }) {
+export default function ImageUploadField({
+  label,
+  value,
+  onChange,
+  accept = "image/*",
+  upload = uploadMedia,
+}) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
 
@@ -12,10 +18,10 @@ export default function ImageUploadField({ label, value, onChange }) {
     setBusy(true);
     setError(null);
     try {
-      const media = await uploadMedia(file);
+      const media = await upload(file);
       onChange(media.url);
-    } catch {
-      setError("Upload failed — try again.");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "Upload failed — try again.");
     } finally {
       setBusy(false);
     }
@@ -25,11 +31,11 @@ export default function ImageUploadField({ label, value, onChange }) {
     <div>
       <label className="text-sm font-medium text-cvc-ink">{label}</label>
       {value && (
-        <img src={value} alt="" className="mt-2 h-32 w-32 rounded-lg object-cover" />
+        <img src={value} alt="" className="mt-2 h-32 w-32 rounded-lg object-contain" />
       )}
       <input
         type="file"
-        accept="image/*"
+        accept={accept}
         onChange={handleFile}
         disabled={busy}
         className="mt-2 block text-sm text-cvc-muted"

@@ -7,6 +7,7 @@ import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
+import ClientLogos from "../../components/ClientLogos.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 export default function Home() {
@@ -30,7 +31,7 @@ export default function Home() {
         <Container>
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-3xl">
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
-              Colourful Visual Communication · Ndeiya, Limuru
+              Colourful Visual Communication ...Online!
             </motion.p>
             <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold leading-[1.05] tracking-tight sm:text-7xl">
               From idea to action.
@@ -38,8 +39,8 @@ export default function Home() {
               <span className="text-cvc-amber">From action</span> to reality.
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg text-cvc-muted">
-              Brand identity and digital development from one team — most brand
-              designers can't build, most developers can't brand. We do both.
+              Strategic Brand identity and digital development from one team — most brand
+              designers can't build, most developers can't brand. <span className="font-bold text-cvc-crimson">We do both.</span>
             </motion.p>
             <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-4">
               <WhatsAppCTA />
@@ -126,6 +127,8 @@ export default function Home() {
           )}
         </Container>
       </section>
+
+      <ClientLogos />
 
       {testimonials.length > 0 && (
         <section className="bg-cvc-crimson px-6 py-20">
