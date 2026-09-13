@@ -47,7 +47,7 @@ export default function Login() {
               autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+              className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
             />
           </div>
           <div>
@@ -59,7 +59,7 @@ export default function Login() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+              className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
             />
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={busy}
-          className="mt-6 w-full rounded-lg bg-cvc-ink px-4 py-2.5 font-semibold text-cvc-paper disabled:opacity-50"
+          className="mt-6 w-full bg-cvc-ink px-4 py-2.5 font-semibold text-cvc-paper disabled:opacity-50"
         >
           {busy ? "Signing in…" : "Sign in"}
         </button>

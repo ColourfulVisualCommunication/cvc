@@ -79,7 +79,7 @@ export default function Services() {
                 <motion.div key={s.slug} variants={fadeUp}>
                   <Link
                     to={`/services/${s.slug}`}
-                    className="group flex h-full flex-col justify-between rounded-2xl border border-black/10 p-6 transition-colors hover:border-cvc-ink"
+                    className="group flex h-full flex-col justify-between border border-black/10 p-6 transition-colors hover:border-cvc-ink"
                   >
                     <div>
                       <h3 className="text-lg font-semibold">{s.name}</h3>

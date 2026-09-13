@@ -4,10 +4,10 @@
  * drifting (too small) across the public header, footer, and admin sidebar
  * before this existed.
  */
-export default function Logo({ className = "" }) {
+export default function Logo({ className = "", dark = false }) {
   return (
     <img
-      src="/logo.svg"
+      src={dark ? "/logo-white.svg" : "/logo.svg"}
       alt="Colourful Visual Communication"
       className={`h-20 w-auto ${className}`}
     />

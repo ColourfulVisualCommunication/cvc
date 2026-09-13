@@ -10,7 +10,7 @@ export default function WhatsAppCTA({ text = "Start a project", message, classNa
       href={href}
       target="_blank"
       rel="noreferrer"
-      className={`inline-flex items-center gap-2 rounded-full bg-cvc-ink px-6 py-3 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105 ${className}`}
+      className={`inline-flex items-center gap-2 bg-cvc-ink px-6 py-3 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105 ${className}`}
     >
       {text}
     </a>

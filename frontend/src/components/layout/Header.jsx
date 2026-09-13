@@ -38,7 +38,7 @@ export default function Header() {
             href="https://wa.me/254769604255"
             target="_blank"
             rel="noreferrer"
-            className="rounded-full bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105"
+            className="bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105"
           >
             Start a project
           </a>
@@ -71,7 +71,7 @@ export default function Header() {
                   end={l.end}
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
-                    `rounded-lg px-3 py-2.5 text-base font-medium ${
+                    `px-3 py-2.5 text-base font-medium ${
                       isActive ? "bg-black/5 text-cvc-ink" : "text-cvc-muted"
                     }`
                   }
@@ -83,7 +83,7 @@ export default function Header() {
                 href="https://wa.me/254769604255"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 rounded-lg bg-cvc-ink px-3 py-2.5 text-center text-base font-semibold text-cvc-paper"
+                className="mt-2 bg-cvc-ink px-3 py-2.5 text-center text-base font-semibold text-cvc-paper"
               >
                 Start a project
               </a>

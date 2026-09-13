@@ -4,7 +4,7 @@ import { adminListPosts, adminCreatePost, adminUpdatePost, adminDeletePost } fro
 import ImageUploadField from "../../admin/ImageUploadField.jsx";
 
 const EMPTY = { slug: "", title: "", excerpt: "", body: "", cover_image_url: "", published: false };
-const inputClass = "mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink";
+const inputClass = "mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink";
 
 function slugify(text) {
   return text.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -82,7 +82,7 @@ export default function PostsAdmin() {
         {error && <p className="text-sm text-cvc-crimson">{error}</p>}
 
         <div className="flex gap-3">
-          <button type="submit" className="rounded-lg bg-cvc-ink px-4 py-2 font-semibold text-cvc-paper">Save</button>
+          <button type="submit" className="bg-cvc-ink px-4 py-2 font-semibold text-cvc-paper">Save</button>
           <button type="button" onClick={() => setEditing(null)} className="text-sm text-cvc-muted">Cancel</button>
         </div>
       </form>
@@ -93,7 +93,7 @@ export default function PostsAdmin() {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Blog</h1>
-        <button onClick={() => setEditing({ ...EMPTY })} className="rounded-lg bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper">
+        <button onClick={() => setEditing({ ...EMPTY })} className="bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper">
           New post
         </button>
       </div>

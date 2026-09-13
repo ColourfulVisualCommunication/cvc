@@ -56,7 +56,7 @@ export default function ClientLogos() {
             key={`${logo.id}-${i}`}
             src={logo.logo_url}
             alt={logo.name}
-            className="h-16 w-auto shrink-0 grayscale transition-all duration-300 hover:scale-110 hover:grayscale-0 sm:h-20"
+            className="h-16 w-auto shrink-0 transition-all duration-300 [@media(hover:hover)]:grayscale [@media(hover:hover)]:hover:scale-110 [@media(hover:hover)]:hover:grayscale-0 sm:h-20"
           />
         ))}
       </motion.div>

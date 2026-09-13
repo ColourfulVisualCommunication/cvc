@@ -76,7 +76,7 @@ export default function PortfolioAdmin() {
                 slug: editing.id ? editing.slug : slugify(e.target.value),
               })
             }
-            className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
           />
         </Field>
         <Field label="Slug">
@@ -84,21 +84,21 @@ export default function PortfolioAdmin() {
             required
             value={editing.slug}
             onChange={(e) => setEditing({ ...editing, slug: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
           />
         </Field>
         <Field label="Client name">
           <input
             value={editing.client_name || ""}
             onChange={(e) => setEditing({ ...editing, client_name: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
           />
         </Field>
         <Field label="Summary (shown in listings)">
           <textarea
             value={editing.summary || ""}
             onChange={(e) => setEditing({ ...editing, summary: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
             rows={2}
           />
         </Field>
@@ -106,7 +106,7 @@ export default function PortfolioAdmin() {
           <textarea
             value={editing.problem || ""}
             onChange={(e) => setEditing({ ...editing, problem: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
             rows={3}
           />
         </Field>
@@ -114,7 +114,7 @@ export default function PortfolioAdmin() {
           <textarea
             value={editing.solution || ""}
             onChange={(e) => setEditing({ ...editing, solution: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
             rows={3}
           />
         </Field>
@@ -122,7 +122,7 @@ export default function PortfolioAdmin() {
           <textarea
             value={editing.result || ""}
             onChange={(e) => setEditing({ ...editing, result: e.target.value })}
-            className="mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
             rows={3}
           />
         </Field>
@@ -142,13 +142,13 @@ export default function PortfolioAdmin() {
           <div className="flex flex-wrap gap-2">
             {editing.gallery.map((src, i) => (
               <div key={src} className="relative">
-                <img src={src} alt="" className="h-16 w-16 rounded object-cover" />
+                <img src={src} alt="" className="h-16 w-16 object-cover" />
                 <button
                   type="button"
                   onClick={() =>
                     setEditing({ ...editing, gallery: editing.gallery.filter((_, idx) => idx !== i) })
                   }
-                  className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-cvc-crimson text-xs text-white"
+                  className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center bg-cvc-crimson text-xs text-white"
                 >
                   ×
                 </button>
@@ -169,7 +169,7 @@ export default function PortfolioAdmin() {
         {error && <p className="text-sm text-cvc-crimson">{error}</p>}
 
         <div className="flex gap-3">
-          <button type="submit" className="rounded-lg bg-cvc-ink px-4 py-2 font-semibold text-cvc-paper">
+          <button type="submit" className="bg-cvc-ink px-4 py-2 font-semibold text-cvc-paper">
             Save
           </button>
           <button type="button" onClick={() => setEditing(null)} className="text-sm text-cvc-muted">
@@ -187,7 +187,7 @@ export default function PortfolioAdmin() {
         <h1 className="text-2xl font-bold tracking-tight">Portfolio</h1>
         <button
           onClick={() => setEditing({ ...EMPTY })}
-          className="rounded-lg bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper"
+          className="bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper"
         >
           New project
         </button>
