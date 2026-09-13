@@ -6,6 +6,7 @@ import { Compass, Palette, Globe, LayoutGrid, Rocket, RefreshCw, Sparkles, Arrow
 import { listServices, listPortfolio, listTestimonials } from "../../api/client.js";
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
+import SectionHeading from "../../components/ui/SectionHeading.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
@@ -79,7 +80,7 @@ export default function Home() {
         <Container className="relative">
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-4xl">
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
-              Colourful Visual Communication ...Online!
+              Colourful Visual Communication <span className="text-cvc-amber">.</span><span className="text-cvc-crimson">.</span><span className="text-cvc-cyan">.Online!</span>
             </motion.p>
             <motion.h1 variants={fadeUp} className="mt-5 text-6xl font-bold leading-[0.98] tracking-tight sm:text-8xl">
               From idea to action.
@@ -123,10 +124,11 @@ export default function Home() {
       {services.length > 0 && (
         <section className="border-t border-black/5 px-6 py-20">
           <Container>
-            <motion.div {...revealOnce}>
-              <p className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">What we do</p>
-              <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-6xl">A ladder, not a guess.</h2>
-            </motion.div>
+            <SectionHeading
+              eyebrow="What we do"
+              title="A ladder, not a guess."
+              subtitle="Fixed prices where the scope is clear, quoted work where it isn't — either way, you know the number before we start."
+            />
 
             <motion.div
               {...revealOnce}
@@ -176,12 +178,15 @@ export default function Home() {
 
       <section className="bg-cvc-cyan/10 px-6 py-20">
         <Container>
-          <motion.div {...revealOnce}>
-            <p className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">Work</p>
-            <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-6xl">
-              {portfolio.length > 0 ? "Recent projects." : "New work, in progress."}
-            </h2>
-          </motion.div>
+          <SectionHeading
+            eyebrow="Work"
+            title={portfolio.length > 0 ? "Proof, not promises." : "Something's brewing."}
+            subtitle={
+              portfolio.length > 0
+                ? "A look at what's actually shipped — real problems, real solutions."
+                : "Case studies are being written up. Ask on WhatsApp and we'll share examples of recent brand and web work directly."
+            }
+          />
 
           {portfolio.length > 0 ? (
             <motion.div
@@ -212,12 +217,7 @@ export default function Home() {
                 </motion.div>
               ))}
             </motion.div>
-          ) : (
-            <motion.p {...revealOnce} className="mt-6 max-w-lg text-cvc-muted">
-              The case studies are being written up. Ask on WhatsApp and we'll
-              share examples of recent brand and web work directly.
-            </motion.p>
-          )}
+          ) : null}
         </Container>
       </section>
 
@@ -226,9 +226,12 @@ export default function Home() {
       {testimonials.length > 0 && (
         <section className="bg-cvc-crimson px-6 py-20">
           <Container>
-            <motion.p {...revealOnce} className="font-mono text-xs uppercase tracking-[0.18em] text-white/70">
-              What clients say
-            </motion.p>
+            <SectionHeading
+              eyebrow="Testimonials"
+              title="Don't take our word for it."
+              subtitle="Straight from the people we've actually worked with."
+              light
+            />
             <motion.div
               {...revealOnce}
               variants={stagger(0.1)}
@@ -266,15 +269,15 @@ export default function Home() {
       )}
 
       <section className="bg-cvc-amber/15 px-6 py-24">
-        <Container className="text-center">
-          <motion.div {...revealOnce}>
-            <h2 className="text-4xl font-bold tracking-tight sm:text-6xl">
-              Got an idea, an event, or a business that needs to look real?
-            </h2>
-            <div className="mt-9">
-              <WhatsAppCTA />
-            </div>
-          </motion.div>
+        <Container>
+          <SectionHeading
+            title="Got an idea, an event, or a business that needs to look real?"
+            subtitle="One message on WhatsApp is genuinely how every CVC project starts."
+            center
+          />
+          <div className="mt-9 flex justify-center">
+            <WhatsAppCTA />
+          </div>
         </Container>
       </section>
     </>
