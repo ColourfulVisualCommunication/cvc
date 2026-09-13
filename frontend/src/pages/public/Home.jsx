@@ -1,16 +1,22 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Compass, Palette, Globe, LayoutGrid, Rocket, RefreshCw, Sparkles, ArrowRight } from "lucide-react";
+import { Compass, Palette, Globe, LayoutGrid, Rocket, RefreshCw, Sparkles } from "lucide-react";
 
 import { listServices, listPortfolio, listTestimonials } from "../../api/client.js";
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import SectionHeading from "../../components/ui/SectionHeading.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
+import ArrowIcon from "../../components/ui/ArrowIcon.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
+
+const blink = {
+  animate: { opacity: [1, 0.25, 1] },
+  transition: { duration: 1.3, repeat: Infinity, ease: "easeInOut" },
+};
 
 // A grid built for 3 items looks broken with 1 — two-thirds of the row sits
 // empty. Cap the track width and column count to what's actually there
@@ -113,8 +119,11 @@ export default function Home() {
             </motion.p>
             <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-4">
               <WhatsAppCTA />
-              <Link to="/work" className="text-sm font-semibold text-cvc-ink underline underline-offset-4">
+              <Link to="/work" className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink">
                 See our work
+                <motion.span {...blink} className="inline-flex">
+                  <ArrowIcon size={16} />
+                </motion.span>
               </Link>
             </motion.div>
           </motion.div>
@@ -142,9 +151,9 @@ export default function Home() {
                   <motion.div key={s.slug} variants={fadeUp}>
                     <Link
                       to={`/services/${s.slug}`}
-                      className={`group block h-full rounded-2xl ${accent} p-7 transition-all duration-300 hover:-translate-y-1 hover:bg-cvc-ink hover:shadow-xl`}
+                      className={`group block h-full ${accent} p-7 transition-all duration-300 hover:-translate-y-1 hover:bg-cvc-ink hover:shadow-xl`}
                     >
-                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cvc-ink/10 transition-colors duration-300 group-hover:bg-white/10">
+                      <div className="flex h-14 w-14 items-center justify-center bg-cvc-ink/10 transition-colors duration-300 group-hover:bg-white/10">
                         <Icon
                           size={26}
                           strokeWidth={2.25}
@@ -159,7 +168,7 @@ export default function Home() {
                       </p>
                       <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-cvc-ink transition-colors duration-300 group-hover:text-white">
                         Learn more
-                        <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                        <ArrowIcon size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
                       </span>
                     </Link>
                   </motion.div>
@@ -170,10 +179,12 @@ export default function Home() {
             <motion.div {...revealOnce} className="mt-8">
               <Link
                 to="/services"
-                className="group inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink underline underline-offset-4"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink"
               >
                 See the full service ladder
-                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                <motion.span {...blink} className="inline-flex">
+                  <ArrowIcon size={16} />
+                </motion.span>
               </Link>
             </motion.div>
           </Container>
@@ -202,7 +213,7 @@ export default function Home() {
                 <motion.div key={p.slug} variants={fadeUp}>
                   <Link to={`/work/${p.slug}`} className="group block">
                     {p.cover_image_url && (
-                      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-black/5">
+                      <div className="relative aspect-[4/3] overflow-hidden bg-black/5">
                         <img
                           src={p.cover_image_url}
                           alt={p.title}
@@ -245,7 +256,7 @@ export default function Home() {
                 <motion.blockquote
                   key={t.id}
                   variants={fadeUp}
-                  className="rounded-2xl bg-white p-7 shadow-xl transition-transform duration-300 hover:-translate-y-1"
+                  className="bg-white p-7 shadow-xl transition-transform duration-300 hover:-translate-y-1"
                 >
                   <p className="text-xl font-medium leading-snug text-cvc-ink">&ldquo;{t.quote}&rdquo;</p>
                   <footer className="mt-5 flex items-center gap-3">

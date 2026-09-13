@@ -71,13 +71,13 @@ export default function BlogPost() {
               </motion.p>
             )}
             {post.cover_image_url && (
-              <motion.div variants={fadeUp} className="mt-8 overflow-hidden rounded-2xl bg-black/5">
+              <motion.div variants={fadeUp} className="mt-8 overflow-hidden bg-black/5">
                 <img src={post.cover_image_url} alt={post.title} className="w-full object-cover" />
               </motion.div>
             )}
             <motion.div
               variants={fadeUp}
-              className="mt-8 space-y-5 text-lg leading-relaxed text-cvc-ink [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold [&_img]:rounded-2xl"
+              className="mt-8 space-y-5 text-lg leading-relaxed text-cvc-ink [&_a]:underline [&_a]:underline-offset-4 [&_h2]:mt-8 [&_h2]:text-2xl [&_h2]:font-bold"
               dangerouslySetInnerHTML={{ __html: post.body || "" }}
             />
           </motion.div>

@@ -48,7 +48,7 @@ function SidebarContent({ onNavigate }) {
               end={l.end}
               onClick={onNavigate}
               className={({ isActive }) =>
-                `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                `flex items-center gap-3 px-3 py-2.5 text-sm font-medium transition-colors ${
                   isActive
                     ? "bg-cvc-ink text-cvc-paper"
                     : "text-cvc-muted hover:bg-black/5 hover:text-cvc-ink"
@@ -63,7 +63,7 @@ function SidebarContent({ onNavigate }) {
       </nav>
 
       <div className="border-t border-black/5 p-3">
-        <div className="flex items-center gap-3 rounded-lg px-3 py-2.5">
+        <div className="flex items-center gap-3 px-3 py-2.5">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cvc-amber/20 text-sm font-semibold text-cvc-ink">
             {user?.name?.[0]?.toUpperCase() ?? "A"}
           </div>
@@ -74,7 +74,7 @@ function SidebarContent({ onNavigate }) {
           <button
             onClick={handleLogout}
             aria-label="Sign out"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-cvc-crimson hover:bg-cvc-crimson/10"
+            className="flex h-8 w-8 shrink-0 items-center justify-center text-cvc-crimson hover:bg-cvc-crimson/10"
           >
             <LogOut size={16} />
           </button>
@@ -114,7 +114,7 @@ export default function AdminLayout() {
           <button
             onClick={() => setMobileOpen(true)}
             aria-label="Open menu"
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-cvc-ink hover:bg-black/5"
+            className="flex h-9 w-9 items-center justify-center text-cvc-ink hover:bg-black/5"
           >
             <Menu size={20} />
           </button>

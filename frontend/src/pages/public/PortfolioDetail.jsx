@@ -51,7 +51,7 @@ export default function PortfolioDetail() {
             </motion.h1>
 
             {project.cover_image_url && (
-              <motion.div variants={fadeUp} className="mt-10 overflow-hidden rounded-2xl bg-black/5">
+              <motion.div variants={fadeUp} className="mt-10 overflow-hidden bg-black/5">
                 <img src={project.cover_image_url} alt={project.title} className="w-full object-cover" />
               </motion.div>
             )}
@@ -80,7 +80,7 @@ export default function PortfolioDetail() {
             {project.gallery?.length > 0 && (
               <motion.div variants={fadeUp} className="mt-12 grid gap-4 sm:grid-cols-2">
                 {project.gallery.map((src) => (
-                  <div key={src} className="overflow-hidden rounded-2xl bg-black/5">
+                  <div key={src} className="overflow-hidden bg-black/5">
                     <img src={src} alt="" className="w-full object-cover" />
                   </div>
                 ))}

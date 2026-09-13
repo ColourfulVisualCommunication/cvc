@@ -80,7 +80,7 @@ export default function ServiceDetail() {
               </motion.p>
             )}
 
-            <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-6 rounded-2xl border border-black/10 p-6">
+            <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-6 border border-black/10 p-6">
               <div>
                 <p className="text-xs uppercase tracking-wide text-cvc-muted">Investment</p>
                 <p className="mt-1 font-mono text-lg">{formatPrice(service)}</p>

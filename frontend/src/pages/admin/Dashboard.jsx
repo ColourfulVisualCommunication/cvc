@@ -73,10 +73,10 @@ export default function Dashboard() {
             <Link
               key={s.key}
               to={s.newHref}
-              className="rounded-xl border border-black/10 p-5 transition-colors hover:border-cvc-ink"
+              className="border border-black/10 p-5 transition-colors hover:border-cvc-ink"
             >
               <div className="flex items-center justify-between">
-                <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${s.color}`}>
+                <div className={`flex h-10 w-10 items-center justify-center ${s.color}`}>
                   <Icon size={20} />
                 </div>
                 <Plus size={16} className="text-cvc-muted" />

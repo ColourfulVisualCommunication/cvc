@@ -60,7 +60,7 @@ export default function Portfolio() {
                 <motion.div key={p.slug} variants={fadeUp}>
                   <Link to={`/work/${p.slug}`} className="group block">
                     {p.cover_image_url && (
-                      <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-black/5">
+                      <div className="aspect-[4/3] overflow-hidden bg-black/5">
                         <img
                           src={p.cover_image_url}
                           alt={p.title}

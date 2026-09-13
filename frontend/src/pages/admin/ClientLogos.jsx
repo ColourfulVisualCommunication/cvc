@@ -10,7 +10,7 @@ import {
 import ImageUploadField from "../../admin/ImageUploadField.jsx";
 
 const EMPTY = { name: "", logo_url: "", published: false, sort_order: 0 };
-const inputClass = "mt-1 w-full rounded-lg border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink";
+const inputClass = "mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink";
 
 export default function ClientLogosAdmin() {
   const [items, setItems] = useState([]);
@@ -85,7 +85,7 @@ export default function ClientLogosAdmin() {
         {error && <p className="text-sm text-cvc-crimson">{error}</p>}
 
         <div className="flex gap-3">
-          <button type="submit" className="rounded-lg bg-cvc-ink px-4 py-2 font-semibold text-cvc-paper">Save</button>
+          <button type="submit" className="bg-cvc-ink px-4 py-2 font-semibold text-cvc-paper">Save</button>
           <button type="button" onClick={() => setEditing(null)} className="text-sm text-cvc-muted">Cancel</button>
         </div>
       </form>
@@ -96,7 +96,7 @@ export default function ClientLogosAdmin() {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold tracking-tight">Client logos</h1>
-        <button onClick={() => setEditing({ ...EMPTY })} className="rounded-lg bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper">
+        <button onClick={() => setEditing({ ...EMPTY })} className="bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper">
           New logo
         </button>
       </div>
