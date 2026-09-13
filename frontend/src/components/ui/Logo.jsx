@@ -9,7 +9,7 @@ export default function Logo({ className = "" }) {
     <img
       src="/logo.svg"
       alt="Colourful Visual Communication"
-      className={`h-14 w-auto ${className}`}
+      className={`h-20 w-auto ${className}`}
     />
   );
 }
