@@ -11,7 +11,7 @@ import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import ArrowIcon from "../../components/ui/ArrowIcon.jsx";
 import TypewriterEffect from "../../components/ui/TypewriterEffect.jsx";
 import RetroGrid from "../../components/ui/RetroGrid.jsx";
-import CoverflowCarousel from "../../components/ui/CoverflowCarousel.jsx";
+import OrbitProjects from "../../components/ui/OrbitProjects.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
@@ -183,24 +183,23 @@ export default function Home() {
             }
           />
 
-          {portfolio.length > 0 && (
-            <motion.div {...revealOnce} variants={fadeUp} className="mt-10">
-              <CoverflowCarousel
-                label="Portfolio work"
-                slides={portfolio
-                  .filter((p) => p.cover_image_url)
-                  .map((p) => ({
-                    key: p.slug,
-                    image: p.cover_image_url,
-                    alt: p.title,
-                    title: p.title,
-                    subtitle: p.client_name,
-                    onOpen: () => navigate(`/work/${p.slug}`),
-                  }))}
-              />
-            </motion.div>
-          )}
         </Container>
+
+        {portfolio.length > 0 && (
+          <OrbitProjects
+            items={portfolio
+              .filter((p) => p.cover_image_url)
+              .map((p) => ({
+                key: p.slug,
+                image: p.cover_image_url,
+                label: p.title,
+                onOpen: () => navigate(`/work/${p.slug}`),
+              }))}
+            background="transparent"
+            content={{ showCopy: false }}
+            cards={{ radius: 0, background: "var(--color-cvc-paper)" }}
+          />
+        )}
       </section>
 
       <ClientLogos />
