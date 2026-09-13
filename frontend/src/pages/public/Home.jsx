@@ -168,8 +168,12 @@ export default function Home() {
             </motion.div>
 
             <motion.div {...revealOnce} className="mt-8">
-              <Link to="/services" className="text-sm font-semibold text-cvc-ink underline underline-offset-4">
+              <Link
+                to="/services"
+                className="group inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink underline underline-offset-4"
+              >
                 See the full service ladder
+                <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
             </motion.div>
           </Container>
