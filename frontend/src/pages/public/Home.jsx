@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Compass, Palette, Globe, LayoutGrid, Rocket, RefreshCw, Sparkles, ArrowRight } from "lucide-react";
 
 import { listServices, listPortfolio, listTestimonials } from "../../api/client.js";
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
@@ -23,6 +24,17 @@ function testimonialGridClass(count) {
   if (count <= 1) return "max-w-lg";
   return "sm:grid-cols-2";
 }
+
+// One icon per service tier (0-5, see backend/seed.py) — derived from real
+// structural data, not decorative guesswork.
+const TIER_ICONS = {
+  0: Compass,
+  1: Palette,
+  2: Globe,
+  3: LayoutGrid,
+  4: Rocket,
+  5: RefreshCw,
+};
 
 export default function Home() {
   const [services, setServices] = useState([]);
@@ -122,25 +134,31 @@ export default function Home() {
               className="mt-10 grid gap-6 sm:grid-cols-3"
             >
               {services.map((s, i) => {
-                const accent = [
-                  "bg-cvc-amber",
-                  "bg-cvc-cyan",
-                  "bg-cvc-crimson",
-                ][i % 3];
+                const accent = ["bg-cvc-amber", "bg-cvc-cyan", "bg-cvc-crimson"][i % 3];
+                const Icon = TIER_ICONS[s.tier] ?? Sparkles;
                 return (
                   <motion.div key={s.slug} variants={fadeUp}>
                     <Link
                       to={`/services/${s.slug}`}
-                      className="group block h-full overflow-hidden rounded-2xl border border-black/10 transition-all hover:-translate-y-1 hover:border-cvc-ink hover:shadow-lg"
+                      className={`group block h-full rounded-2xl ${accent} p-7 transition-all duration-300 hover:-translate-y-1 hover:bg-cvc-ink hover:shadow-xl`}
                     >
-                      <div className={`h-1.5 w-full ${accent}`} />
-                      <div className="p-6">
-                        <h3 className="text-lg font-semibold">{s.name}</h3>
-                        <p className="mt-2 text-sm text-cvc-muted">{s.summary}</p>
-                        <span className="mt-4 inline-block text-sm font-medium text-cvc-ink underline underline-offset-4">
-                          Learn more
-                        </span>
+                      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cvc-ink/10 transition-colors duration-300 group-hover:bg-white/10">
+                        <Icon
+                          size={26}
+                          strokeWidth={2.25}
+                          className="text-cvc-ink transition-all duration-300 group-hover:rotate-6 group-hover:text-white"
+                        />
                       </div>
+                      <h3 className="mt-6 text-2xl font-bold tracking-tight text-cvc-ink transition-colors duration-300 group-hover:text-white">
+                        {s.name}
+                      </h3>
+                      <p className="mt-2 text-sm text-cvc-ink/70 transition-colors duration-300 group-hover:text-white/70">
+                        {s.summary}
+                      </p>
+                      <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-cvc-ink transition-colors duration-300 group-hover:text-white">
+                        Learn more
+                        <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                      </span>
                     </Link>
                   </motion.div>
                 );
@@ -220,12 +238,25 @@ export default function Home() {
                 <motion.blockquote
                   key={t.id}
                   variants={fadeUp}
-                  className="rounded-2xl bg-white/10 p-7 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1"
+                  className="rounded-2xl bg-white p-7 shadow-xl transition-transform duration-300 hover:-translate-y-1"
                 >
-                  <p className="text-xl font-medium leading-snug text-white">&ldquo;{t.quote}&rdquo;</p>
-                  <footer className="mt-4 text-sm text-white/70">
-                    {t.client_name}
-                    {t.client_role && <> · {t.client_role}</>}
+                  <p className="text-xl font-medium leading-snug text-cvc-ink">&ldquo;{t.quote}&rdquo;</p>
+                  <footer className="mt-5 flex items-center gap-3">
+                    {t.avatar_url ? (
+                      <img
+                        src={t.avatar_url}
+                        alt={t.client_name}
+                        className="h-11 w-11 shrink-0 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-cvc-crimson/15 text-sm font-bold text-cvc-crimson">
+                        {t.client_name?.[0]?.toUpperCase()}
+                      </div>
+                    )}
+                    <div className="text-sm">
+                      <p className="font-semibold text-cvc-ink">{t.client_name}</p>
+                      {t.client_role && <p className="text-cvc-muted">{t.client_role}</p>}
+                    </div>
                   </footer>
                 </motion.blockquote>
               ))}
