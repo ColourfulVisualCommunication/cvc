@@ -3,15 +3,15 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn, FaThreads, FaTiktok, FaYoutube,
 
 import Logo from "../ui/Logo.jsx";
 
-// Threads and YouTube accounts aren't set up yet — left as "#" so the
-// row's layout is already final once they exist.
+// Threads isn't set up yet — left as "#" so the row's layout is already
+// final once it exists.
 const SOCIALS = [
   { label: "Facebook", href: "https://www.facebook.com/ColourfulVisualCommunication", Icon: FaFacebookF },
   { label: "Instagram", href: "https://www.instagram.com/_njoroge_stephen/", Icon: FaInstagram },
   { label: "LinkedIn", href: "https://www.linkedin.com/in/stephen-njoroge-cvc", Icon: FaLinkedinIn },
   { label: "Threads", href: "#", Icon: FaThreads },
   { label: "TikTok", href: "https://www.tiktok.com/@colorfulvisual", Icon: FaTiktok },
-  { label: "YouTube", href: "#", Icon: FaYoutube },
+  { label: "YouTube", href: "https://www.youtube.com/channel/UCtwOHu7z1P9OdX4N6Xnnz4g", Icon: FaYoutube },
   { label: "X", href: "https://x.com/stevekamnjoros", Icon: FaXTwitter },
 ];
 
