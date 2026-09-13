@@ -18,6 +18,8 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import puppeteer from "puppeteer";
+import puppeteerCore from "puppeteer-core";
+import chromium from "@sparticuz/chromium";
 
 const PORT = 4173;
 const ORIGIN = `http://localhost:${PORT}`;
@@ -148,9 +150,22 @@ async function main() {
   console.log(`Prerendering ${routes.length} routes:`, routes);
 
   const server = await startServer();
-  const browser = await puppeteer.launch({
-    args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu"],
-  });
+  // Cloudflare's build container is missing the shared libraries (libatk,
+  // libnss3, ...) a normal Chrome-for-Testing binary needs and there's no
+  // way to apt-get them into that pipeline, so on Linux this launches
+  // @sparticuz/chromium instead — a statically-linked Chromium built for
+  // exactly this kind of locked-down CI environment. Non-Linux dev
+  // machines keep using regular puppeteer's own bundled browser.
+  const browser =
+    process.platform === "linux"
+      ? await puppeteerCore.launch({
+          args: [...chromium.args, "--disable-gpu"],
+          executablePath: await chromium.executablePath(),
+          headless: chromium.headless,
+        })
+      : await puppeteer.launch({
+          args: ["--no-sandbox", "--disable-setuid-sandbox", "--disable-gpu"],
+        });
 
   try {
     for (const route of routes) {
