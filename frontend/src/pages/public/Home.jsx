@@ -10,6 +10,20 @@ import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
+// A grid built for 3 items looks broken with 1 — two-thirds of the row sits
+// empty. Cap the track width and column count to what's actually there
+// instead of stretching a mostly-empty grid.
+function workGridClass(count) {
+  if (count <= 1) return "max-w-sm sm:mx-0";
+  if (count === 2) return "max-w-2xl sm:grid-cols-2 sm:mx-0";
+  return "sm:grid-cols-3";
+}
+
+function testimonialGridClass(count) {
+  if (count <= 1) return "max-w-lg";
+  return "sm:grid-cols-2";
+}
+
 export default function Home() {
   const [services, setServices] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
@@ -27,8 +41,14 @@ export default function Home() {
     <>
       <Seo path="/" jsonLd={localBusinessJsonLd} />
 
-      <section className="px-6 pb-20 pt-24 sm:pt-32">
-        <Container>
+      <section className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-32 sm:pt-36">
+        <img
+          src="/favicon.svg"
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] opacity-[0.08] sm:-right-24 sm:-top-24 sm:h-[560px] sm:w-[560px]"
+        />
+        <Container className="relative">
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-3xl">
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Colourful Visual Communication ...Online!
@@ -65,20 +85,30 @@ export default function Home() {
               variants={stagger(0.1)}
               className="mt-10 grid gap-6 sm:grid-cols-3"
             >
-              {services.map((s) => (
-                <motion.div key={s.slug} variants={fadeUp}>
-                  <Link
-                    to={`/services/${s.slug}`}
-                    className="group block h-full rounded-2xl border border-black/10 p-6 transition-colors hover:border-cvc-ink"
-                  >
-                    <h3 className="text-lg font-semibold">{s.name}</h3>
-                    <p className="mt-2 text-sm text-cvc-muted">{s.summary}</p>
-                    <span className="mt-4 inline-block text-sm font-medium text-cvc-ink underline underline-offset-4">
-                      Learn more
-                    </span>
-                  </Link>
-                </motion.div>
-              ))}
+              {services.map((s, i) => {
+                const accent = [
+                  "bg-cvc-amber",
+                  "bg-cvc-cyan",
+                  "bg-cvc-crimson",
+                ][i % 3];
+                return (
+                  <motion.div key={s.slug} variants={fadeUp}>
+                    <Link
+                      to={`/services/${s.slug}`}
+                      className="group block h-full overflow-hidden rounded-2xl border border-black/10 transition-all hover:-translate-y-1 hover:border-cvc-ink hover:shadow-lg"
+                    >
+                      <div className={`h-1.5 w-full ${accent}`} />
+                      <div className="p-6">
+                        <h3 className="text-lg font-semibold">{s.name}</h3>
+                        <p className="mt-2 text-sm text-cvc-muted">{s.summary}</p>
+                        <span className="mt-4 inline-block text-sm font-medium text-cvc-ink underline underline-offset-4">
+                          Learn more
+                        </span>
+                      </div>
+                    </Link>
+                  </motion.div>
+                );
+              })}
             </motion.div>
 
             <motion.div {...revealOnce} className="mt-8">
@@ -100,7 +130,11 @@ export default function Home() {
           </motion.div>
 
           {portfolio.length > 0 ? (
-            <motion.div {...revealOnce} variants={stagger(0.1)} className="mt-10 grid gap-6 sm:grid-cols-3">
+            <motion.div
+              {...revealOnce}
+              variants={stagger(0.1)}
+              className={`mt-10 grid gap-6 ${workGridClass(portfolio.length)}`}
+            >
               {portfolio.slice(0, 3).map((p) => (
                 <motion.div key={p.slug} variants={fadeUp}>
                   <Link to={`/work/${p.slug}`} className="group block">
@@ -136,7 +170,11 @@ export default function Home() {
             <motion.p {...revealOnce} className="font-mono text-xs uppercase tracking-[0.18em] text-white/70">
               What clients say
             </motion.p>
-            <motion.div {...revealOnce} variants={stagger(0.1)} className="mt-8 grid gap-6 sm:grid-cols-2">
+            <motion.div
+              {...revealOnce}
+              variants={stagger(0.1)}
+              className={`mt-8 grid gap-6 ${testimonialGridClass(testimonials.length)}`}
+            >
               {testimonials.slice(0, 4).map((t) => (
                 <motion.blockquote key={t.id} variants={fadeUp} className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
                   <p className="text-lg font-medium leading-snug text-white">&ldquo;{t.quote}&rdquo;</p>
@@ -151,13 +189,13 @@ export default function Home() {
         </section>
       )}
 
-      <section className="border-t border-black/5 px-6 py-20">
+      <section className="bg-cvc-amber/15 px-6 py-24">
         <Container className="text-center">
           <motion.div {...revealOnce}>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
               Got an idea, an event, or a business that needs to look real?
             </h2>
-            <div className="mt-8">
+            <div className="mt-9">
               <WhatsAppCTA />
             </div>
           </motion.div>
