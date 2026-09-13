@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
+import StaggerText from "./StaggerText.jsx";
 
 /**
  * The eyebrow + big headline + subtext pattern, used consistently across
@@ -23,12 +24,9 @@ export default function SectionHeading({ eyebrow, title, subtitle, center = fals
           {eyebrow}
         </motion.p>
       )}
-      <motion.h2
-        variants={fadeUp}
-        className={`mt-3 text-4xl font-bold tracking-tight sm:text-6xl ${light ? "text-white" : "text-cvc-ink"}`}
-      >
-        {title}
-      </motion.h2>
+      <h2 className={`mt-3 text-4xl font-bold tracking-tight sm:text-6xl ${light ? "text-white" : "text-cvc-ink"}`}>
+        <StaggerText text={title} />
+      </h2>
       {subtitle && (
         <motion.p
           variants={fadeUp}

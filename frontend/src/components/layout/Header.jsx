@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
 import Logo from "../ui/Logo.jsx";
+import EyeFollowEyes from "../ui/EyeFollowEyes.jsx";
 
 const LINKS = [
   { to: "/", label: "Home", end: true },
@@ -38,8 +39,9 @@ export default function Header() {
             href="https://wa.me/254769604255"
             target="_blank"
             rel="noreferrer"
-            className="bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105"
+            className="inline-flex items-center gap-2 bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105"
           >
+            <EyeFollowEyes size={13} pupilSize={5} gap={4} />
             Start a project
           </a>
         </nav>
@@ -83,8 +85,9 @@ export default function Header() {
                 href="https://wa.me/254769604255"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 bg-cvc-ink px-3 py-2.5 text-center text-base font-semibold text-cvc-paper"
+                className="mt-2 flex items-center justify-center gap-2 bg-cvc-ink px-3 py-2.5 text-center text-base font-semibold text-cvc-paper"
               >
+                <EyeFollowEyes size={15} pupilSize={5} gap={4} />
                 Start a project
               </a>
             </div>
