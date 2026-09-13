@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Compass, Palette, Globe, LayoutGrid, Rocket, RefreshCw, Sparkles } from "lucide-react";
 
@@ -9,8 +9,9 @@ import Container from "../../components/ui/Container.jsx";
 import SectionHeading from "../../components/ui/SectionHeading.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import ArrowIcon from "../../components/ui/ArrowIcon.jsx";
-import ColorSweepWord from "../../components/ui/ColorSweepWord.jsx";
+import TypewriterEffect from "../../components/ui/TypewriterEffect.jsx";
 import RetroGrid from "../../components/ui/RetroGrid.jsx";
+import CoverflowCarousel from "../../components/ui/CoverflowCarousel.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
@@ -19,15 +20,6 @@ const blink = {
   animate: { opacity: [1, 0.25, 1] },
   transition: { duration: 1.3, repeat: Infinity, ease: "easeInOut" },
 };
-
-// A grid built for 3 items looks broken with 1 — two-thirds of the row sits
-// empty. Cap the track width and column count to what's actually there
-// instead of stretching a mostly-empty grid.
-function workGridClass(count) {
-  if (count <= 1) return "max-w-sm sm:mx-0";
-  if (count === 2) return "max-w-2xl sm:grid-cols-2 sm:mx-0";
-  return "sm:grid-cols-3";
-}
 
 function testimonialGridClass(count) {
   if (count <= 1) return "max-w-lg";
@@ -46,6 +38,7 @@ const TIER_ICONS = {
 };
 
 export default function Home() {
+  const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
@@ -93,19 +86,16 @@ export default function Home() {
               Colourful Visual Communication <span className="text-cvc-amber">.</span><span className="text-cvc-crimson">.</span><span className="text-cvc-cyan">.Online!</span>
             </motion.p>
             <motion.h1 variants={fadeUp} className="mt-5 text-6xl font-bold leading-[1.1] tracking-tight sm:text-8xl">
-              <ColorSweepWord
-                text="From {idea|action} to {action.|reality.}"
-                cycleColor="var(--color-cvc-amber)"
-                keepTogether={2}
-                decorations={{
-                  0: { shape: "underline", color: "var(--color-cvc-cyan)" },
-                  1: { shape: "circle", color: "var(--color-cvc-crimson)" },
-                }}
+              <TypewriterEffect
+                text="From idea to action. From action to reality."
+                highlightWords={["idea", "action", "reality"]}
               />
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-8 max-w-xl text-lg text-cvc-muted">
-              Strategic Brand identity and digital development from one team — most brand
-              designers can't build, most developers can't brand. <span className="font-bold text-cvc-crimson">We do both.</span>
+              <span className="underline decoration-cvc-cyan decoration-2 underline-offset-4">Strategic Brand identity</span> and{" "}
+              <span className="underline decoration-cvc-crimson decoration-2 underline-offset-4">digital development</span> from
+              one team — most brand designers can't build, most developers can't brand.{" "}
+              <span className="font-bold text-cvc-crimson">We do both.</span>
             </motion.p>
             <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-4">
               <WhatsAppCTA />
@@ -193,43 +183,30 @@ export default function Home() {
             }
           />
 
-          {portfolio.length > 0 ? (
-            <motion.div
-              {...revealOnce}
-              variants={stagger(0.1)}
-              className={`mt-10 grid gap-6 ${workGridClass(portfolio.length)}`}
-            >
-              {portfolio.slice(0, 3).map((p) => (
-                <motion.div key={p.slug} variants={fadeUp}>
-                  <Link to={`/work/${p.slug}`} className="group block">
-                    {p.cover_image_url && (
-                      <div className="relative aspect-[4/3] overflow-hidden bg-black/5">
-                        <img
-                          src={p.cover_image_url}
-                          alt={p.title}
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 flex items-end bg-cvc-ink/0 p-5 transition-colors duration-300 group-hover:bg-cvc-ink/40">
-                          <span className="translate-y-3 text-sm font-semibold text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                            View project →
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                    <h3 className="mt-4 font-semibold">{p.title}</h3>
-                    <p className="text-sm text-cvc-muted">{p.client_name}</p>
-                  </Link>
-                </motion.div>
-              ))}
+          {portfolio.length > 0 && (
+            <motion.div {...revealOnce} variants={fadeUp} className="mt-10">
+              <CoverflowCarousel
+                label="Portfolio work"
+                slides={portfolio
+                  .filter((p) => p.cover_image_url)
+                  .map((p) => ({
+                    key: p.slug,
+                    image: p.cover_image_url,
+                    alt: p.title,
+                    title: p.title,
+                    subtitle: p.client_name,
+                    onOpen: () => navigate(`/work/${p.slug}`),
+                  }))}
+              />
             </motion.div>
-          ) : null}
+          )}
         </Container>
       </section>
 
       <ClientLogos />
 
       {testimonials.length > 0 && (
-        <section className="bg-cvc-crimson px-6 py-20">
+        <section className="bg-cvc-crimson px-6 py-20" data-cvc-theme="dark">
           <Container>
             <SectionHeading
               eyebrow="Testimonials"
