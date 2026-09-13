@@ -9,6 +9,8 @@ import Container from "../../components/ui/Container.jsx";
 import SectionHeading from "../../components/ui/SectionHeading.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import ArrowIcon from "../../components/ui/ArrowIcon.jsx";
+import ColorSweepWord from "../../components/ui/ColorSweepWord.jsx";
+import RetroGrid from "../../components/ui/RetroGrid.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
@@ -61,6 +63,8 @@ export default function Home() {
       <Seo path="/" jsonLd={localBusinessJsonLd} />
 
       <section className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-36 sm:pt-40">
+        <RetroGrid />
+
         {/* Three brand-colored blobs instead of one faint watermark — the
             "colourful" in the name should show up before a single word of
             copy is read. Slow drift keeps it playful without being busy. */}
@@ -88,30 +92,16 @@ export default function Home() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Colourful Visual Communication <span className="text-cvc-amber">.</span><span className="text-cvc-crimson">.</span><span className="text-cvc-cyan">.Online!</span>
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-6xl font-bold leading-[0.98] tracking-tight sm:text-8xl">
-              From idea to action.
-              <br />
-              <span className="relative inline-block text-cvc-amber">
-                From action
-                <svg
-                  viewBox="0 0 300 20"
-                  className="absolute -bottom-2 left-0 w-full text-cvc-cyan sm:-bottom-3"
-                  preserveAspectRatio="none"
-                  aria-hidden="true"
-                >
-                  <motion.path
-                    d="M2 14 C 60 4, 120 18, 150 10 S 260 2, 298 12"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="5"
-                    strokeLinecap="round"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1, delay: 0.9, ease: "easeInOut" }}
-                  />
-                </svg>
-              </span>{" "}
-              to reality.
+            <motion.h1 variants={fadeUp} className="mt-5 text-6xl font-bold leading-[1.1] tracking-tight sm:text-8xl">
+              <ColorSweepWord
+                text="From {idea|action} to {action.|reality.}"
+                cycleColor="var(--color-cvc-amber)"
+                keepTogether={2}
+                decorations={{
+                  0: { shape: "underline", color: "var(--color-cvc-cyan)" },
+                  1: { shape: "circle", color: "var(--color-cvc-crimson)" },
+                }}
+              />
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-8 max-w-xl text-lg text-cvc-muted">
               Strategic Brand identity and digital development from one team — most brand
