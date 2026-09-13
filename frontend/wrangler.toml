@@ -4,3 +4,10 @@ compatibility_date = "2025-01-01"
 [assets]
 directory = "./dist"
 not_found_handling = "single-page-application"
+# React Router's paths (and the generated sitemap/robots.txt) never use a
+# trailing slash — without this, Cloudflare's default html_handling mode
+# 307-redirects e.g. /about to /about/ before serving the prerendered
+# page, and some link-unfurlers (WhatsApp, Twitter) don't reliably follow
+# a redirect when scraping Open Graph tags. This makes the no-slash form
+# canonical (served directly) instead.
+html_handling = "drop-trailing-slash"
