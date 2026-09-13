@@ -41,24 +41,60 @@ export default function Home() {
     <>
       <Seo path="/" jsonLd={localBusinessJsonLd} />
 
-      <section className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-32 sm:pt-36">
-        <img
-          src="/favicon.svg"
-          alt=""
+      <section className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-36 sm:pt-40">
+        {/* Three brand-colored blobs instead of one faint watermark — the
+            "colourful" in the name should show up before a single word of
+            copy is read. Slow drift keeps it playful without being busy. */}
+        <motion.div
           aria-hidden="true"
-          className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] opacity-[0.08] sm:-right-24 sm:-top-24 sm:h-[560px] sm:w-[560px]"
+          className="pointer-events-none absolute -left-24 -top-32 h-72 w-72 rounded-full bg-cvc-amber/30 blur-3xl sm:h-96 sm:w-96"
+          animate={{ x: [0, 30, 0], y: [0, 20, 0] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
         />
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-20 top-10 h-64 w-64 rounded-full bg-cvc-cyan/30 blur-3xl sm:h-80 sm:w-80"
+          animate={{ x: [0, -25, 0], y: [0, 25, 0] }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-cvc-crimson/20 blur-3xl sm:h-72 sm:w-72"
+          animate={{ x: [0, 20, 0], y: [0, -15, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        />
+
         <Container className="relative">
-          <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-3xl">
+          <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-4xl">
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Colourful Visual Communication ...Online!
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold leading-[1.05] tracking-tight sm:text-7xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-6xl font-bold leading-[0.98] tracking-tight sm:text-8xl">
               From idea to action.
               <br />
-              <span className="text-cvc-amber">From action</span> to reality.
+              <span className="relative inline-block text-cvc-amber">
+                From action
+                <svg
+                  viewBox="0 0 300 20"
+                  className="absolute -bottom-2 left-0 w-full text-cvc-cyan sm:-bottom-3"
+                  preserveAspectRatio="none"
+                  aria-hidden="true"
+                >
+                  <motion.path
+                    d="M2 14 C 60 4, 120 18, 150 10 S 260 2, 298 12"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="5"
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0 }}
+                    animate={{ pathLength: 1 }}
+                    transition={{ duration: 1, delay: 0.9, ease: "easeInOut" }}
+                  />
+                </svg>
+              </span>{" "}
+              to reality.
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 max-w-xl text-lg text-cvc-muted">
+            <motion.p variants={fadeUp} className="mt-8 max-w-xl text-lg text-cvc-muted">
               Strategic Brand identity and digital development from one team — most brand
               designers can't build, most developers can't brand. <span className="font-bold text-cvc-crimson">We do both.</span>
             </motion.p>
@@ -77,7 +113,7 @@ export default function Home() {
           <Container>
             <motion.div {...revealOnce}>
               <p className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">What we do</p>
-              <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">A ladder, not a guess.</h2>
+              <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-6xl">A ladder, not a guess.</h2>
             </motion.div>
 
             <motion.div
@@ -120,11 +156,11 @@ export default function Home() {
         </section>
       )}
 
-      <section className="border-t border-black/5 px-6 py-20">
+      <section className="bg-cvc-cyan/10 px-6 py-20">
         <Container>
           <motion.div {...revealOnce}>
             <p className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">Work</p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="mt-3 text-4xl font-bold tracking-tight sm:text-6xl">
               {portfolio.length > 0 ? "Recent projects." : "New work, in progress."}
             </h2>
           </motion.div>
@@ -139,12 +175,17 @@ export default function Home() {
                 <motion.div key={p.slug} variants={fadeUp}>
                   <Link to={`/work/${p.slug}`} className="group block">
                     {p.cover_image_url && (
-                      <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-black/5">
+                      <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-black/5">
                         <img
                           src={p.cover_image_url}
                           alt={p.title}
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
+                        <div className="absolute inset-0 flex items-end bg-cvc-ink/0 p-5 transition-colors duration-300 group-hover:bg-cvc-ink/40">
+                          <span className="translate-y-3 text-sm font-semibold text-white opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+                            View project →
+                          </span>
+                        </div>
                       </div>
                     )}
                     <h3 className="mt-4 font-semibold">{p.title}</h3>
@@ -176,8 +217,12 @@ export default function Home() {
               className={`mt-8 grid gap-6 ${testimonialGridClass(testimonials.length)}`}
             >
               {testimonials.slice(0, 4).map((t) => (
-                <motion.blockquote key={t.id} variants={fadeUp} className="rounded-2xl bg-white/10 p-6 backdrop-blur-sm">
-                  <p className="text-lg font-medium leading-snug text-white">&ldquo;{t.quote}&rdquo;</p>
+                <motion.blockquote
+                  key={t.id}
+                  variants={fadeUp}
+                  className="rounded-2xl bg-white/10 p-7 backdrop-blur-sm transition-transform duration-300 hover:-translate-y-1"
+                >
+                  <p className="text-xl font-medium leading-snug text-white">&ldquo;{t.quote}&rdquo;</p>
                   <footer className="mt-4 text-sm text-white/70">
                     {t.client_name}
                     {t.client_role && <> · {t.client_role}</>}
@@ -192,7 +237,7 @@ export default function Home() {
       <section className="bg-cvc-amber/15 px-6 py-24">
         <Container className="text-center">
           <motion.div {...revealOnce}>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-5xl">
+            <h2 className="text-4xl font-bold tracking-tight sm:text-6xl">
               Got an idea, an event, or a business that needs to look real?
             </h2>
             <div className="mt-9">
