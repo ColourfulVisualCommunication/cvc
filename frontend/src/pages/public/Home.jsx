@@ -89,6 +89,7 @@ export default function Home() {
               <span>You&rsquo;ve an idea?</span>
               <br />
               <span>We shall</span>
+              <br />
               <TypewriterEffect
                 prefix=""
                 phrases={[
