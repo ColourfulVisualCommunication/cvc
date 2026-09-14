@@ -87,6 +87,7 @@ export default function Home() {
             </motion.p>
             <motion.h1 variants={fadeUp} className="mt-5 text-6xl font-bold leading-[1.1] tracking-tight sm:text-8xl">
               <span>From</span>
+              <br />
               <TypewriterEffect
                 prefix=""
                 phrases={[
