@@ -6,11 +6,11 @@ import { useEffect, useRef } from "react";
 export default function RetroGrid({
   angle = 40,
   cellSize = 56,
-  opacity = 0.35,
-  lineColor = "#19191926",
+  opacity = 0.5,
+  lineColor = "#19191940",
   animationSpeed = 8,
   perspective = 300,
-  fadeHeight = 85,
+  fadeHeight = 45,
   fadeColor = "#fdfcfb",
   className = "",
 }) {

@@ -8,6 +8,7 @@ import AdminLayout from "./components/layout/AdminLayout.jsx";
 
 import Home from "./pages/public/Home.jsx";
 import About from "./pages/public/About.jsx";
+import OurStory from "./pages/public/OurStory.jsx";
 import Process from "./pages/public/Process.jsx";
 import Services from "./pages/public/Services.jsx";
 import ServiceDetail from "./pages/public/ServiceDetail.jsx";
@@ -31,6 +32,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<About />} />
+          <Route path="/about/our-story" element={<OurStory />} />
           <Route path="/process" element={<Process />} />
           <Route path="/services" element={<Services />} />
           <Route path="/services/:slug" element={<ServiceDetail />} />
