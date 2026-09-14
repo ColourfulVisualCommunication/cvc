@@ -1,10 +1,12 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import Pullquote from "../../components/ui/Pullquote.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
+import ArrowIcon from "../../components/ui/ArrowIcon.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
@@ -35,6 +37,15 @@ export default function About() {
               and run by Njoroge, who does both brand identity and full-stack
               development.
             </motion.p>
+            <motion.div variants={fadeUp} className="mt-6">
+              <Link
+                to="/about/our-story"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink"
+              >
+                Read the full story
+                <ArrowIcon size={16} />
+              </Link>
+            </motion.div>
           </motion.div>
         </Container>
       </section>

@@ -85,33 +85,34 @@ export default function Home() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Colourful Visual Communication <span className="text-cvc-amber">.</span><span className="text-cvc-crimson">.</span><span className="text-cvc-cyan">.Online!</span>
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold leading-[1.1] tracking-tight sm:text-7xl">
+            <motion.h1 variants={fadeUp} className="mt-8 text-5xl font-bold leading-[1.1] tracking-tight sm:text-7xl">
               <span>You&rsquo;ve an idea?</span>
               <br />
+              <span>We shall</span>
               <TypewriterEffect
-                prefix="We shall "
+                prefix=""
                 phrases={[
-                  { text: "Define it", color: "var(--color-cvc-cyan)" },
-                  { text: "Position it", color: "var(--color-cvc-grey)" },
-                  { text: "Build it", color: "var(--color-cvc-crimson)" },
+                  { text: "Define it...", color: "var(--color-cvc-cyan)" },
+                  { text: "Position it...", color: "var(--color-cvc-grey)" },
+                  { text: "Build it...", color: "var(--color-cvc-crimson)" },
                   { text: "Put it into the world!", color: "var(--color-cvc-amber)" },
                 ]}
-                typingSpeed={62}
-                pauseDuration={2100}
+                typingSpeed={50}
+                pauseDuration={1500}
               />
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-8 max-w-xl text-lg text-cvc-muted">
-              <span className="underline decoration-cvc-cyan decoration-2 underline-offset-4">Strategic Brand identity</span> and{" "}
-              <span className="underline decoration-cvc-crimson decoration-2 underline-offset-4">digital development</span> from
+              <span className="underline decoration-cvc-cyan decoration-2 underline-offset-4 font-bold">Strategic Brand identity</span> and{" "}
+              <span className="underline decoration-cvc-crimson decoration-2 underline-offset-4 font-bold">digital development</span> from
               one team — most brand designers can't build, most developers can't brand.{" "}
               <span className="font-bold text-cvc-crimson">We do both.</span>
             </motion.p>
-            <motion.div variants={fadeUp} className="mt-9 flex flex-wrap items-center gap-4">
+            <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center gap-4">
               <WhatsAppCTA />
               <Link to="/work" className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink">
                 See our work
                 <motion.span {...blink} className="inline-flex">
-                  <ArrowIcon size={16} />
+                  <ArrowIcon size={32} />
                 </motion.span>
               </Link>
             </motion.div>
@@ -209,6 +210,35 @@ export default function Home() {
             cards={{ radius: 0, background: "var(--color-cvc-paper)" }}
           />
         )}
+      </section>
+
+      <section className="border-t border-black/5 px-6 py-20">
+        <Container className="max-w-2xl">
+          <motion.div {...revealOnce} variants={stagger(0.1)}>
+            <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
+              From an idea, to a promise, to a platform
+            </motion.p>
+            <motion.h2 variants={fadeUp} className="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+              It started with KSh 200, a cracked copy of Photoshop, and a stranger&rsquo;s trust.
+            </motion.h2>
+            <motion.p variants={fadeUp} className="mt-5 text-lg text-cvc-muted">
+              CVC didn&rsquo;t start in a boardroom — it started on a matatu, in traffic, with a
+              promise a stranger had no reason to keep. Everything since has just been proving
+              that trust right.
+            </motion.p>
+            <motion.div variants={fadeUp} className="mt-6">
+              <Link
+                to="/about/our-story"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink"
+              >
+                Read the full story
+                <motion.span {...blink} className="inline-flex">
+                  <ArrowIcon size={16} />
+                </motion.span>
+              </Link>
+            </motion.div>
+          </motion.div>
+        </Container>
       </section>
 
       <ClientLogos />
