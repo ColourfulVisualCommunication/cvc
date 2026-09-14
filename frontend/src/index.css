@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Self-hosted, weight-scoped imports — only the cuts actually used, so no
+   font-family ships more than its three roles need. Fontsource defaults
+   every face to font-display: swap already. */
+@import "@fontsource/lexend/600.css";
+@import "@fontsource/lexend/700.css";
+@import "@fontsource/literata/500-italic.css";
+@import "@fontsource/be-vietnam-pro/400.css";
+@import "@fontsource/be-vietnam-pro/500.css";
+@import "@fontsource/be-vietnam-pro/600.css";
+
 /* Tailwind v4 takes its design tokens from CSS. Colours are read straight
    from the CVC logo — use these rather than arbitrary hex values. */
 @theme {
@@ -11,6 +21,15 @@
   --color-cvc-ink: #16181a;
   --color-cvc-muted: #5c6469;
   --color-cvc-paper: #fcfcfb;
+
+  /* Three-role type system — each font has exactly one job. Lexend for
+     precision (headlines), Be Vietnam Pro for approachable body/UI,
+     Literata italic for crafted accent (quotes/manifesto lines only —
+     see .accent-quote below). Don't reach for accent on headings or body
+     copy; that's the one rule that keeps this system legible. */
+  --font-heading: "Lexend", sans-serif;
+  --font-accent: "Literata", serif;
+  --font-body: "Be Vietnam Pro", sans-serif;
 }
 
 html {
@@ -18,8 +37,43 @@ html {
 }
 
 body {
+  font-family: var(--font-body);
+  font-weight: 400;
   background: var(--color-cvc-paper);
   color: var(--color-cvc-ink);
+}
+
+/* In Tailwind v4's own layer order (theme, base, components, utilities),
+   a bare `h1 { ... }` selector outside any @layer is unlayered — and
+   unlayered rules always beat layered ones, utilities included. Every
+   heading in this codebase already sets its own weight via font-bold /
+   font-semibold utility classes, so an unlayered rule here would silently
+   overrule all of them. Declaring this as `@layer base` instead merges it
+   into Tailwind's own base layer, which sits *before* utilities — so it
+   supplies a sane default weight without ever winning against an explicit
+   utility class. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  h2,
+  h3 {
+    font-weight: 600;
+  }
+}
+
+/* The accent role, used sparingly (once or twice a page, on a direct
+   quote or a standalone manifesto line) — never as a default heading or
+   paragraph style. See components/ui/Pullquote.jsx for the component
+   that applies this. */
+@utility accent-quote {
+  font-family: var(--font-accent);
+  font-style: italic;
+  font-weight: 500;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -229,7 +229,7 @@ export default function Home() {
                   variants={fadeUp}
                   className="bg-white p-7 shadow-xl transition-transform duration-300 hover:-translate-y-1"
                 >
-                  <p className="text-xl font-medium leading-snug text-cvc-ink">&ldquo;{t.quote}&rdquo;</p>
+                  <p className="accent-quote text-xl leading-snug text-cvc-ink">&ldquo;{t.quote}&rdquo;</p>
                   <footer className="mt-5 flex items-center gap-3">
                     {t.avatar_url ? (
                       <img
