@@ -35,7 +35,15 @@ export default function Footer() {
   return (
     <footer className="bg-cvc-ink" data-cvc-theme="dark">
       <div className="mx-auto max-w-6xl px-6 py-14">
-        <div className="grid grid-cols-2 gap-10 text-sm sm:grid-cols-4">
+        <div className="relative grid grid-cols-2 gap-10 text-sm sm:grid-cols-4">
+          {/* Cross divider splitting the 2x2 mobile layout into its four
+              quadrants — collapses away once the columns go into a single
+              row at sm+, where a cross no longer makes sense. */}
+          <div className="pointer-events-none absolute inset-0 sm:hidden" aria-hidden="true">
+            <div className="absolute left-1/2 top-0 h-full w-px -translate-x-1/2 bg-cvc-crimson" />
+            <div className="absolute left-0 top-1/2 h-px w-full -translate-y-1/2 bg-cvc-crimson" />
+          </div>
+
           <Column>
             <Logo dark />
             <p className="max-w-[16rem] text-white/60">From Idea to Action. From Action to Reality.</p>
@@ -76,7 +84,7 @@ export default function Footer() {
               <a href="mailto:njoroge@colourfulvisualcommunication.com" className="text-white/60 hover:text-white">
                 Email
               </a>
-              <span className="text-white/60">Ndeiya, Limuru, Kenya</span>
+              <span className="text-white/60">Online</span>
             </div>
           </Column>
         </div>
