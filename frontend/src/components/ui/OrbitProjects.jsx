@@ -173,10 +173,11 @@ function CompactLayout({
     <section style={{ position: "relative", width: "100%", height: "auto", padding, boxSizing: "border-box", background }}>
       {showCopy && (
         <header style={{ position: "relative", width: "100%", marginBottom: headerGap }}>
-          <h2 style={{ ...titleFont, margin: 0, width: "100%", maxWidth: "100%", color: textColor }}>
-            <span style={{ display: "block" }}>{leftTitle}</span>
-            <span style={{ display: "block" }}>{rightTitle}</span>
-          </h2>
+          {/* The big depth-title ("REAL"/"WORK") is a desktop parallax
+              effect — on a phone-width viewport (this compact layout only
+              renders below the desktop breakpoint) it has no depth to show
+              off and just eats space above the project grid, so it's
+              skipped here rather than just visually hidden. */}
           {centerText && (
             <p style={{ ...centerFont, margin: `${contentGap}px 0 0`, maxWidth: centerTextWidth, color: centerTextColor, textAlign: "left" }}>
               {centerText}

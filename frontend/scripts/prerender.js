@@ -178,6 +178,16 @@ async function main() {
     for (const route of routes) {
       const page = await browser.newPage();
       await page.setViewport({ width: 1280, height: 1600 });
+      // Some homepage components (the WebGL hero tunnel) do real network
+      // work — loading images as textures — that can keep the connection
+      // count above zero indefinitely in a headless, GPU-less container,
+      // which starves out networkidle0 below and times out the whole
+      // build. This flag lets a component opt out of anything like that
+      // during prerendering, where it buys nothing anyway (the interactive
+      // canvas isn't part of the crawlable snapshot).
+      await page.evaluateOnNewDocument(() => {
+        window.__CVC_PRERENDER__ = true;
+      });
       await page.goto(`${ORIGIN}${route}`, { waitUntil: "networkidle0", timeout: 30000 });
       // networkidle0 alone isn't reliable here: JS parsing/mounting has zero
       // network activity, so the idle-timer can already have elapsed before

@@ -30,13 +30,13 @@ export default function ClientLogos() {
   const track = [...padded, ...padded];
 
   return (
-    <section className="overflow-hidden border-t border-white/10 py-20">
+    <section className="overflow-hidden border-t border-black/10 bg-cvc-paper py-20">
       <Container>
         <motion.div {...revealOnce} variants={stagger(0.08)} className="text-center">
-          <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
+          <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-ink/60">
             Who we've worked with
           </motion.p>
-          <motion.h2 variants={fadeUp} className="mx-auto mt-3 text-3xl font-bold tracking-tight sm:text-4xl">
+          <motion.h2 variants={fadeUp} className="mx-auto mt-3 text-3xl font-bold tracking-tight text-cvc-ink sm:text-4xl">
             In good company.
           </motion.h2>
         </motion.div>
