@@ -87,8 +87,11 @@ export default function Home() {
             </motion.p>
             <motion.h1 variants={fadeUp} className="mt-5 text-6xl font-bold leading-[1.1] tracking-tight sm:text-8xl">
               <TypewriterEffect
-                text="From idea to action. From action to reality."
-                highlightWords={["idea", "action", "reality"]}
+                prefix="From "
+                phrases={[
+                  { text: "idea to action", color: "var(--color-cvc-cyan)" },
+                  { text: "action to reality", color: "var(--color-cvc-amber)" },
+                ]}
               />
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-8 max-w-xl text-lg text-cvc-muted">
