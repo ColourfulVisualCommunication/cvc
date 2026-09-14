@@ -72,12 +72,15 @@ export default function Home() {
               <br />
               <span>We shall</span>
               <br />
-              {/* Fixed-height allowance (2 lines' worth, in em so it scales
-                  with the h1's own responsive font size) — phrases range
-                  from "Build it..." to "Put it into the world!", so without
-                  this the line wrapping differently per phrase reflows and
-                  pushes the subtitle/CTA below up and down as it cycles. */}
-              <span className="block min-h-[2.2em]">
+              {/* Fixed-height allowance, in em so it scales with the h1's
+                  own responsive font size — phrases range from "Build
+                  it..." to "Put it into the world!", so without this the
+                  line wrapping differently per phrase reflows and pushes
+                  the subtitle/CTA below up and down as it cycles. Phone
+                  widths need up to 3 lines for the longest phrase; from
+                  sm+ the container is wide enough that every phrase fits
+                  on one line. */}
+              <span className="block min-h-[3.3em] sm:min-h-[1.1em]">
                 <TypewriterEffect
                   prefix=""
                   phrases={[
