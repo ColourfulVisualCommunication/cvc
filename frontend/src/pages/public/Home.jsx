@@ -270,8 +270,13 @@ export default function Home() {
       <ClientLogos />
 
       {testimonials.length > 0 && (
-        <section className="bg-cvc-ink px-6 py-20">
-          <Container>
+        <section className="relative overflow-hidden bg-cvc-ink px-6 py-20">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-20"
+            style={{ backgroundImage: "url(/backgrounds/testimonials-bg.svg)" }}
+          />
+          <Container className="relative">
             <SectionHeading
               eyebrow="Testimonials"
               title="Don't take our word for it."
