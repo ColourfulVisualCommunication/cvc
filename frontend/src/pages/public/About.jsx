@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
+import Pullquote from "../../components/ui/Pullquote.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
@@ -44,11 +45,13 @@ export default function About() {
             <motion.h2 variants={fadeUp} className="text-2xl font-bold tracking-tight">
               The moat
             </motion.h2>
+            <motion.div variants={fadeUp} className="mt-4">
+              <Pullquote>Most brand designers can&rsquo;t build. Most developers can&rsquo;t brand.</Pullquote>
+            </motion.div>
             <motion.p variants={fadeUp} className="mt-4 text-cvc-muted">
-              Most brand designers in the market cannot build. Most developers
-              cannot brand. That combination — one person who can define how a
-              business looks and then actually build the site or app that carries
-              it — is what CVC sells.
+              That combination — one person who can define how a business looks
+              and then actually build the site or app that carries it — is what
+              CVC sells.
             </motion.p>
           </motion.div>
         </Container>
