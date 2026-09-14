@@ -110,7 +110,7 @@ export default function Home() {
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center gap-4">
               <WhatsAppCTA />
-              <Link to="/work" className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink">
+              <Link to="/work" className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper">
                 See our work
                 <motion.span {...blink} className="inline-flex">
                   <ArrowIcon size={32} />
@@ -122,7 +122,7 @@ export default function Home() {
       </section>
 
       {services.length > 0 && (
-        <section className="border-t border-black/5 px-6 py-20">
+        <section className="border-t border-white/10 px-6 py-20">
           <Container>
             <SectionHeading
               eyebrow="What we do"
@@ -170,7 +170,7 @@ export default function Home() {
             <motion.div {...revealOnce} className="mt-8">
               <Link
                 to="/services"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper"
               >
                 See the full service ladder
                 <motion.span {...blink} className="inline-flex">
@@ -213,7 +213,7 @@ export default function Home() {
         )}
       </section>
 
-      <section className="border-t border-black/5 px-6 py-20">
+      <section className="border-t border-white/10 px-6 py-20">
         <Container className="max-w-2xl">
           <motion.div {...revealOnce} variants={stagger(0.1)}>
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
@@ -230,7 +230,7 @@ export default function Home() {
             <motion.div variants={fadeUp} className="mt-6">
               <Link
                 to="/about/our-story"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper"
               >
                 Read the full story
                 <motion.span {...blink} className="inline-flex">
@@ -245,13 +245,12 @@ export default function Home() {
       <ClientLogos />
 
       {testimonials.length > 0 && (
-        <section className="bg-cvc-crimson px-6 py-20" data-cvc-theme="dark">
+        <section className="bg-cvc-crimson px-6 py-20">
           <Container>
             <SectionHeading
               eyebrow="Testimonials"
               title="Don't take our word for it."
               subtitle="Straight from the people we've actually worked with."
-              light
             />
             <motion.div
               {...revealOnce}

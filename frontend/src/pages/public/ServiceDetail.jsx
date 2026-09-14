@@ -33,7 +33,7 @@ export default function ServiceDetail() {
     return (
       <Container className="py-32 text-center">
         <p className="text-cvc-muted">That service doesn't exist.</p>
-        <Link to="/services" className="mt-4 inline-block text-cvc-ink underline">
+        <Link to="/services" className="mt-4 inline-block text-cvc-paper underline">
           Back to services
         </Link>
       </Container>
@@ -80,7 +80,7 @@ export default function ServiceDetail() {
               </motion.p>
             )}
 
-            <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-6 border border-black/10 p-6">
+            <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-6 border border-white/10 p-6">
               <div>
                 <p className="text-xs uppercase tracking-wide text-cvc-muted">Investment</p>
                 <p className="mt-1 font-mono text-lg">{formatPrice(service)}</p>
@@ -98,7 +98,7 @@ export default function ServiceDetail() {
                 <p className="text-xs uppercase tracking-wide text-cvc-muted">What's included</p>
                 <ul className="mt-3 space-y-2">
                   {service.deliverables.map((d) => (
-                    <li key={d} className="flex items-start gap-2 text-cvc-ink">
+                    <li key={d} className="flex items-start gap-2 text-cvc-paper">
                       <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-cvc-amber" />
                       {d}
                     </li>

@@ -27,7 +27,7 @@ export default function PortfolioDetail() {
     return (
       <Container className="py-32 text-center">
         <p className="text-cvc-muted">That project doesn't exist.</p>
-        <Link to="/work" className="mt-4 inline-block text-cvc-ink underline">
+        <Link to="/work" className="mt-4 inline-block text-cvc-paper underline">
           Back to work
         </Link>
       </Container>
@@ -51,7 +51,7 @@ export default function PortfolioDetail() {
             </motion.h1>
 
             {project.cover_image_url && (
-              <motion.div variants={fadeUp} className="mt-10 overflow-hidden bg-black/5">
+              <motion.div variants={fadeUp} className="mt-10 overflow-hidden bg-white/5">
                 <img src={project.cover_image_url} alt={project.title} className="w-full object-cover" />
               </motion.div>
             )}
@@ -60,19 +60,19 @@ export default function PortfolioDetail() {
               {project.problem && (
                 <motion.div variants={fadeUp}>
                   <p className="text-xs uppercase tracking-wide text-cvc-muted">Problem</p>
-                  <p className="mt-2 text-cvc-ink">{project.problem}</p>
+                  <p className="mt-2 text-cvc-paper">{project.problem}</p>
                 </motion.div>
               )}
               {project.solution && (
                 <motion.div variants={fadeUp}>
                   <p className="text-xs uppercase tracking-wide text-cvc-muted">What we did</p>
-                  <p className="mt-2 text-cvc-ink">{project.solution}</p>
+                  <p className="mt-2 text-cvc-paper">{project.solution}</p>
                 </motion.div>
               )}
               {project.result && (
                 <motion.div variants={fadeUp}>
                   <p className="text-xs uppercase tracking-wide text-cvc-muted">Result</p>
-                  <p className="mt-2 text-cvc-ink">{project.result}</p>
+                  <p className="mt-2 text-cvc-paper">{project.result}</p>
                 </motion.div>
               )}
             </div>
@@ -80,7 +80,7 @@ export default function PortfolioDetail() {
             {project.gallery?.length > 0 && (
               <motion.div variants={fadeUp} className="mt-12 grid gap-4 sm:grid-cols-2">
                 {project.gallery.map((src) => (
-                  <div key={src} className="overflow-hidden bg-black/5">
+                  <div key={src} className="overflow-hidden bg-white/5">
                     <img src={src} alt="" className="w-full object-cover" />
                   </div>
                 ))}

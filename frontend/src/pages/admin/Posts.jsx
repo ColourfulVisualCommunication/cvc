@@ -4,7 +4,7 @@ import { adminListPosts, adminCreatePost, adminUpdatePost, adminDeletePost } fro
 import ImageUploadField from "../../admin/ImageUploadField.jsx";
 
 const EMPTY = { slug: "", title: "", excerpt: "", body: "", cover_image_url: "", published: false };
-const inputClass = "mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink";
+const inputClass = "mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper";
 
 function slugify(text) {
   return text.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
@@ -46,10 +46,10 @@ export default function PostsAdmin() {
   if (editing) {
     return (
       <form onSubmit={handleSave} className="max-w-xl space-y-4">
-        <h1 className="text-xl font-bold">{editing.id ? "Edit post" : "New post"}</h1>
+        <h1 className="text-xl font-bold text-cvc-paper">{editing.id ? "Edit post" : "New post"}</h1>
 
         <div>
-          <label className="text-sm font-medium text-cvc-ink">Title</label>
+          <label className="text-sm font-medium text-cvc-paper">Title</label>
           <input
             required
             value={editing.title}
@@ -60,21 +60,21 @@ export default function PostsAdmin() {
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-cvc-ink">Slug</label>
+          <label className="text-sm font-medium text-cvc-paper">Slug</label>
           <input required value={editing.slug} onChange={(e) => setEditing({ ...editing, slug: e.target.value })} className={inputClass} />
         </div>
         <div>
-          <label className="text-sm font-medium text-cvc-ink">Excerpt</label>
+          <label className="text-sm font-medium text-cvc-paper">Excerpt</label>
           <textarea value={editing.excerpt || ""} onChange={(e) => setEditing({ ...editing, excerpt: e.target.value })} className={inputClass} rows={2} />
         </div>
         <div>
-          <label className="text-sm font-medium text-cvc-ink">Body (HTML)</label>
+          <label className="text-sm font-medium text-cvc-paper">Body (HTML)</label>
           <textarea value={editing.body || ""} onChange={(e) => setEditing({ ...editing, body: e.target.value })} className={inputClass} rows={10} />
         </div>
 
         <ImageUploadField label="Cover image" value={editing.cover_image_url} onChange={(url) => setEditing({ ...editing, cover_image_url: url })} />
 
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm text-cvc-paper">
           <input type="checkbox" checked={editing.published} onChange={(e) => setEditing({ ...editing, published: e.target.checked })} />
           Published (visible on the public site)
         </label>
@@ -82,7 +82,7 @@ export default function PostsAdmin() {
         {error && <p className="text-sm text-cvc-crimson">{error}</p>}
 
         <div className="flex gap-3">
-          <button type="submit" className="bg-cvc-ink px-4 py-2 font-semibold text-cvc-paper">Save</button>
+          <button type="submit" className="bg-cvc-paper px-4 py-2 font-semibold text-cvc-ink">Save</button>
           <button type="button" onClick={() => setEditing(null)} className="text-sm text-cvc-muted">Cancel</button>
         </div>
       </form>
@@ -92,21 +92,21 @@ export default function PostsAdmin() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Blog</h1>
-        <button onClick={() => setEditing({ ...EMPTY })} className="bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper">
+        <h1 className="text-2xl font-bold tracking-tight text-cvc-paper">Blog</h1>
+        <button onClick={() => setEditing({ ...EMPTY })} className="bg-cvc-paper px-4 py-2 text-sm font-semibold text-cvc-ink">
           New post
         </button>
       </div>
 
-      <div className="mt-6 divide-y divide-black/10">
+      <div className="mt-6 divide-y divide-white/10">
         {items.map((p) => (
           <div key={p.id} className="flex items-center justify-between py-3">
             <div>
-              <p className="font-medium">{p.title}</p>
+              <p className="font-medium text-cvc-paper">{p.title}</p>
               <p className="text-sm text-cvc-muted">{p.slug} · {p.published ? "published" : "draft"}</p>
             </div>
             <div className="flex gap-3 text-sm">
-              <button onClick={() => setEditing(p)} className="text-cvc-ink underline">Edit</button>
+              <button onClick={() => setEditing(p)} className="text-cvc-paper underline">Edit</button>
               <button onClick={() => handleDelete(p.id)} className="text-cvc-crimson">Delete</button>
             </div>
           </div>

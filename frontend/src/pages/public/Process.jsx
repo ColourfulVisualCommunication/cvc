@@ -59,7 +59,7 @@ export default function Process() {
         </Container>
       </section>
 
-      <section className="border-t border-black/5 px-6 py-16">
+      <section className="border-t border-white/10 px-6 py-16">
         <Container className="max-w-2xl">
           <motion.ol {...revealOnce} variants={stagger(0.12)} className="space-y-10">
             {STEPS.map((s) => (
@@ -75,7 +75,7 @@ export default function Process() {
         </Container>
       </section>
 
-      <section className="border-t border-black/5 px-6 py-20 text-center">
+      <section className="border-t border-white/10 px-6 py-20 text-center">
         <Container>
           <motion.div {...revealOnce}>
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">Ready to start step one?</h2>

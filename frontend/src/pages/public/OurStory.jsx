@@ -52,7 +52,7 @@ const SECTIONS = [
     ],
     closingStatement: (
       <>
-        <strong className="font-semibold text-cvc-ink">Colourful Visual Communication was born here.</strong> Not
+        <strong className="font-semibold text-cvc-paper">Colourful Visual Communication was born here.</strong> Not
         from the connection she'd promised — from the belief she extended instead.
       </>
     ),
@@ -143,7 +143,7 @@ export default function OurStory() {
       {SECTIONS.map((s, i) => (
         <section
           key={s.number}
-          className={`border-t border-black/5 px-6 py-16 ${i % 2 === 1 ? "bg-cvc-cyan/5" : ""}`}
+          className={`border-t border-white/10 px-6 py-16 ${i % 2 === 1 ? "bg-cvc-cyan/5" : ""}`}
         >
           <Container className="max-w-2xl">
             <motion.div {...revealOnce} variants={stagger(0.08)}>
@@ -177,7 +177,7 @@ export default function OurStory() {
               )}
 
               {s.closingStatement && (
-                <motion.p variants={fadeUp} className="mt-6 text-cvc-ink">
+                <motion.p variants={fadeUp} className="mt-6 text-cvc-paper">
                   {s.closingStatement}
                 </motion.p>
               )}
@@ -186,7 +186,7 @@ export default function OurStory() {
         </section>
       ))}
 
-      <section className="border-t border-black/5 bg-cvc-ink px-6 py-24 text-center" data-cvc-theme="dark">
+      <section className="border-t border-white/10 bg-cvc-ink px-6 py-24 text-center">
         <Container className="max-w-2xl">
           <motion.div {...revealOnce} variants={stagger(0.1)}>
             <motion.p variants={fadeUp} className="text-2xl font-bold tracking-tight text-cvc-amber sm:text-3xl">

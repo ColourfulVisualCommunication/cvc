@@ -62,7 +62,7 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold tracking-tight text-cvc-ink">Dashboard</h1>
+      <h1 className="text-2xl font-bold tracking-tight text-cvc-paper">Dashboard</h1>
       <p className="mt-1 text-sm text-cvc-muted">What's live on the site right now.</p>
 
       <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -73,7 +73,7 @@ export default function Dashboard() {
             <Link
               key={s.key}
               to={s.newHref}
-              className="border border-black/10 p-5 transition-colors hover:border-cvc-ink"
+              className="border border-white/10 p-5 transition-colors hover:border-cvc-paper"
             >
               <div className="flex items-center justify-between">
                 <div className={`flex h-10 w-10 items-center justify-center ${s.color}`}>
@@ -81,7 +81,7 @@ export default function Dashboard() {
                 </div>
                 <Plus size={16} className="text-cvc-muted" />
               </div>
-              <p className="mt-4 text-3xl font-bold text-cvc-ink">
+              <p className="mt-4 text-3xl font-bold text-cvc-paper">
                 {count ? count.total : "—"}
               </p>
               <p className="text-sm text-cvc-muted">

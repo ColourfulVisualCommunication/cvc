@@ -37,25 +37,25 @@ export default function Contact() {
               <WhatsAppCTA text="Message us on WhatsApp" />
             </motion.div>
 
-            <motion.div variants={fadeUp} className="mt-14 grid gap-8 border-t border-black/5 pt-10 sm:grid-cols-2">
+            <motion.div variants={fadeUp} className="mt-14 grid gap-8 border-t border-white/10 pt-10 sm:grid-cols-2">
               <div>
                 <p className="text-xs uppercase tracking-wide text-cvc-muted">Email</p>
                 <a
                   href="mailto:njoroge@colourfulvisualcommunication.com"
-                  className="mt-1 block font-medium text-cvc-ink underline underline-offset-4"
+                  className="mt-1 block font-medium text-cvc-paper underline underline-offset-4"
                 >
                   njoroge@colourfulvisualcommunication.com
                 </a>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide text-cvc-muted">Phone / WhatsApp</p>
-                <a href="tel:+254769604255" className="mt-1 block font-medium text-cvc-ink underline underline-offset-4">
+                <a href="tel:+254769604255" className="mt-1 block font-medium text-cvc-paper underline underline-offset-4">
                   +254 769 604255
                 </a>
               </div>
               <div>
                 <p className="text-xs uppercase tracking-wide text-cvc-muted">Based in</p>
-                <p className="mt-1 font-medium text-cvc-ink">Ndeiya, Limuru, Kenya</p>
+                <p className="mt-1 font-medium text-cvc-paper">Ndeiya, Limuru, Kenya</p>
               </div>
             </motion.div>
           </motion.div>

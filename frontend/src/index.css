@@ -39,8 +39,8 @@ html {
 body {
   font-family: var(--font-body);
   font-weight: 400;
-  background: var(--color-cvc-paper);
-  color: var(--color-cvc-ink);
+  background: var(--color-cvc-ink);
+  color: var(--color-cvc-paper);
 }
 
 /* In Tailwind v4's own layer order (theme, base, components, utilities),

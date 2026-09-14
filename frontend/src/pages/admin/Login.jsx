@@ -29,17 +29,17 @@ export default function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-cvc-paper px-6">
+    <div className="flex min-h-screen items-center justify-center bg-cvc-ink px-6">
       <Helmet>
         <meta name="robots" content="noindex, nofollow" />
       </Helmet>
       <form onSubmit={handleSubmit} className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold tracking-tight">Admin</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-cvc-paper">Admin</h1>
         <p className="mt-1 text-sm text-cvc-muted">Colourful Visual Communication</p>
 
         <div className="mt-8 space-y-4">
           <div>
-            <label className="text-sm font-medium text-cvc-ink" htmlFor="email">Email</label>
+            <label className="text-sm font-medium text-cvc-paper" htmlFor="email">Email</label>
             <input
               id="email"
               type="email"
@@ -47,11 +47,11 @@ export default function Login() {
               autoComplete="username"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+              className="mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper"
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-cvc-ink" htmlFor="password">Password</label>
+            <label className="text-sm font-medium text-cvc-paper" htmlFor="password">Password</label>
             <input
               id="password"
               type="password"
@@ -59,7 +59,7 @@ export default function Login() {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+              className="mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper"
             />
           </div>
         </div>
@@ -69,7 +69,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={busy}
-          className="mt-6 w-full bg-cvc-ink px-4 py-2.5 font-semibold text-cvc-paper disabled:opacity-50"
+          className="mt-6 w-full bg-cvc-paper px-4 py-2.5 font-semibold text-cvc-ink disabled:opacity-50"
         >
           {busy ? "Signing in…" : "Sign in"}
         </button>

@@ -33,7 +33,7 @@ function Column({ heading, children }) {
 
 export default function Footer() {
   return (
-    <footer className="bg-cvc-ink" data-cvc-theme="dark">
+    <footer className="bg-cvc-ink">
       <div className="mx-auto max-w-6xl px-6 py-14">
         <div className="relative grid grid-cols-2 gap-10 text-sm sm:grid-cols-4">
           {/* Cross divider splitting the 2x2 mobile layout into its four
