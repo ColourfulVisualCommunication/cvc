@@ -85,15 +85,19 @@ export default function Home() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Colourful Visual Communication <span className="text-cvc-amber">.</span><span className="text-cvc-crimson">.</span><span className="text-cvc-cyan">.Online!</span>
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-6xl font-bold leading-[1.1] tracking-tight sm:text-8xl">
-              <span>From</span>
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold leading-[1.1] tracking-tight sm:text-7xl">
+              <span>You&rsquo;ve an idea?</span>
               <br />
               <TypewriterEffect
-                prefix=""
+                prefix="We shall "
                 phrases={[
-                  { text: "idea to action", color: "var(--color-cvc-cyan)" },
-                  { text: "action to reality", color: "var(--color-cvc-amber)" },
+                  { text: "Define it", color: "var(--color-cvc-cyan)" },
+                  { text: "Position it", color: "var(--color-cvc-grey)" },
+                  { text: "Build it", color: "var(--color-cvc-crimson)" },
+                  { text: "Put it into the world!", color: "var(--color-cvc-amber)" },
                 ]}
+                typingSpeed={62}
+                pauseDuration={2100}
               />
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-8 max-w-xl text-lg text-cvc-muted">

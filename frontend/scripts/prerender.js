@@ -27,7 +27,7 @@ const API_URL = process.env.VITE_API_URL || "http://localhost:5000/api/v1";
 const ROOT = path.dirname(fileURLToPath(import.meta.url)) + "/..";
 const DIST = path.resolve(ROOT, "dist");
 
-const STATIC_ROUTES = ["/", "/about", "/process", "/services", "/work", "/blog", "/contact"];
+const STATIC_ROUTES = ["/", "/about", "/about/our-story", "/process", "/services", "/work", "/blog", "/contact"];
 
 async function fetchSlugs(endpoint, attempt = 1) {
   try {
