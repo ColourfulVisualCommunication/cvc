@@ -86,8 +86,9 @@ export default function Home() {
               Colourful Visual Communication <span className="text-cvc-amber">.</span><span className="text-cvc-crimson">.</span><span className="text-cvc-cyan">.Online!</span>
             </motion.p>
             <motion.h1 variants={fadeUp} className="mt-5 text-6xl font-bold leading-[1.1] tracking-tight sm:text-8xl">
+              <span>From</span>
               <TypewriterEffect
-                prefix="From "
+                prefix=""
                 phrases={[
                   { text: "idea to action", color: "var(--color-cvc-cyan)" },
                   { text: "action to reality", color: "var(--color-cvc-amber)" },
@@ -199,7 +200,7 @@ export default function Home() {
                 onOpen: () => navigate(`/work/${p.slug}`),
               }))}
             background="transparent"
-            content={{ showCopy: false }}
+            content={{ leftTitle: "REAL", rightTitle: "WORK", textColor: "rgba(22, 24, 26, 0.07)" }}
             cards={{ radius: 0, background: "var(--color-cvc-paper)" }}
           />
         )}
