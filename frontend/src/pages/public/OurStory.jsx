@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
+import Breadcrumbs from "../../components/ui/Breadcrumbs.jsx";
 import Pullquote from "../../components/ui/Pullquote.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
@@ -126,6 +127,7 @@ export default function OurStory() {
 
       <section className="px-6 pb-16 pt-24 sm:pt-32">
         <Container className="max-w-2xl">
+          <Breadcrumbs items={[{ label: "About", to: "/about" }, { label: "Our Story" }]} />
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible">
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Our Story

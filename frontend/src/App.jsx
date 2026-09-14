@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./admin/AuthContext.jsx";
 import ProtectedRoute from "./admin/ProtectedRoute.jsx";
 
+import ScrollManager from "./components/ScrollManager.jsx";
 import Layout from "./components/layout/Layout.jsx";
 import AdminLayout from "./components/layout/AdminLayout.jsx";
 
@@ -28,6 +29,7 @@ import ClientLogosAdmin from "./pages/admin/ClientLogos.jsx";
 export default function App() {
   return (
     <AuthProvider>
+      <ScrollManager />
       <Routes>
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />

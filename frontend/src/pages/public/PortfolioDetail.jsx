@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { getPortfolioProject } from "../../api/client.js";
 import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
+import Breadcrumbs from "../../components/ui/Breadcrumbs.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo from "../../components/Seo.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
@@ -26,6 +27,9 @@ export default function PortfolioDetail() {
   if (notFound) {
     return (
       <Container className="py-32 text-center">
+        <div className="mb-6 flex justify-center">
+          <Breadcrumbs items={[{ label: "Work", to: "/work" }, { label: "Not found" }]} className="mb-0" />
+        </div>
         <p className="text-cvc-muted">That project doesn't exist.</p>
         <Link to="/work" className="mt-4 inline-block text-cvc-paper underline">
           Back to work
@@ -42,6 +46,7 @@ export default function PortfolioDetail() {
 
       <section className="px-6 pb-16 pt-24 sm:pt-32">
         <Container className="max-w-3xl">
+          <Breadcrumbs items={[{ label: "Work", to: "/work" }, { label: project.title }]} />
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible">
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               {project.client_name}

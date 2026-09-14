@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { getPost } from "../../api/client.js";
 import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
+import Breadcrumbs from "../../components/ui/Breadcrumbs.jsx";
 import Seo from "../../components/Seo.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
@@ -25,6 +26,9 @@ export default function BlogPost() {
   if (notFound) {
     return (
       <Container className="py-32 text-center">
+        <div className="mb-6 flex justify-center">
+          <Breadcrumbs items={[{ label: "Blog", to: "/blog" }, { label: "Not found" }]} className="mb-0" />
+        </div>
         <p className="text-cvc-muted">That post doesn't exist.</p>
         <Link to="/blog" className="mt-4 inline-block text-cvc-paper underline">
           Back to the blog
@@ -57,6 +61,7 @@ export default function BlogPost() {
 
       <article className="px-6 pb-20 pt-24 sm:pt-32">
         <Container className="max-w-2xl">
+          <Breadcrumbs items={[{ label: "Blog", to: "/blog" }, { label: post.title }]} />
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible">
             <motion.h1 variants={fadeUp} className="text-4xl font-bold tracking-tight sm:text-5xl">
               {post.title}
