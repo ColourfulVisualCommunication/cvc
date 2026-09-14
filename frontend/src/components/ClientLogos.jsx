@@ -46,23 +46,18 @@ export default function ClientLogos() {
           screen edge, not dissolve into the background. The scroll itself
           only starts once this section is actually in view. */}
       <motion.div
-        className="mt-12 flex w-max items-center gap-20"
+        className="mt-12 flex w-max items-center gap-16"
         whileInView={reduceMotion ? undefined : { x: ["0%", "-50%"] }}
         viewport={{ once: true }}
-        transition={reduceMotion ? undefined : { duration: 36, repeat: Infinity, ease: "linear" }}
+        transition={reduceMotion ? undefined : { duration: 90, repeat: Infinity, ease: "linear" }}
       >
         {track.map((logo, i) => (
-          // Client logos are uploaded art with their own (often dark)
-          // colors, designed against a light background — a solid paper
-          // chip behind each one keeps them visible now that the page
-          // itself is dark, regardless of what color the logo is.
-          <div key={`${logo.id}-${i}`} className="flex h-16 shrink-0 items-center bg-cvc-paper px-5 sm:h-20">
-            <img
-              src={logo.logo_url}
-              alt={logo.name}
-              className="h-8 w-auto transition-all duration-300 [@media(hover:hover)]:grayscale [@media(hover:hover)]:hover:scale-110 [@media(hover:hover)]:hover:grayscale-0 sm:h-10"
-            />
-          </div>
+          <img
+            key={`${logo.id}-${i}`}
+            src={logo.logo_url}
+            alt={logo.name}
+            className="h-16 w-auto shrink-0 transition-all duration-300 [@media(hover:hover)]:grayscale [@media(hover:hover)]:hover:scale-110 [@media(hover:hover)]:hover:grayscale-0 sm:h-24"
+          />
         ))}
       </motion.div>
     </section>

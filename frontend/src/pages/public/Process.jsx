@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
+import Breadcrumbs from "../../components/ui/Breadcrumbs.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import Seo from "../../components/Seo.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
@@ -48,6 +49,7 @@ export default function Process() {
 
       <section className="px-6 pb-16 pt-24 sm:pt-32">
         <Container>
+          <Breadcrumbs items={[{ label: "Process" }]} />
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-2xl">
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Process

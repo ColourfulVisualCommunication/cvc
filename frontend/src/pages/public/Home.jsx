@@ -58,28 +58,6 @@ export default function Home() {
       <section className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-36 sm:pt-40">
         <RetroGrid />
 
-        {/* Three brand-colored blobs instead of one faint watermark — the
-            "colourful" in the name should show up before a single word of
-            copy is read. Slow drift keeps it playful without being busy. */}
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute -left-24 -top-32 h-72 w-72 rounded-full bg-cvc-amber/30 blur-3xl sm:h-96 sm:w-96"
-          animate={{ x: [0, 30, 0], y: [0, 20, 0] }}
-          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-20 top-10 h-64 w-64 rounded-full bg-cvc-cyan/30 blur-3xl sm:h-80 sm:w-80"
-          animate={{ x: [0, -25, 0], y: [0, 25, 0] }}
-          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-0 left-1/3 h-56 w-56 rounded-full bg-cvc-crimson/20 blur-3xl sm:h-72 sm:w-72"
-          animate={{ x: [0, 20, 0], y: [0, -15, 0] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        />
-
         <Container className="relative">
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-4xl">
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
@@ -182,7 +160,7 @@ export default function Home() {
         </section>
       )}
 
-      <section className="bg-cvc-cyan/10 px-6 py-20">
+      <section className="bg-cvc-cyan px-6 py-20">
         <Container>
           <SectionHeading
             eyebrow="Work"
@@ -214,30 +192,46 @@ export default function Home() {
       </section>
 
       <section className="border-t border-white/10 px-6 py-20">
-        <Container className="max-w-2xl">
-          <motion.div {...revealOnce} variants={stagger(0.1)}>
-            <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
-              From an idea, to a promise, to a platform
-            </motion.p>
-            <motion.h2 variants={fadeUp} className="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-              It started with KSh 200, a cracked copy of Photoshop, and a stranger&rsquo;s trust.
-            </motion.h2>
-            <motion.p variants={fadeUp} className="mt-5 text-lg text-cvc-muted">
-              CVC didn&rsquo;t start in a boardroom — it started on a matatu, in traffic, with a
-              promise a stranger had no reason to keep. Everything since has just been proving
-              that trust right.
-            </motion.p>
-            <motion.div variants={fadeUp} className="mt-6">
-              <Link
-                to="/about/our-story"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper"
-              >
-                Read the full story
-                <motion.span {...blink} className="inline-flex">
-                  <ArrowIcon size={16} />
-                </motion.span>
-              </Link>
+        <Container>
+          <motion.div
+            {...revealOnce}
+            variants={stagger(0.1)}
+            className="grid items-center gap-10 sm:grid-cols-[minmax(0,240px)_1fr]"
+          >
+            <motion.div
+              variants={fadeUp}
+              className="mx-auto flex aspect-[3/4] w-full max-w-[240px] items-center justify-center overflow-hidden bg-cvc-cyan/15"
+            >
+              <img
+                src="/founder/njoroge.webp"
+                alt="Njoroge, founder of CVC"
+                className="h-full w-full object-contain"
+              />
             </motion.div>
+            <div className="max-w-2xl">
+              <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
+                From an idea, to a promise, to a platform
+              </motion.p>
+              <motion.h2 variants={fadeUp} className="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+                It started with KSh 200, a cracked copy of Photoshop, and a stranger&rsquo;s trust.
+              </motion.h2>
+              <motion.p variants={fadeUp} className="mt-5 text-lg text-cvc-muted">
+                CVC didn&rsquo;t start in a boardroom — it started on a matatu, in traffic, with a
+                promise a stranger had no reason to keep. Everything since has just been proving
+                that trust right.
+              </motion.p>
+              <motion.div variants={fadeUp} className="mt-6">
+                <Link
+                  to="/about/our-story"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper"
+                >
+                  Read the full story
+                  <motion.span {...blink} className="inline-flex">
+                    <ArrowIcon size={16} />
+                  </motion.span>
+                </Link>
+              </motion.div>
+            </div>
           </motion.div>
         </Container>
       </section>
@@ -288,7 +282,7 @@ export default function Home() {
         </section>
       )}
 
-      <section className="bg-cvc-amber/15 px-6 py-24">
+      <section className="bg-cvc-crimson px-6 py-24">
         <Container>
           <SectionHeading
             title="Got an idea, an event, or a business that needs to look real?"
