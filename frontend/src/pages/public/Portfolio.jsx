@@ -37,7 +37,7 @@ export default function Portfolio() {
         </Container>
       </section>
 
-      <section className="border-t border-black/5 px-6 py-16">
+      <section className="border-t border-white/10 px-6 py-16">
         <Container>
           {items === null && <div className="h-40" />}
 
@@ -60,7 +60,7 @@ export default function Portfolio() {
                 <motion.div key={p.slug} variants={fadeUp}>
                   <Link to={`/work/${p.slug}`} className="group block">
                     {p.cover_image_url && (
-                      <div className="aspect-[4/3] overflow-hidden bg-black/5">
+                      <div className="aspect-[4/3] overflow-hidden bg-white/5">
                         <img
                           src={p.cover_image_url}
                           alt={p.title}

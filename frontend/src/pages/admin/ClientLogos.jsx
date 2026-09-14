@@ -10,7 +10,7 @@ import {
 import ImageUploadField from "../../admin/ImageUploadField.jsx";
 
 const EMPTY = { name: "", logo_url: "", published: false, sort_order: 0 };
-const inputClass = "mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink";
+const inputClass = "mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper";
 
 export default function ClientLogosAdmin() {
   const [items, setItems] = useState([]);
@@ -52,10 +52,10 @@ export default function ClientLogosAdmin() {
   if (editing) {
     return (
       <form onSubmit={handleSave} className="max-w-xl space-y-4">
-        <h1 className="text-xl font-bold">{editing.id ? "Edit client logo" : "New client logo"}</h1>
+        <h1 className="text-xl font-bold text-cvc-paper">{editing.id ? "Edit client logo" : "New client logo"}</h1>
 
         <div>
-          <label className="text-sm font-medium text-cvc-ink">Client name</label>
+          <label className="text-sm font-medium text-cvc-paper">Client name</label>
           <input
             required
             value={editing.name}
@@ -73,7 +73,7 @@ export default function ClientLogosAdmin() {
           upload={uploadLogo}
         />
 
-        <label className="flex items-center gap-2 text-sm">
+        <label className="flex items-center gap-2 text-sm text-cvc-paper">
           <input
             type="checkbox"
             checked={editing.published}
@@ -85,7 +85,7 @@ export default function ClientLogosAdmin() {
         {error && <p className="text-sm text-cvc-crimson">{error}</p>}
 
         <div className="flex gap-3">
-          <button type="submit" className="bg-cvc-ink px-4 py-2 font-semibold text-cvc-paper">Save</button>
+          <button type="submit" className="bg-cvc-paper px-4 py-2 font-semibold text-cvc-ink">Save</button>
           <button type="button" onClick={() => setEditing(null)} className="text-sm text-cvc-muted">Cancel</button>
         </div>
       </form>
@@ -95,24 +95,26 @@ export default function ClientLogosAdmin() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Client logos</h1>
-        <button onClick={() => setEditing({ ...EMPTY })} className="bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper">
+        <h1 className="text-2xl font-bold tracking-tight text-cvc-paper">Client logos</h1>
+        <button onClick={() => setEditing({ ...EMPTY })} className="bg-cvc-paper px-4 py-2 text-sm font-semibold text-cvc-ink">
           New logo
         </button>
       </div>
 
-      <div className="mt-6 divide-y divide-black/10">
+      <div className="mt-6 divide-y divide-white/10">
         {items.map((c) => (
           <div key={c.id} className="flex items-center justify-between py-3">
             <div className="flex items-center gap-4">
-              <img src={c.logo_url} alt="" className="h-10 w-16 object-contain" />
+              <div className="flex h-10 w-16 items-center justify-center bg-cvc-paper">
+                <img src={c.logo_url} alt="" className="h-8 w-14 object-contain" />
+              </div>
               <div>
-                <p className="font-medium">{c.name}</p>
+                <p className="font-medium text-cvc-paper">{c.name}</p>
                 <p className="text-sm text-cvc-muted">{c.published ? "published" : "draft"}</p>
               </div>
             </div>
             <div className="flex gap-3 text-sm">
-              <button onClick={() => setEditing(c)} className="text-cvc-ink underline">Edit</button>
+              <button onClick={() => setEditing(c)} className="text-cvc-paper underline">Edit</button>
               <button onClick={() => handleDelete(c.id)} className="text-cvc-crimson">Delete</button>
             </div>
           </div>

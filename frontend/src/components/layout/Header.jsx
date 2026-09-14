@@ -16,17 +16,17 @@ const LINKS = [
 
 const linkClass = ({ isActive }) =>
   `text-sm font-medium transition-colors ${
-    isActive ? "text-cvc-ink" : "text-cvc-muted hover:text-cvc-ink"
+    isActive ? "text-cvc-paper" : "text-cvc-muted hover:text-cvc-paper"
   }`;
 
 export default function Header() {
   const [open, setOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/5 bg-cvc-paper/90 backdrop-blur">
+    <header className="sticky top-0 z-50 border-b border-white/10 bg-cvc-ink/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
         <NavLink to="/" className="flex items-center">
-          <Logo />
+          <Logo dark />
         </NavLink>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -39,7 +39,7 @@ export default function Header() {
             href="https://wa.me/254769604255"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105"
+            className="inline-flex items-center gap-2 bg-cvc-amber px-4 py-2 text-sm font-semibold text-cvc-ink transition-transform hover:scale-105"
           >
             <EyeFollowEyes size={13} pupilSize={5} gap={4} />
             Start a project
@@ -51,9 +51,9 @@ export default function Header() {
           onClick={() => setOpen((v) => !v)}
           aria-label="Toggle menu"
         >
-          <span className={`h-0.5 w-6 bg-cvc-ink transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`h-0.5 w-6 bg-cvc-ink transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span className={`h-0.5 w-6 bg-cvc-ink transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+          <span className={`h-0.5 w-6 bg-cvc-paper transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
+          <span className={`h-0.5 w-6 bg-cvc-paper transition-opacity ${open ? "opacity-0" : ""}`} />
+          <span className={`h-0.5 w-6 bg-cvc-paper transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </div>
 
@@ -63,7 +63,7 @@ export default function Header() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t border-black/5 md:hidden"
+            className="overflow-hidden border-t border-white/10 md:hidden"
           >
             <div className="flex flex-col gap-1 px-6 py-4">
               {LINKS.map((l) => (
@@ -74,7 +74,7 @@ export default function Header() {
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
                     `px-3 py-2.5 text-base font-medium ${
-                      isActive ? "bg-black/5 text-cvc-ink" : "text-cvc-muted"
+                      isActive ? "bg-white/10 text-cvc-paper" : "text-cvc-muted"
                     }`
                   }
                 >
@@ -85,7 +85,7 @@ export default function Header() {
                 href="https://wa.me/254769604255"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 flex items-center justify-center gap-2 bg-cvc-ink px-3 py-2.5 text-center text-base font-semibold text-cvc-paper"
+                className="mt-2 flex items-center justify-center gap-2 bg-cvc-amber px-3 py-2.5 text-center text-base font-semibold text-cvc-ink"
               >
                 <EyeFollowEyes size={15} pupilSize={5} gap={4} />
                 Start a project

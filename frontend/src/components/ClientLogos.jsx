@@ -30,7 +30,7 @@ export default function ClientLogos() {
   const track = [...padded, ...padded];
 
   return (
-    <section className="overflow-hidden border-t border-black/5 py-20">
+    <section className="overflow-hidden border-t border-white/10 py-20">
       <Container>
         <motion.div {...revealOnce} variants={stagger(0.08)} className="text-center">
           <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
@@ -52,12 +52,17 @@ export default function ClientLogos() {
         transition={reduceMotion ? undefined : { duration: 36, repeat: Infinity, ease: "linear" }}
       >
         {track.map((logo, i) => (
-          <img
-            key={`${logo.id}-${i}`}
-            src={logo.logo_url}
-            alt={logo.name}
-            className="h-16 w-auto shrink-0 transition-all duration-300 [@media(hover:hover)]:grayscale [@media(hover:hover)]:hover:scale-110 [@media(hover:hover)]:hover:grayscale-0 sm:h-20"
-          />
+          // Client logos are uploaded art with their own (often dark)
+          // colors, designed against a light background — a solid paper
+          // chip behind each one keeps them visible now that the page
+          // itself is dark, regardless of what color the logo is.
+          <div key={`${logo.id}-${i}`} className="flex h-16 shrink-0 items-center bg-cvc-paper px-5 sm:h-20">
+            <img
+              src={logo.logo_url}
+              alt={logo.name}
+              className="h-8 w-auto transition-all duration-300 [@media(hover:hover)]:grayscale [@media(hover:hover)]:hover:scale-110 [@media(hover:hover)]:hover:grayscale-0 sm:h-10"
+            />
+          </div>
         ))}
       </motion.div>
     </section>

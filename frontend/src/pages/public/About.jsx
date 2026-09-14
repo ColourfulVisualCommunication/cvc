@@ -40,7 +40,7 @@ export default function About() {
             <motion.div variants={fadeUp} className="mt-6">
               <Link
                 to="/about/our-story"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-ink"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper"
               >
                 Read the full story
                 <ArrowIcon size={16} />
@@ -50,7 +50,7 @@ export default function About() {
         </Container>
       </section>
 
-      <section className="border-t border-black/5 px-6 py-16">
+      <section className="border-t border-white/10 px-6 py-16">
         <Container className="max-w-2xl">
           <motion.div {...revealOnce} variants={stagger(0.1)}>
             <motion.h2 variants={fadeUp} className="text-2xl font-bold tracking-tight">
@@ -68,7 +68,7 @@ export default function About() {
         </Container>
       </section>
 
-      <section className="border-t border-black/5 px-6 py-16">
+      <section className="border-t border-white/10 px-6 py-16">
         <Container className="max-w-2xl">
           <motion.div {...revealOnce} variants={stagger(0.1)}>
             <motion.h2 variants={fadeUp} className="text-2xl font-bold tracking-tight">
@@ -85,7 +85,7 @@ export default function About() {
         </Container>
       </section>
 
-      <section className="border-t border-black/5 px-6 py-20 text-center">
+      <section className="border-t border-white/10 px-6 py-20 text-center">
         <Container>
           <motion.div {...revealOnce}>
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl">

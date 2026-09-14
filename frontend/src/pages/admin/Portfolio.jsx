@@ -63,7 +63,7 @@ export default function PortfolioAdmin() {
   if (editing) {
     return (
       <form onSubmit={handleSave} className="max-w-xl space-y-4">
-        <h1 className="text-xl font-bold">{editing.id ? "Edit project" : "New project"}</h1>
+        <h1 className="text-xl font-bold text-cvc-paper">{editing.id ? "Edit project" : "New project"}</h1>
 
         <Field label="Title">
           <input
@@ -76,7 +76,7 @@ export default function PortfolioAdmin() {
                 slug: editing.id ? editing.slug : slugify(e.target.value),
               })
             }
-            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper"
           />
         </Field>
         <Field label="Slug">
@@ -84,21 +84,21 @@ export default function PortfolioAdmin() {
             required
             value={editing.slug}
             onChange={(e) => setEditing({ ...editing, slug: e.target.value })}
-            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper"
           />
         </Field>
         <Field label="Client name">
           <input
             value={editing.client_name || ""}
             onChange={(e) => setEditing({ ...editing, client_name: e.target.value })}
-            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper"
           />
         </Field>
         <Field label="Summary (shown in listings)">
           <textarea
             value={editing.summary || ""}
             onChange={(e) => setEditing({ ...editing, summary: e.target.value })}
-            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper"
             rows={2}
           />
         </Field>
@@ -106,7 +106,7 @@ export default function PortfolioAdmin() {
           <textarea
             value={editing.problem || ""}
             onChange={(e) => setEditing({ ...editing, problem: e.target.value })}
-            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper"
             rows={3}
           />
         </Field>
@@ -114,7 +114,7 @@ export default function PortfolioAdmin() {
           <textarea
             value={editing.solution || ""}
             onChange={(e) => setEditing({ ...editing, solution: e.target.value })}
-            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper"
             rows={3}
           />
         </Field>
@@ -122,7 +122,7 @@ export default function PortfolioAdmin() {
           <textarea
             value={editing.result || ""}
             onChange={(e) => setEditing({ ...editing, result: e.target.value })}
-            className="mt-1 w-full border border-black/15 px-3 py-2 outline-none focus:border-cvc-ink"
+            className="mt-1 w-full border border-white/15 bg-cvc-ink px-3 py-2 text-cvc-paper outline-none focus:border-cvc-paper"
             rows={3}
           />
         </Field>
@@ -169,7 +169,7 @@ export default function PortfolioAdmin() {
         {error && <p className="text-sm text-cvc-crimson">{error}</p>}
 
         <div className="flex gap-3">
-          <button type="submit" className="bg-cvc-ink px-4 py-2 font-semibold text-cvc-paper">
+          <button type="submit" className="bg-cvc-paper px-4 py-2 font-semibold text-cvc-ink">
             Save
           </button>
           <button type="button" onClick={() => setEditing(null)} className="text-sm text-cvc-muted">
@@ -184,26 +184,26 @@ export default function PortfolioAdmin() {
   return (
     <div>
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold tracking-tight">Portfolio</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-cvc-paper">Portfolio</h1>
         <button
           onClick={() => setEditing({ ...EMPTY })}
-          className="bg-cvc-ink px-4 py-2 text-sm font-semibold text-cvc-paper"
+          className="bg-cvc-paper px-4 py-2 text-sm font-semibold text-cvc-ink"
         >
           New project
         </button>
       </div>
 
-      <div className="mt-6 divide-y divide-black/10">
+      <div className="mt-6 divide-y divide-white/10">
         {items.map((p) => (
           <div key={p.id} className="flex items-center justify-between py-3">
             <div>
-              <p className="font-medium">{p.title}</p>
+              <p className="font-medium text-cvc-paper">{p.title}</p>
               <p className="text-sm text-cvc-muted">
                 {p.slug} · {p.published ? "published" : "draft"}
               </p>
             </div>
             <div className="flex gap-3 text-sm">
-              <button onClick={() => setEditing(p)} className="text-cvc-ink underline">
+              <button onClick={() => setEditing(p)} className="text-cvc-paper underline">
                 Edit
               </button>
               <button onClick={() => handleDelete(p.id)} className="text-cvc-crimson">
@@ -221,7 +221,7 @@ export default function PortfolioAdmin() {
 function Field({ label, children }) {
   return (
     <div>
-      <label className="text-sm font-medium text-cvc-ink">{label}</label>
+      <label className="text-sm font-medium text-cvc-paper">{label}</label>
       {children}
     </div>
   );

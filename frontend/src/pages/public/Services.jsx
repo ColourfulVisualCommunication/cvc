@@ -68,7 +68,7 @@ export default function Services() {
       </section>
 
       {Object.entries(byTier).map(([tier, items]) => (
-        <section key={tier} className="border-t border-black/5 px-6 py-16">
+        <section key={tier} className="border-t border-white/10 px-6 py-16">
           <Container>
             <motion.h2 {...revealOnce} className="text-sm font-semibold uppercase tracking-wide text-cvc-cyan">
               {TIER_LABELS[tier] ?? `Tier ${tier}`}
@@ -79,14 +79,14 @@ export default function Services() {
                 <motion.div key={s.slug} variants={fadeUp}>
                   <Link
                     to={`/services/${s.slug}`}
-                    className="group flex h-full flex-col justify-between border border-black/10 p-6 transition-colors hover:border-cvc-ink"
+                    className="group flex h-full flex-col justify-between border border-white/10 p-6 transition-colors hover:border-cvc-paper"
                   >
                     <div>
                       <h3 className="text-lg font-semibold">{s.name}</h3>
                       <p className="mt-2 text-sm text-cvc-muted">{s.summary}</p>
                     </div>
                     <div className="mt-6 flex items-center justify-between text-sm">
-                      <span className="font-mono text-cvc-ink">{formatPrice(s)}</span>
+                      <span className="font-mono text-cvc-paper">{formatPrice(s)}</span>
                       {s.duration && <span className="text-cvc-muted">{s.duration}</span>}
                     </div>
                   </Link>

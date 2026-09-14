@@ -29,9 +29,11 @@ export default function ImageUploadField({
 
   return (
     <div>
-      <label className="text-sm font-medium text-cvc-ink">{label}</label>
+      <label className="text-sm font-medium text-cvc-paper">{label}</label>
       {value && (
-        <img src={value} alt="" className="mt-2 h-32 w-32 object-contain" />
+        <div className="mt-2 inline-flex h-32 w-32 items-center justify-center bg-cvc-paper">
+          <img src={value} alt="" className="h-28 w-28 object-contain" />
+        </div>
       )}
       <input
         type="file"
