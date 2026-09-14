@@ -27,10 +27,10 @@ export default function Contact() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Contact
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
               Let's talk about it.
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 text-lg text-cvc-muted">
+            <motion.p variants={fadeUp} className="mt-6 text-xl text-cvc-paper/80">
               The fastest way to reach us is WhatsApp — that's where every CVC
               project actually starts.
             </motion.p>

@@ -32,7 +32,7 @@ export default function Portfolio() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Work
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
               What we've built.
             </motion.h1>
           </motion.div>
@@ -45,7 +45,7 @@ export default function Portfolio() {
 
           {items?.length === 0 && (
             <motion.div {...revealOnce} className="max-w-lg">
-              <p className="text-lg text-cvc-muted">
+              <p className="text-xl text-cvc-paper/80">
                 Case studies are being written up for the site. In the meantime,
                 ask on WhatsApp and we'll walk you through recent brand and web
                 work directly — screenshots, links, the lot.

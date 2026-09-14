@@ -73,10 +73,10 @@ export default function ServiceDetail() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Service
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
               {service.name}
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 text-lg text-cvc-muted">
+            <motion.p variants={fadeUp} className="mt-6 text-xl text-cvc-paper/80">
               {service.summary}
             </motion.p>
             {service.description && (

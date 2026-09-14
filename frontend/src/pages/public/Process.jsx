@@ -54,7 +54,7 @@ export default function Process() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Process
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
               Five steps. No surprises.
             </motion.h1>
           </motion.div>
