@@ -10,6 +10,15 @@ import * as THREE from "three";
 // a Framer canvas. WebGL context creation is wrapped in try/catch so a
 // headless prerender environment without GPU support degrades to simply
 // not rendering the tunnel, rather than breaking the build.
+//
+// Kept deliberately light after an earlier version visibly froze scroll
+// on real devices: the original ported logic created a brand-new
+// THREE.Texture (a real GPU upload) for every single slab instance even
+// when several slabs reused the same source image, across a dense 14-
+// segment tunnel — tens of redundant GPU textures uploaded synchronously
+// on mount. This version shares one texture per URL, uses far fewer
+// segments/slabs, and skips entirely on small screens and for
+// prefers-reduced-motion, since it's a decorative flourish, not content.
 export default function HeroTunnel({ images = [], className = "" }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -19,6 +28,12 @@ export default function HeroTunnel({ images = [], className = "" }) {
   const segmentsRef = useRef([]);
   const scrollPosRef = useRef(0);
   const [failed, setFailed] = useState(false);
+  const [enabled, setEnabled] = useState(false);
+
+  useEffect(() => {
+    const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    setEnabled(!reduceMotion && window.innerWidth >= 768);
+  }, []);
 
   // Build-time prerendering runs in a headless, GPU-less Chromium — a real
   // WebGL context there is unreliable and its texture-loading network
@@ -27,12 +42,12 @@ export default function HeroTunnel({ images = [], className = "" }) {
   // flourish with nothing worth capturing in a static snapshot anyway, so
   // it's skipped entirely rather than risk breaking the build.
   const isPrerendering = typeof window !== "undefined" && window.__CVC_PRERENDER__ === true;
-  const imageUrls = !isPrerendering && images.length > 0 ? images : null;
+  const imageUrls = enabled && !isPrerendering && images.length > 0 ? images : null;
 
   const TUNNEL_WIDTH = 24;
   const TUNNEL_HEIGHT = 16;
   const SEGMENT_DEPTH = 6;
-  const NUM_SEGMENTS = 14;
+  const NUM_SEGMENTS = 6;
   const FLOOR_COLS = 6;
   const WALL_ROWS = 4;
   const COL_WIDTH = TUNNEL_WIDTH / FLOOR_COLS;
@@ -41,19 +56,44 @@ export default function HeroTunnel({ images = [], className = "" }) {
   useEffect(() => {
     if (!imageUrls || !canvasRef.current || !containerRef.current) return;
 
+    // One real GPU texture per distinct image, reused by every slab that
+    // happens to draw the same logo — loaded lazily the first time a slab
+    // needs it, cached for the lifetime of this mount.
+    const textureCache = new Map();
+    const textureLoader = new THREE.TextureLoader();
+    const getTexture = (url) => {
+      let entry = textureCache.get(url);
+      if (!entry) {
+        entry = { texture: null, materials: [] };
+        textureCache.set(url, entry);
+        textureLoader.load(url, (tex) => {
+          tex.minFilter = THREE.LinearFilter;
+          entry.texture = tex;
+          entry.materials.forEach((mat) => {
+            mat.map = tex;
+            mat.needsUpdate = true;
+            gsap.to(mat, { opacity: 0.85, duration: 1 });
+          });
+          entry.materials = [];
+        });
+      }
+      return entry;
+    };
+
     const populateImages = (group, w, h, d, pool) => {
-      const textureLoader = new THREE.TextureLoader();
       const cellMargin = 0.4;
       const addImg = (pos, rot, wd, ht) => {
         const url = pool[Math.floor(Math.random() * pool.length)];
         const geom = new THREE.PlaneGeometry(wd - cellMargin, ht - cellMargin);
         const mat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, side: THREE.DoubleSide });
-        textureLoader.load(url, (tex) => {
-          tex.minFilter = THREE.LinearFilter;
-          mat.map = tex;
+        const entry = getTexture(url);
+        if (entry.texture) {
+          mat.map = entry.texture;
           mat.needsUpdate = true;
           gsap.to(mat, { opacity: 0.85, duration: 1 });
-        });
+        } else {
+          entry.materials.push(mat);
+        }
         const m = new THREE.Mesh(geom, mat);
         m.position.copy(pos);
         m.rotation.copy(rot);
@@ -61,9 +101,11 @@ export default function HeroTunnel({ images = [], className = "" }) {
         group.add(m);
       };
 
+      // Lower fill-rate than the original port — fewer slabs per segment
+      // means fewer meshes/draw calls across the whole tunnel.
       let lastFloorIdx = -999;
       for (let i = 0; i < FLOOR_COLS; i++) {
-        if (i > lastFloorIdx + 1 && Math.random() > 0.8) {
+        if (i > lastFloorIdx + 1 && Math.random() > 0.88) {
           addImg(
             new THREE.Vector3(-w + i * COL_WIDTH + COL_WIDTH / 2, -h, -d / 2),
             new THREE.Euler(-Math.PI / 2, 0, 0),
@@ -75,7 +117,7 @@ export default function HeroTunnel({ images = [], className = "" }) {
       }
       let lastCeilIdx = -999;
       for (let i = 0; i < FLOOR_COLS; i++) {
-        if (i > lastCeilIdx + 1 && Math.random() > 0.88) {
+        if (i > lastCeilIdx + 1 && Math.random() > 0.93) {
           addImg(
             new THREE.Vector3(-w + i * COL_WIDTH + COL_WIDTH / 2, h, -d / 2),
             new THREE.Euler(Math.PI / 2, 0, 0),
@@ -87,7 +129,7 @@ export default function HeroTunnel({ images = [], className = "" }) {
       }
       let lastLeftIdx = -999;
       for (let i = 0; i < WALL_ROWS; i++) {
-        if (i > lastLeftIdx + 1 && Math.random() > 0.8) {
+        if (i > lastLeftIdx + 1 && Math.random() > 0.88) {
           addImg(
             new THREE.Vector3(-w, -h + i * ROW_HEIGHT + ROW_HEIGHT / 2, -d / 2),
             new THREE.Euler(0, Math.PI / 2, 0),
@@ -99,7 +141,7 @@ export default function HeroTunnel({ images = [], className = "" }) {
       }
       let lastRightIdx = -999;
       for (let i = 0; i < WALL_ROWS; i++) {
-        if (i > lastRightIdx + 1 && Math.random() > 0.8) {
+        if (i > lastRightIdx + 1 && Math.random() > 0.88) {
           addImg(
             new THREE.Vector3(w, -h + i * ROW_HEIGHT + ROW_HEIGHT / 2, -d / 2),
             new THREE.Euler(0, -Math.PI / 2, 0),
@@ -120,7 +162,9 @@ export default function HeroTunnel({ images = [], className = "" }) {
         segment.remove(c);
         if (c instanceof THREE.Mesh) {
           c.geometry.dispose();
-          if (c.material.map) c.material.map.dispose();
+          // Textures are shared via textureCache — dispose the material
+          // only, never the shared map itself, or every other slab using
+          // that same logo goes blank.
           c.material.dispose();
         }
       });
@@ -160,7 +204,7 @@ export default function HeroTunnel({ images = [], className = "" }) {
     try {
       renderer = new THREE.WebGLRenderer({
         canvas: canvasRef.current,
-        antialias: true,
+        antialias: false,
         alpha: true,
         powerPreference: "high-performance",
       });
@@ -180,7 +224,11 @@ export default function HeroTunnel({ images = [], className = "" }) {
     cameraRef.current = camera;
 
     renderer.setSize(width, height);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Capped well below the device's real pixel ratio — a full-viewport
+    // canvas at 2-3x DPI (common on phones) is the single biggest GPU
+    // cost in this component and buys very little visible sharpness for
+    // a blurred, fog-obscured background.
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     rendererRef.current = renderer;
 
     const segments = [];
@@ -202,7 +250,11 @@ export default function HeroTunnel({ images = [], className = "" }) {
 
       const targetZ = -scrollPosRef.current * 0.05;
       const currentZ = cameraRef.current.position.z;
-      cameraRef.current.position.z += (targetZ - currentZ) * 0.1;
+      const delta = targetZ - currentZ;
+      // Once the camera has settled (no scrolling happening), stop
+      // re-rendering every frame — there's nothing new to draw.
+      if (Math.abs(delta) < 0.001) return;
+      cameraRef.current.position.z += delta * 0.1;
 
       const tunnelLength = NUM_SEGMENTS * SEGMENT_DEPTH;
       const camZ = cameraRef.current.position.z;
@@ -225,6 +277,10 @@ export default function HeroTunnel({ images = [], className = "" }) {
 
       rendererRef.current.render(sceneRef.current, cameraRef.current);
     };
+
+    // First frame always renders once, even with zero scroll delta, so
+    // the tunnel isn't blank before any scrolling happens.
+    renderer.render(scene, camera);
 
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -260,6 +316,8 @@ export default function HeroTunnel({ images = [], className = "" }) {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", handleResize);
       cancelAnimationFrame(frameId);
+      segmentsRef.current.forEach((segment) => clearSlabs(segment));
+      textureCache.forEach((entry) => entry.texture?.dispose());
       renderer.dispose();
     };
   }, [imageUrls]);
