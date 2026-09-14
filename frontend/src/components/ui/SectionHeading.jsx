@@ -9,7 +9,7 @@ import StaggerText from "./StaggerText.jsx";
  * bold/playful hook, the subtext is one plain sentence that says what the
  * section actually is — the hook earns attention, the subtext earns trust.
  */
-export default function SectionHeading({ eyebrow, title, subtitle, center = false }) {
+export default function SectionHeading({ eyebrow, title, subtitle, center = false, onLight = false }) {
   return (
     <motion.div
       {...revealOnce}
@@ -17,11 +17,14 @@ export default function SectionHeading({ eyebrow, title, subtitle, center = fals
       className={center ? "mx-auto max-w-2xl text-center" : "max-w-2xl"}
     >
       {eyebrow && (
-        <motion.p variants={fadeUp} className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-cvc-muted">
+        <motion.p
+          variants={fadeUp}
+          className={`font-mono text-sm font-semibold uppercase tracking-[0.18em] ${onLight ? "text-cvc-ink/60" : "text-cvc-muted"}`}
+        >
           {eyebrow}
         </motion.p>
       )}
-      <h2 className="mt-3 text-5xl font-bold tracking-tight text-cvc-paper sm:text-7xl">
+      <h2 className={`mt-3 text-5xl font-bold tracking-tight sm:text-7xl ${onLight ? "text-cvc-ink" : "text-cvc-paper"}`}>
         {/* Keyed on the text itself: when a heading's title swaps after its
             first mount (e.g. a loading-state placeholder replaced by real
             data), this forces a full remount instead of React reusing the
@@ -33,7 +36,7 @@ export default function SectionHeading({ eyebrow, title, subtitle, center = fals
         <StaggerText key={title} text={title} />
       </h2>
       {subtitle && (
-        <motion.p variants={fadeUp} className="mt-4 text-xl text-cvc-paper/80">
+        <motion.p variants={fadeUp} className={`mt-4 text-xl ${onLight ? "text-cvc-ink/70" : "text-cvc-paper/80"}`}>
           {subtitle}
         </motion.p>
       )}

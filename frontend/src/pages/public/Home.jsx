@@ -1,16 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Compass, Palette, Globe, LayoutGrid, Rocket, RefreshCw, Sparkles } from "lucide-react";
 
-import { listServices, listPortfolio, listTestimonials } from "../../api/client.js";
+import { listServices, listPortfolio, listTestimonials, listClientLogos } from "../../api/client.js";
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import SectionHeading from "../../components/ui/SectionHeading.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import ArrowIcon from "../../components/ui/ArrowIcon.jsx";
+import ScrollArrow from "../../components/ui/ScrollArrow.jsx";
 import TypewriterEffect from "../../components/ui/TypewriterEffect.jsx";
-import RetroGrid from "../../components/ui/RetroGrid.jsx";
+import HeroTunnel from "../../components/ui/HeroTunnel.jsx";
 import OrbitProjects from "../../components/ui/OrbitProjects.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
@@ -39,15 +40,18 @@ const TIER_ICONS = {
 
 export default function Home() {
   const navigate = useNavigate();
+  const heroRef = useRef(null);
   const [services, setServices] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
+  const [clientLogos, setClientLogos] = useState([]);
 
   useEffect(() => {
     Promise.allSettled([
       listServices().then((s) => setServices((s.items ?? []).slice(0, 3))),
       listPortfolio().then((p) => setPortfolio(p.items ?? [])),
       listTestimonials().then((t) => setTestimonials(t.items ?? [])),
+      listClientLogos().then((c) => setClientLogos(c.items ?? [])),
     ]).then(markPrerenderReady);
   }, []);
 
@@ -55,8 +59,8 @@ export default function Home() {
     <>
       <Seo path="/" jsonLd={localBusinessJsonLd} />
 
-      <section className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-36 sm:pt-40">
-        <RetroGrid />
+      <section ref={heroRef} className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-36 sm:pt-40">
+        <HeroTunnel images={clientLogos.map((l) => l.logo_url)} />
 
         {/* Bold, saturated color is the whole point of the brand name —
             against the dark page these glow instead of just tinting a
@@ -120,10 +124,12 @@ export default function Home() {
             </motion.div>
           </motion.div>
         </Container>
+
+        <ScrollArrow targetRef={heroRef} className="absolute inset-x-0 bottom-8 hidden sm:flex" />
       </section>
 
       {services.length > 0 && (
-        <section className="border-t border-white/10 px-6 py-20">
+        <section id="services" className="border-t border-white/10 px-6 py-20">
           <Container>
             <SectionHeading
               eyebrow="What we do"
@@ -183,7 +189,7 @@ export default function Home() {
         </section>
       )}
 
-      <section className="bg-cvc-cyan px-6 py-20">
+      <section id="work" className="bg-cvc-cyan px-6 py-20">
         <Container>
           <SectionHeading
             eyebrow="Work"
@@ -214,23 +220,14 @@ export default function Home() {
         )}
       </section>
 
-      <section className="border-t border-white/10 px-6 py-20">
+      <section id="about" className="border-t border-white/10 px-6 py-20">
         <Container>
           <motion.div
             {...revealOnce}
             variants={stagger(0.1)}
             className="grid items-center gap-10 sm:grid-cols-[minmax(0,240px)_1fr]"
           >
-            <motion.div
-              variants={fadeUp}
-              className="mx-auto flex aspect-[3/4] w-full max-w-[240px] items-center justify-center overflow-hidden bg-cvc-cyan/15"
-            >
-              <img
-                src="/founder/njoroge.webp"
-                alt="Njoroge, founder of CVC"
-                className="h-full w-full object-contain"
-              />
-            </motion.div>
+            
             <div className="max-w-2xl">
               <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
                 From an idea, to a promise, to a platform
@@ -255,6 +252,17 @@ export default function Home() {
                 </Link>
               </motion.div>
             </div>
+
+            <motion.div
+              variants={fadeUp}
+              className="mx-auto flex aspect-[3/4] w-full items-center justify-center overflow-hidden"
+            >
+              <img
+                src="/founder/njoroge.webp"
+                alt="Njoroge, founder of CVC"
+                className="h-full w-full object-contain"
+              />
+            </motion.div>
           </motion.div>
         </Container>
       </section>
@@ -262,7 +270,7 @@ export default function Home() {
       <ClientLogos />
 
       {testimonials.length > 0 && (
-        <section className="bg-cvc-crimson px-6 py-20">
+        <section className="bg-cvc-ink px-6 py-20">
           <Container>
             <SectionHeading
               eyebrow="Testimonials"
@@ -305,15 +313,16 @@ export default function Home() {
         </section>
       )}
 
-      <section className="bg-cvc-crimson px-6 py-24">
+      <section id="contact" className="bg-cvc-amber px-6 py-24">
         <Container>
           <SectionHeading
             title="Got an idea, an event, or a business that needs to look real?"
             subtitle="One message on WhatsApp is genuinely how every CVC project starts."
             center
+            onLight
           />
           <div className="mt-9 flex justify-center">
-            <WhatsAppCTA />
+            <WhatsAppCTA dark />
           </div>
         </Container>
       </section>
