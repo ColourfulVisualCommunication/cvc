@@ -25,7 +25,15 @@ export default function SectionHeading({ eyebrow, title, subtitle, center = fals
         </motion.p>
       )}
       <h2 className={`mt-3 text-4xl font-bold tracking-tight sm:text-6xl ${light ? "text-white" : "text-cvc-ink"}`}>
-        <StaggerText text={title} />
+        {/* Keyed on the text itself: when a heading's title swaps after its
+            first mount (e.g. a loading-state placeholder replaced by real
+            data), this forces a full remount instead of React reusing the
+            existing character nodes — reused nodes at settled positions
+            would keep their already-resolved opacity/transform instead of
+            replaying the reveal, while newly-added trailing characters
+            would stay stuck at their initial hidden state forever, since
+            the reveal-once trigger only fires a single time per mount. */}
+        <StaggerText key={title} text={title} />
       </h2>
       {subtitle && (
         <motion.p
