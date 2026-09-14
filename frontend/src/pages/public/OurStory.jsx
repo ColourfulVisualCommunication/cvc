@@ -132,10 +132,10 @@ export default function OurStory() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Our Story
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
               Colourful Visual Communication didn&rsquo;t start in a boardroom. It started in traffic.
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 text-lg text-cvc-muted">
+            <motion.p variants={fadeUp} className="mt-6 text-xl text-cvc-paper/80">
               From an idea, to a promise, to a platform.
             </motion.p>
           </motion.div>

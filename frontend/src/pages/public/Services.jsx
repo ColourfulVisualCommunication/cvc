@@ -57,10 +57,10 @@ export default function Services() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Services
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
               A ladder, not a guess.
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 text-lg text-cvc-muted">
+            <motion.p variants={fadeUp} className="mt-6 text-xl text-cvc-paper/80">
               Fixed packages where the scope is predictable, quoted bands where
               it isn't. Every price below is a real starting point for a
               conversation, not a locked-in figure.

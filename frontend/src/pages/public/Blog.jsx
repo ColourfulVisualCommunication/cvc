@@ -31,7 +31,7 @@ export default function Blog() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               Blog
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
               Notes from the studio.
             </motion.h1>
           </motion.div>
@@ -43,7 +43,7 @@ export default function Blog() {
           {posts === null && <div className="h-40" />}
 
           {posts?.length === 0 && (
-            <motion.p {...revealOnce} className="max-w-lg text-lg text-cvc-muted">
+            <motion.p {...revealOnce} className="max-w-lg text-xl text-cvc-paper/80">
               First posts are on the way. Check back soon.
             </motion.p>
           )}

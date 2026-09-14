@@ -58,12 +58,35 @@ export default function Home() {
       <section className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-36 sm:pt-40">
         <RetroGrid />
 
+        {/* Bold, saturated color is the whole point of the brand name —
+            against the dark page these glow instead of just tinting a
+            white background, so they're pushed harder (bigger, brighter)
+            than they'd need to be on a light theme. */}
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute -left-32 -top-40 h-112 w-md rounded-full bg-cvc-amber/40 blur-3xl"
+          animate={{ x: [0, 40, 0], y: [0, 25, 0] }}
+          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute -right-24 top-0 h-96 w-96 rounded-full bg-cvc-cyan/40 blur-3xl"
+          animate={{ x: [0, -30, 0], y: [0, 30, 0] }}
+          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-cvc-crimson/30 blur-3xl"
+          animate={{ x: [0, 25, 0], y: [0, -20, 0] }}
+          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+        />
+
         <Container className="relative">
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-4xl">
-            <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
+            <motion.p variants={fadeUp} className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-cvc-muted">
               Colourful Visual Communication <span className="text-cvc-amber">.</span><span className="text-cvc-crimson">.</span><span className="text-cvc-cyan">.Online!</span>
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-8 text-5xl font-bold leading-[1.1] tracking-tight sm:text-7xl">
+            <motion.h1 variants={fadeUp} className="mt-8 text-6xl font-bold leading-[1.1] tracking-tight sm:text-8xl">
               <span>You&rsquo;ve an idea?</span>
               <br />
               <span>We shall</span>
@@ -80,7 +103,7 @@ export default function Home() {
                 pauseDuration={1500}
               />
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-8 max-w-xl text-lg text-cvc-muted">
+            <motion.p variants={fadeUp} className="mt-8 max-w-xl text-xl text-cvc-paper/80">
               <span className="underline decoration-cvc-cyan decoration-2 underline-offset-4 font-bold">Strategic Brand identity</span> and{" "}
               <span className="underline decoration-cvc-crimson decoration-2 underline-offset-4 font-bold">digital development</span> from
               one team — most brand designers can't build, most developers can't brand.{" "}
@@ -272,7 +295,7 @@ export default function Home() {
                     )}
                     <div className="text-sm">
                       <p className="font-semibold text-cvc-ink">{t.client_name}</p>
-                      {t.client_role && <p className="text-cvc-muted">{t.client_role}</p>}
+                      {t.client_role && <p className="text-cvc-ink/60">{t.client_role}</p>}
                     </div>
                   </footer>
                 </motion.blockquote>

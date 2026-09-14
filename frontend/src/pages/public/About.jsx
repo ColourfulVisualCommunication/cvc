@@ -30,10 +30,10 @@ export default function About() {
             <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
               About
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-4xl font-bold tracking-tight sm:text-5xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
               One person, two disciplines most agencies split in two.
             </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 text-lg text-cvc-muted">
+            <motion.p variants={fadeUp} className="mt-6 text-xl text-cvc-paper/80">
               CVC — Colourful Visual Communication — is a strategic creative and
               digital development agency based in Ndeiya, Limuru, Kenya. Founded
               and run by Njoroge, who does both brand identity and full-stack
