@@ -62,29 +62,6 @@ export default function Home() {
       <section ref={heroRef} className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-36 sm:pt-40">
         <HeroTunnel images={clientLogos.map((l) => l.logo_url)} />
 
-        {/* Bold, saturated color is the whole point of the brand name —
-            against the dark page these glow instead of just tinting a
-            white background, so they're pushed harder (bigger, brighter)
-            than they'd need to be on a light theme. */}
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute -left-32 -top-40 h-112 w-md rounded-full bg-cvc-amber/40 blur-3xl"
-          animate={{ x: [0, 40, 0], y: [0, 25, 0] }}
-          transition={{ duration: 14, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute -right-24 top-0 h-96 w-96 rounded-full bg-cvc-cyan/40 blur-3xl"
-          animate={{ x: [0, -30, 0], y: [0, 30, 0] }}
-          transition={{ duration: 16, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          aria-hidden="true"
-          className="pointer-events-none absolute bottom-0 left-1/3 h-80 w-80 rounded-full bg-cvc-crimson/30 blur-3xl"
-          animate={{ x: [0, 25, 0], y: [0, -20, 0] }}
-          transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
-        />
-
         <Container className="relative">
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-4xl">
             <motion.p variants={fadeUp} className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-cvc-muted">
@@ -95,17 +72,24 @@ export default function Home() {
               <br />
               <span>We shall</span>
               <br />
-              <TypewriterEffect
-                prefix=""
-                phrases={[
-                  { text: "Define it...", color: "var(--color-cvc-cyan)" },
-                  { text: "Position it...", color: "var(--color-cvc-grey)" },
-                  { text: "Build it...", color: "var(--color-cvc-crimson)" },
-                  { text: "Put it into the world!", color: "var(--color-cvc-amber)" },
-                ]}
-                typingSpeed={50}
-                pauseDuration={1500}
-              />
+              {/* Fixed-height allowance (2 lines' worth, in em so it scales
+                  with the h1's own responsive font size) — phrases range
+                  from "Build it..." to "Put it into the world!", so without
+                  this the line wrapping differently per phrase reflows and
+                  pushes the subtitle/CTA below up and down as it cycles. */}
+              <span className="block min-h-[2.2em]">
+                <TypewriterEffect
+                  prefix=""
+                  phrases={[
+                    { text: "Define it...", color: "var(--color-cvc-cyan)" },
+                    { text: "Position it...", color: "var(--color-cvc-grey)" },
+                    { text: "Build it...", color: "var(--color-cvc-crimson)" },
+                    { text: "Put it into the world!", color: "var(--color-cvc-amber)" },
+                  ]}
+                  typingSpeed={50}
+                  pauseDuration={1500}
+                />
+              </span>
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-8 max-w-xl text-xl text-cvc-paper/80">
               <span className="underline decoration-cvc-cyan decoration-2 underline-offset-4 font-bold">Strategic Brand identity</span> and{" "}
