@@ -18,10 +18,15 @@ const container = (staggerChildren) => ({
 
 const charVariant = {
   hidden: { y: "110%", opacity: 0 },
-  visible: { y: "0%", opacity: 1, transition: { duration: 0.5, ease: [0.4, 0, 0.2, 1] } },
+  visible: { y: "0%", opacity: 1, transition: { duration: 0.32, ease: [0.4, 0, 0.2, 1] } },
 };
 
-export default function StaggerText({ text, className = "", staggerDelay = 0.025 }) {
+// Longer headings have more characters ahead of the last word, so at the
+// original delay their final word could still be mid-flight nearly a
+// second after the heading scrolled into view — long enough to read as
+// missing text rather than an in-progress animation. Tightened so even a
+// multi-word heading fully settles in well under half a second.
+export default function StaggerText({ text, className = "", staggerDelay = 0.01 }) {
   const words = text.split(" ");
 
   return (
