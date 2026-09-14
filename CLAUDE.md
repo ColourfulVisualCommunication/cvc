@@ -94,7 +94,7 @@ These were in an earlier, much larger plan. Each was cut for a reason:
 
 ## Build phases
 
-Current position: **Phase 1 shipped** — live at `https://cvc-api.onrender.com`, DB-backed (`/api/v1/health`, `/api/v1/services`), admin login working. **Phase 2 next.** See `docs/02-build-plan.md` for full detail.
+Current position: **Phase 2 shipped** — colourfulvisualcommunication.com is live (Cloudflare Workers, DNS cut over from Netlify), with Home, About, Our Story, Process, Services + detail pages, Portfolio (real case studies), Blog, Contact, admin CRUD for portfolio/posts/testimonials/client logos, build-time prerendering with meta/OG/JSON-LD, and a full typography system. Services remain public-read-only (edited via seed data, not an admin panel) — the ladder rarely changes and a fixed price list didn't justify the CRUD yet. **Phase 3 next.** See `docs/02-build-plan.md` for full detail.
 
 | # | Phase | Ships |
 |---|---|---|
@@ -157,7 +157,6 @@ npm run dev                                       # http://localhost:5173
 
 ## Still needed from Njoroge
 
-1. **Portfolio material** — 3–6 real projects (client, problem, what CVC did, result, images). Phase 2 cannot ship with placeholders.
-2. **Confirmed service prices** — the ladder in `docs/03-service-ladder.md` has draft bands that need his correction before they become real checkouts.
+Nothing outstanding for Phase 3. Portfolio material (5 real case studies) and the confirmed service ladder are both live in the database via `backend/seed.py`.
 
 Resolved: domain registered (`colourfulvisualcommunication.com`), Supabase Postgres, Cloudinary, Brevo, and M-Pesa Daraja credentials are all in hand — see `backend/.env.example` for what each needs. All go in `.env`, never in Git.
