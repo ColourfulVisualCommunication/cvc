@@ -201,7 +201,7 @@ export default function Home() {
                 onOpen: () => navigate(`/work/${p.slug}`),
               }))}
             background="transparent"
-            content={{ leftTitle: "REAL", rightTitle: "WORK", textColor: "rgba(22, 24, 26, 0.07)" }}
+            content={{ leftTitle: "REAL", rightTitle: "WORK", textColor: "rgba(22, 24, 26, 0.18)" }}
             cards={{ radius: 0, background: "var(--color-cvc-paper)" }}
           />
         )}

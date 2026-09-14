@@ -141,7 +141,14 @@ async function scrollToBottom(page) {
       }, 80);
     });
   });
-  await new Promise((r) => setTimeout(r, 300)); // let in-flight transitions settle
+  // Let in-flight transitions settle before capturing. Scroll-triggered
+  // reveals (headings) and scroll-position-driven effects (the orbit
+  // gallery's smoothed progress value) both need real wall-clock time
+  // after the scroll stops — 300ms wasn't enough for whatever last
+  // entered view right before reaching the bottom, so the prerendered
+  // snapshot could freeze mid-animation (a heading missing its last
+  // word, cards still mid-orbit instead of settled into their grid).
+  await new Promise((r) => setTimeout(r, 1500));
 }
 
 async function main() {
