@@ -23,15 +23,19 @@ Each phase ends in something deployed and usable. Estimates assume part-time bui
 
 ---
 
-## Phase 2 — The public site · ~2 weeks
+## Phase 2 — The public site · ~2 weeks · **shipped**
 
 **Ships:** colourfulvisualcommunication.com, live, animated, real. The link you send when a referral asks what you do. **This is the phase that changes the business.**
 
-Home · About · Process · service pages generated from the ladder · portfolio index and case studies · blog · contact · a Framer Motion system rather than scattered animations · admin CRUD for all content · image upload and optimisation · meta and Open Graph tags · mobile-first, tested on a real phone on Kenyan mobile data.
+- [x] Home · About · Our Story · Process · service pages generated from the ladder · portfolio index and case studies · blog · contact
+- [x] A Framer Motion system rather than scattered animations
+- [x] Admin CRUD for portfolio, posts, testimonials, client logos (services stayed public-read-only — the ladder rarely changes, so a fixed price list didn't justify the CRUD yet)
+- [x] Image upload and optimisation (Cloudinary)
+- [x] Build-time prerendering with meta, Open Graph, and JSON-LD baked into every public route
+- [x] Deployed live on Cloudflare Workers (migrated off Netlify after it ran out of build credits), DNS cut over from Namecheap
+- [x] Mobile-first fixes (greyscale client logos, touch targets, responsive typography)
 
-**Blocked on:** 3–6 real portfolio projects with images. Placeholders are worse than nothing — this site is the proof of CVC's development ability.
-
-*Learning: React components and routing, Tailwind as a design system rather than utility soup, Framer Motion orchestration, admin-writes/public-reads.*
+*Learning: React components and routing, Tailwind as a design system rather than utility soup, Framer Motion orchestration, admin-writes/public-reads, build-time prerendering vs. full SSR, Cloudflare Workers static-assets deploys.*
 
 ---
 
