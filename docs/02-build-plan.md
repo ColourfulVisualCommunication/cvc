@@ -53,11 +53,17 @@ Each phase ends in something deployed and usable. Estimates assume part-time bui
 
 ---
 
-## Phase 4 — Quotes · ~1 week
+## Phase 4 — Quotes · ~1 week · **shipped**
 
 **Ships:** a quote built in the admin, sent as one link, with open-tracking and an accept button.
 
-Quote builder with line items · deposit percentage · public quote page reached by signed token · expiry date and exactly one reminder · accept/decline · viewed and accepted timestamps.
+- [x] Quote builder with line items (admin, `/admin/quotes`)
+- [x] Deposit percentage per quote, total/deposit computed server-side from line items
+- [x] Public quote page reached by signed token (`/quote/:token`, no login, `noindex`)
+- [x] Expiry date and exactly one reminder (blocked once `reminder_sent_at` is set)
+- [x] Accept/decline, with a terminal status message once decided
+- [x] Viewed, accepted and declined timestamps; quotes past `expires_at` auto-transition to expired
+- [x] Email notification on send and on reminder (Brevo REST API, best-effort as with leads)
 
 *Learning: signed tokens — how a link can prove who it belongs to without anyone logging in. The same idea secures every client page after this.*
 
