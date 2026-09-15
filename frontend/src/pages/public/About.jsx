@@ -45,7 +45,7 @@ export default function About() {
                 className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper sm:text-base lg:text-lg"
               >
                 Read the full story
-                <ArrowIcon size={16} />
+                <ArrowIcon size={24} />
               </Link>
             </motion.div>
           </motion.div>
