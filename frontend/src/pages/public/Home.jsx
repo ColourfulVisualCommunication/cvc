@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { RoughNotation } from "react-rough-notation";
 import { Compass, Palette, Globe, LayoutGrid, Rocket, RefreshCw, Sparkles } from "lucide-react";
 
 import { listServices, listPortfolio, listTestimonials, listClientLogos } from "../../api/client.js";
@@ -41,14 +42,24 @@ const TIER_ICONS = {
 export default function Home() {
   const navigate = useNavigate();
   const heroRef = useRef(null);
+  const heroThroughServicesRef = useRef(null);
   const [services, setServices] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [clientLogos, setClientLogos] = useState([]);
+  const [annotate, setAnnotate] = useState(false);
+
+  useEffect(() => {
+    // Delayed so the hand-drawn circles draw on once the hero's own
+    // staggered fade-in has settled, rather than animating underneath
+    // text that's still appearing.
+    const t = setTimeout(() => setAnnotate(true), 900);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     Promise.allSettled([
-      listServices().then((s) => setServices((s.items ?? []).slice(0, 3))),
+      listServices().then((s) => setServices((s.items ?? []).slice(0, 6))),
       listPortfolio().then((p) => setPortfolio(p.items ?? [])),
       listTestimonials().then((t) => setTestimonials(t.items ?? [])),
       listClientLogos().then((c) => setClientLogos(c.items ?? [])),
@@ -59,6 +70,7 @@ export default function Home() {
     <>
       <Seo path="/" jsonLd={localBusinessJsonLd} />
 
+      <div ref={heroThroughServicesRef} className="relative">
       <section ref={heroRef} className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-36 sm:pt-40">
         <HeroTunnel images={clientLogos.map((l) => l.logo_url)} />
 
@@ -97,9 +109,14 @@ export default function Home() {
               </span>
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-8 max-w-xl text-xl text-cvc-paper/80">
-              <span className="underline decoration-cvc-cyan decoration-2 underline-offset-4 font-bold">Strategic Brand identity</span> and{" "}
-              <span className="underline decoration-cvc-crimson decoration-2 underline-offset-4 font-bold">digital development</span> from
-              one team — most brand designers can't build, most developers can't brand.{" "}
+              <RoughNotation type="circle" show={annotate} color="var(--color-cvc-cyan)" strokeWidth={2} padding={4} animationDuration={800}>
+                <span className="font-bold">Strategic Brand identity</span>
+              </RoughNotation>{" "}
+              and{" "}
+              <RoughNotation type="circle" show={annotate} color="var(--color-cvc-crimson)" strokeWidth={2} padding={4} animationDuration={800}>
+                <span className="font-bold">digital development</span>
+              </RoughNotation>{" "}
+              from one team — most brand designers can't build, most developers can't brand.{" "}
               <span className="font-bold text-cvc-crimson">We do both.</span>
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center gap-4">
@@ -113,8 +130,6 @@ export default function Home() {
             </motion.div>
           </motion.div>
         </Container>
-
-        <ScrollArrow targetRef={heroRef} className="absolute inset-x-0 bottom-8 hidden sm:flex" />
       </section>
 
       {services.length > 0 && (
@@ -177,8 +192,24 @@ export default function Home() {
           </Container>
         </section>
       )}
+      </div>
 
-      <section id="work" className="bg-cvc-cyan px-6 py-20">
+      <ScrollArrow
+        targetRef={heroThroughServicesRef}
+        className="fixed right-6 top-1/2 hidden -translate-y-1/2 sm:right-10 sm:flex"
+      />
+
+      <section id="work" className="relative overflow-hidden bg-cvc-cyan px-6 py-20">
+        {/* The card grid centers itself with a lot of open gutter on wide
+            screens — these fill that empty space rather than leaving it
+            bare, without competing with the cards themselves for attention. */}
+        <p className="pointer-events-none absolute left-6 top-6 hidden max-w-56 text-sm leading-relaxed text-cvc-ink/40 lg:block xl:left-10 xl:top-10">
+          Brand identity, web builds, and everything between — shipped, not just designed.
+        </p>
+        <p className="pointer-events-none absolute bottom-6 right-6 hidden max-w-56 text-right text-sm leading-relaxed text-cvc-ink/40 lg:block xl:bottom-10 xl:right-10">
+          From Idea to Action. From Action to Reality.
+        </p>
+
         <Container>
           <SectionHeading
             eyebrow="Work"
@@ -188,6 +219,7 @@ export default function Home() {
                 ? "A look at what's actually shipped — real problems, real solutions."
                 : "Case studies are being written up. Ask on WhatsApp and we'll share examples of recent brand and web work directly."
             }
+            onLight
           />
 
         </Container>
@@ -203,7 +235,7 @@ export default function Home() {
                 onOpen: () => navigate(`/work/${p.slug}`),
               }))}
             background="transparent"
-            content={{ leftTitle: "REAL", rightTitle: "WORK", textColor: "rgba(22, 24, 26, 0.18)" }}
+            content={{ leftTitle: "IDEAS", centerText: "WE'VE BUILT", rightTitle: "WORK", textColor: "rgba(22, 24, 26, 0.4)" }}
             cards={{ radius: 0, background: "var(--color-cvc-paper)" }}
           />
         )}
@@ -244,7 +276,7 @@ export default function Home() {
 
             <motion.div
               variants={fadeUp}
-              className="mx-auto flex aspect-[3/4] w-full items-center justify-center overflow-hidden"
+              className="mx-auto flex w-1/2 items-center justify-center overflow-hidden"
             >
               <img
                 src="/founder/njoroge.webp"
@@ -310,13 +342,19 @@ export default function Home() {
       <section id="contact" className="bg-cvc-amber px-6 py-24">
         <Container>
           <SectionHeading
-            title="Got an idea, an event, or a business that needs to look real?"
-            subtitle="One message on WhatsApp is genuinely how every CVC project starts."
+            title="Stop describing it. Let's build it."
+            subtitle="WhatsApp, a quick form, phone, or email — whichever's easiest, we're on it."
             center
             onLight
           />
           <div className="mt-9 flex justify-center">
-            <WhatsAppCTA dark />
+            <Link
+              to="/contact"
+              className="inline-flex items-center gap-3 bg-cvc-ink px-6 py-3 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105 sm:text-base lg:text-lg"
+            >
+              Let&rsquo;s talk
+              <ArrowIcon size={20} />
+            </Link>
           </div>
         </Container>
       </section>
