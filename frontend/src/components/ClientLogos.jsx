@@ -6,15 +6,15 @@ import { revealOnce } from "../motion/variants.js";
 import Container from "./ui/Container.jsx";
 import LogoShowcaseStack from "./ui/LogoShowcaseStack.jsx";
 
-// The stack is a single card's footprint now (logos sit on top of each
-// other, not fanned side by side) — sized to genuinely stand out sitting
-// inline in the middle of the heading, not read as a small decoration.
+// The stack is a single card's footprint (logos sit on top of each other,
+// not fanned side by side) — sized big enough to be the visual anchor of
+// its own row between the two heading lines, not a small decoration.
 function useLogoStackSize() {
-  const [size, setSize] = useState(110);
+  const [size, setSize] = useState(200);
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 640px)");
-    setSize(mq.matches ? 160 : 110);
-    const onChange = (e) => setSize(e.matches ? 160 : 110);
+    setSize(mq.matches ? 300 : 200);
+    const onChange = (e) => setSize(e.matches ? 300 : 200);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
   }, []);
@@ -38,7 +38,7 @@ export default function ClientLogos() {
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-cvc-ink/70 sm:text-sm lg:text-base">
             {logos.length}+ brands that we work with
           </p>
-          <h2 className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-4xl font-bold leading-tight tracking-tight text-cvc-ink sm:mt-8 sm:text-5xl">
+          <h2 className="mt-6 flex flex-col items-center gap-4 text-4xl font-bold leading-tight tracking-tight text-cvc-ink sm:mt-8 sm:text-5xl">
             <span>We thank you</span>
             <LogoShowcaseStack logos={logos} size={stackSize} />
             <span>for trusting us</span>
