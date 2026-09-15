@@ -15,6 +15,7 @@ from . import (  # noqa: E402,F401
     media,
     portfolio,
     posts,
+    quotes,
     services,
     testimonials,
 )
