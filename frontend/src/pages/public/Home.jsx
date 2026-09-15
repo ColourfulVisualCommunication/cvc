@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
 import { Compass, Palette, Globe, LayoutGrid, Rocket, RefreshCw, Sparkles } from "lucide-react";
@@ -13,7 +13,6 @@ import ArrowIcon from "../../components/ui/ArrowIcon.jsx";
 import ScrollArrow from "../../components/ui/ScrollArrow.jsx";
 import TypewriterEffect from "../../components/ui/TypewriterEffect.jsx";
 import HeroTunnel from "../../components/ui/HeroTunnel.jsx";
-import OrbitProjects from "../../components/ui/OrbitProjects.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
@@ -40,7 +39,6 @@ const TIER_ICONS = {
 };
 
 export default function Home() {
-  const navigate = useNavigate();
   const heroRef = useRef(null);
   const heroThroughServicesRef = useRef(null);
   const [services, setServices] = useState([]);
@@ -113,7 +111,7 @@ export default function Home() {
                 <span className="font-bold">Strategic Brand identity</span>
               </RoughNotation>{" "}
               and{" "}
-              <RoughNotation type="line" show={annotate} color="var(--color-cvc-crimson)" strokeWidth={2} padding={4} animationDuration={800}>
+              <RoughNotation type="underline" show={annotate} color="var(--color-cvc-crimson)" strokeWidth={2} padding={2} animationDuration={800}>
                 <span className="font-bold">digital development</span>
               </RoughNotation>{" "}
               from one team — most brand designers can't build, most developers can't brand.{" "}
@@ -199,7 +197,7 @@ export default function Home() {
         className="fixed right-6 top-1/2 hidden -translate-y-1/2 sm:right-10 sm:flex"
       />
 
-      <section id="work" className="relative overflow-hidden bg-cvc-cyan px-6 py-20">
+      <section id="work" data-scroll-surface="light" className="relative overflow-hidden bg-cvc-cyan px-6 py-20">
         {/* The card grid centers itself with a lot of open gutter on wide
             screens — these fill that empty space rather than leaving it
             bare, without competing with the cards themselves for attention. */}
@@ -222,24 +220,37 @@ export default function Home() {
             onLight
           />
 
+          {portfolio.length > 0 && (
+            <motion.div
+              {...revealOnce}
+              variants={stagger(0.08)}
+              className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
+            >
+              {portfolio
+                .filter((p) => p.cover_image_url)
+                .map((p) => (
+                  <motion.div key={p.slug} variants={fadeUp}>
+                    <Link
+                      to={`/work/${p.slug}`}
+                      className="group block overflow-hidden bg-cvc-paper shadow-lg transition-transform duration-300 hover:-translate-y-1"
+                    >
+                      <div className="aspect-4/3 overflow-hidden">
+                        <img
+                          src={p.cover_image_url}
+                          alt={p.title}
+                          loading="lazy"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                      </div>
+                      <div className="p-5">
+                        <h3 className="text-lg font-bold text-cvc-ink">{p.title}</h3>
+                      </div>
+                    </Link>
+                  </motion.div>
+                ))}
+            </motion.div>
+          )}
         </Container>
-
-        {portfolio.length > 0 && (
-          <OrbitProjects
-            items={portfolio
-              .filter((p) => p.cover_image_url)
-              .map((p) => ({
-                key: p.slug,
-                image: p.cover_image_url,
-                label: p.title,
-                onOpen: () => navigate(`/work/${p.slug}`),
-              }))}
-            motion={{ scrollLength: 140, smoothness: 12 }}
-            background="transparent"
-            content={{ leftTitle: "IDEAS", centerText: "THE JOURNEY HAS BEEN COLURFUL", rightTitle: "WORK", textColor: "rgba(22, 24, 26, 0.4)" }}
-            cards={{ radius: 0, background: "var(--color-cvc-paper)" }}
-          />
-        )}
       </section>
 
       <section id="about" className="border-t border-white/10 px-6 py-20">
@@ -247,10 +258,9 @@ export default function Home() {
           <motion.div
             {...revealOnce}
             variants={stagger(0.1)}
-            className="grid items-center gap-10 sm:grid-cols-[minmax(0,240px)_1fr]"
+            className="grid items-center gap-10 sm:grid-cols-2"
           >
-            
-            <div className="max-w-1/2">
+            <div>
               <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
                 From an idea, to a promise, to a platform
               </motion.p>
@@ -275,10 +285,7 @@ export default function Home() {
               </motion.div>
             </div>
 
-            <motion.div
-              variants={fadeUp}
-              className="mx-auto flex w-1/2 items-center justify-center overflow-hidden"
-            >
+            <motion.div variants={fadeUp} className="flex items-center justify-center overflow-hidden">
               <img
                 src="/founder/njoroge.webp"
                 alt="Njoroge, founder of CVC"
@@ -340,7 +347,7 @@ export default function Home() {
         </section>
       )}
 
-      <section id="contact" className="bg-cvc-amber px-6 py-24">
+      <section id="contact" data-scroll-surface="light" className="bg-cvc-amber px-6 py-24">
         <Container>
           <SectionHeading
             title="Stop describing it. Let's build it."
