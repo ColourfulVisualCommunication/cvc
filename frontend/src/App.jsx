@@ -24,6 +24,7 @@ import Login from "./pages/admin/Login.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
 import LeadsAdmin from "./pages/admin/Leads.jsx";
 import QuotesAdmin from "./pages/admin/Quotes.jsx";
+import InvoicesAdmin from "./pages/admin/Invoices.jsx";
 import PortfolioAdmin from "./pages/admin/Portfolio.jsx";
 import PostsAdmin from "./pages/admin/Posts.jsx";
 import TestimonialsAdmin from "./pages/admin/Testimonials.jsx";
@@ -56,6 +57,7 @@ export default function App() {
             <Route index element={<Dashboard />} />
             <Route path="leads" element={<LeadsAdmin />} />
             <Route path="quotes" element={<QuotesAdmin />} />
+            <Route path="invoices" element={<InvoicesAdmin />} />
             <Route path="portfolio" element={<PortfolioAdmin />} />
             <Route path="posts" element={<PostsAdmin />} />
             <Route path="testimonials" element={<TestimonialsAdmin />} />
