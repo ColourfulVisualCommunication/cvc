@@ -111,9 +111,9 @@ def pay_quote_deposit(token):
     quote = _load_quote_by_token(token)
     if quote is None:
         return jsonify(error="not_found", message="This quote link isn't valid"), 404
-    if quote.status != "accepted" or quote.invoice is None:
+    if quote.status != "accepted" or quote.deposit_invoice is None:
         return jsonify(error="bad_request", message="This quote doesn't have a deposit ready to pay"), 400
-    if quote.invoice.status == "paid":
+    if quote.deposit_invoice.status == "paid":
         return jsonify(error="bad_request", message="This deposit has already been paid"), 400
 
     data = request.get_json(silent=True) or {}
@@ -121,7 +121,7 @@ def pay_quote_deposit(token):
     if not phone_number:
         return jsonify(error="bad_request", message="phone_number is required"), 400
 
-    payment, error = invoice_service.initiate_payment(quote.invoice, phone_number)
+    payment, error = invoice_service.initiate_payment(quote.deposit_invoice, phone_number)
     if error:
         return jsonify(error="mpesa_error", message=error), 400
     return jsonify(payment.to_public_dict()), 202
@@ -132,11 +132,11 @@ def quote_payment_status(token):
     quote = _load_quote_by_token(token)
     if quote is None:
         return jsonify(error="not_found", message="This quote link isn't valid"), 404
-    if quote.invoice is None or not quote.invoice.payments:
+    if quote.deposit_invoice is None or not quote.deposit_invoice.payments:
         return jsonify(error="not_found", message="No payment attempt yet"), 404
 
-    latest = quote.invoice.payments[0]  # ordered by created_at desc
-    return jsonify(payment=latest.to_public_dict(), invoice=quote.invoice.to_public_dict())
+    latest = quote.deposit_invoice.payments[0]  # ordered by created_at desc
+    return jsonify(payment=latest.to_public_dict(), invoice=quote.deposit_invoice.to_public_dict())
 
 
 @api_v1.get("/quotes/<token>/receipt.pdf")
@@ -144,11 +144,11 @@ def quote_receipt_pdf(token):
     quote = _load_quote_by_token(token)
     if quote is None:
         return jsonify(error="not_found", message="This quote link isn't valid"), 404
-    if quote.invoice is None or quote.invoice.status != "paid":
+    if quote.deposit_invoice is None or quote.deposit_invoice.status != "paid":
         return jsonify(error="bad_request", message="No paid invoice to receipt yet"), 400
 
-    payment = next((p for p in quote.invoice.payments if p.status == "success"), None)
-    pdf_bytes = pdf_service.receipt_pdf_bytes(quote.invoice, payment)
+    payment = next((p for p in quote.deposit_invoice.payments if p.status == "success"), None)
+    pdf_bytes = pdf_service.receipt_pdf_bytes(quote.deposit_invoice, payment)
     return send_file(
-        io.BytesIO(pdf_bytes), mimetype="application/pdf", download_name=f"{quote.invoice.number}-receipt.pdf"
+        io.BytesIO(pdf_bytes), mimetype="application/pdf", download_name=f"{quote.deposit_invoice.number}-receipt.pdf"
     )

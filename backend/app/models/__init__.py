@@ -12,6 +12,7 @@ from .lead import Lead  # noqa: F401
 from .media import Media  # noqa: F401
 from .portfolio_project import PortfolioProject  # noqa: F401
 from .post import Post  # noqa: F401
+from .project import Project, Deliverable, Approval  # noqa: F401
 from .quote import Quote, QuoteItem  # noqa: F401
 from .service import Service  # noqa: F401
 from .testimonial import Testimonial  # noqa: F401
@@ -25,6 +26,9 @@ __all__ = [
     "Media",
     "PortfolioProject",
     "Post",
+    "Project",
+    "Deliverable",
+    "Approval",
     "Quote",
     "QuoteItem",
     "Service",

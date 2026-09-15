@@ -5,6 +5,12 @@ from ..extensions import db
 # (an admin killing a stale invoice is a later-phase concern).
 INVOICE_STATUSES = ("pending", "paid")
 
+# deposit: created the moment a quote is accepted, gets the project started.
+# balance: created the moment the client approves the final deliverables
+# (Phase 6) — whatever's left of quote.total_cents after the deposit (and
+# any other payments) is covered. A quote can have at most one of each.
+INVOICE_KINDS = ("deposit", "balance")
+
 # pending: STK push sent, waiting on the callback (or a manual payment not
 # yet applicable). success/failed/cancelled: resolved, either by the Daraja
 # callback or an admin's "check status" reconciliation. There's no separate
@@ -23,9 +29,11 @@ class Invoice(db.Model):
     __tablename__ = "invoices"
 
     id = db.Column(db.Integer, primary_key=True)
-    quote_id = db.Column(db.Integer, db.ForeignKey("quotes.id"), unique=True, nullable=False)
+    quote_id = db.Column(db.Integer, db.ForeignKey("quotes.id"), nullable=False)
+    kind = db.Column(db.String(10), default="deposit", nullable=False)
 
-    # A locked snapshot of quote.deposit_cents at creation time, rounded to
+    # A locked snapshot of quote.deposit_cents (or, for a balance invoice,
+    # of the remaining amount) at creation time, rounded to
     # the nearest whole shilling (M-Pesa's Amount field can't take a
     # fraction of a shilling) — not a live computed property, because an
     # admin editing quote line items after acceptance must never silently
@@ -52,6 +60,7 @@ class Invoice(db.Model):
             "id": self.id,
             "number": self.number,
             "quote_id": self.quote_id,
+            "kind": self.kind,
             # Denormalized for the admin list view, read live via the
             # relationship (not stored) — avoids an N+1 quote lookup per row.
             "quote_title": self.quote.title if self.quote else None,
@@ -72,13 +81,14 @@ class Invoice(db.Model):
         return {
             "id": self.id,
             "number": self.number,
+            "kind": self.kind,
             "amount_cents": self.amount_cents,
             "status": self.status,
             "paid_at": self.paid_at.isoformat() if self.paid_at else None,
         }
 
     def __repr__(self):
-        return f"<Invoice {self.number}>"
+        return f"<Invoice {self.number} ({self.kind})>"
 
 
 class Payment(db.Model):

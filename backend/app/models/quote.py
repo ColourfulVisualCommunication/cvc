@@ -40,12 +40,30 @@ class Quote(db.Model):
     items = db.relationship(
         "QuoteItem", backref="quote", order_by="QuoteItem.sort_order", cascade="all, delete-orphan"
     )
-    # 1:1 for this phase — see Invoice.quote_id's unique constraint.
-    # cascade="all, delete-orphan": deleting a quote (admin_delete_quote
-    # exists) must not leave an orphaned invoice violating quote_id's
-    # NOT NULL FK — this cascades to the invoice, which itself cascades to
-    # its payments (see Invoice.payments), same pattern as Quote.items.
-    invoice = db.relationship("Invoice", uselist=False, backref="quote", cascade="all, delete-orphan")
+    # A quote can have up to two invoices now (deposit + balance, Phase 6)
+    # — this list is what actually owns the cascade-delete (deleting a
+    # quote must not leave an orphaned invoice violating quote_id's NOT
+    # NULL FK) and what every existing service function's `invoice.quote`
+    # backref relies on. `deposit_invoice`/`balance_invoice` below are
+    # deterministic single-row read accessors for the common case — do NOT
+    # reintroduce a single `uselist=False` "invoice" relationship, that
+    # becomes ambiguous (SQLAlchemy picks one arbitrarily, silently) the
+    # moment a quote has two rows.
+    invoices = db.relationship("Invoice", backref="quote", cascade="all, delete-orphan")
+    deposit_invoice = db.relationship(
+        "Invoice",
+        primaryjoin="and_(Invoice.quote_id==Quote.id, Invoice.kind=='deposit')",
+        uselist=False,
+        viewonly=True,
+    )
+    balance_invoice = db.relationship(
+        "Invoice",
+        primaryjoin="and_(Invoice.quote_id==Quote.id, Invoice.kind=='balance')",
+        uselist=False,
+        viewonly=True,
+    )
+    # 1:1 — see Project.quote_id's unique constraint.
+    project = db.relationship("Project", uselist=False, backref="quote", cascade="all, delete-orphan")
 
     @property
     def total_cents(self):
@@ -79,7 +97,7 @@ class Quote(db.Model):
         if include_items:
             data["items"] = [i.to_dict() for i in self.items]
         if include_invoice:
-            data["invoice"] = self.invoice.to_public_dict() if self.invoice else None
+            data["invoice"] = self.deposit_invoice.to_public_dict() if self.deposit_invoice else None
         return data
 
     def __repr__(self):

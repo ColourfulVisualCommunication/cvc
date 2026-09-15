@@ -124,23 +124,30 @@ def send_quote_reminder(quote, token: str) -> bool:
 
 
 def send_payment_received(invoice, payment) -> bool:
-    """To the client — the deposit landed (the "payment received" email
-    from CLAUDE.md's list of six). Receipt PDF attached; imported here
-    rather than at module scope so a pdf_service import failure can never
-    take down lead/quote emails that don't need it.
+    """To the client — a payment landed (the "payment received" email from
+    CLAUDE.md's list of six — one email, kind-aware copy, not two). Receipt
+    PDF attached; pdf_service imported here rather than at module scope so
+    a pdf_service import failure can never take down lead/quote emails
+    that don't need it.
     """
     from . import pdf_service
 
     quote = invoice.quote
     if not quote.client_email:
         return False
-    html = f"""
-        <p>Hi {quote.client_name},</p>
-        <p>We've received your deposit of KES {payment.amount_cents / 100:,.0f} for
-        <strong>{quote.title}</strong>. Receipt attached — thank you.</p>
-        <p>We'll be in touch shortly to get started.</p>
-        <p>— CVC</p>
-    """
+    if invoice.kind == "balance":
+        body = f"""
+            <p>We've received your final payment of KES {payment.amount_cents / 100:,.0f} for
+            <strong>{quote.title}</strong>. Receipt attached — thank you.</p>
+            <p>Your files are ready to download.</p>
+        """
+    else:
+        body = f"""
+            <p>We've received your deposit of KES {payment.amount_cents / 100:,.0f} for
+            <strong>{quote.title}</strong>. Receipt attached — thank you.</p>
+            <p>We'll be in touch shortly to get started.</p>
+        """
+    html = f"<p>Hi {quote.client_name},</p>{body}<p>— CVC</p>"
     receipt = pdf_service.receipt_pdf_bytes(invoice, payment)
     return _send(
         quote.client_email,
@@ -149,3 +156,54 @@ def send_payment_received(invoice, payment) -> bool:
         html,
         attachments=[(f"{invoice.number}-receipt.pdf", receipt)],
     )
+
+
+def _project_link(token: str) -> str:
+    return f"{current_app.config['FRONTEND_URL'].rstrip('/')}/project/{token}"
+
+
+def send_brief_needed(project, token: str) -> bool:
+    """To the client — the deposit landed, the project exists, we need
+    their brief (the "brief needed" email from CLAUDE.md's list of six)."""
+    quote = project.quote
+    if not quote.client_email:
+        return False
+    html = f"""
+        <p>Hi {quote.client_name},</p>
+        <p>Thanks for the deposit — <strong>{quote.title}</strong> is officially underway.</p>
+        <p>Before we start, tell us a bit more about what you're after, and
+        share any existing files (logo, brand guide, photos) that'll help:</p>
+        <p><a href="{_project_link(token)}">Fill in your brief</a></p>
+        <p>— CVC</p>
+    """
+    return _send(quote.client_email, quote.client_name, f"Tell us about {quote.title}", html)
+
+
+def send_ready_for_approval(project, token: str) -> bool:
+    """To the client — a round of deliverables is up for review (the
+    "ready for your approval" email from CLAUDE.md's list of six)."""
+    quote = project.quote
+    if not quote.client_email:
+        return False
+    html = f"""
+        <p>Hi {quote.client_name},</p>
+        <p>The first look at <strong>{quote.title}</strong> is ready for you to review.</p>
+        <p><a href="{_project_link(token)}">View and respond</a></p>
+        <p>— CVC</p>
+    """
+    return _send(quote.client_email, quote.client_name, f"Ready for your review: {quote.title}", html)
+
+
+def send_files_ready(project, token: str) -> bool:
+    """To the client — the balance cleared, final files unlocked (the
+    "files ready" email from CLAUDE.md's list of six)."""
+    quote = project.quote
+    if not quote.client_email:
+        return False
+    html = f"""
+        <p>Hi {quote.client_name},</p>
+        <p><strong>{quote.title}</strong> is done, and your final files are ready to download.</p>
+        <p><a href="{_project_link(token)}">Download your files</a></p>
+        <p>— CVC</p>
+    """
+    return _send(quote.client_email, quote.client_name, f"Your files are ready: {quote.title}", html)
