@@ -79,3 +79,37 @@ def send_lead_acknowledgement(lead) -> bool:
         <p>— CVC</p>
     """
     return _send(lead.email, lead.name, "We got your project details", html)
+
+
+def _quote_link(token: str) -> str:
+    return f"{current_app.config['FRONTEND_URL'].rstrip('/')}/quote/{token}"
+
+
+def send_quote_notification(quote, token: str) -> bool:
+    """To the client — a quote's ready for them to look at (the "quote
+    sent" email from CLAUDE.md's list of six)."""
+    if not quote.client_email:
+        return False
+    deposit = quote.deposit_cents / 100
+    html = f"""
+        <p>Hi {quote.client_name},</p>
+        <p>Here's your quote for <strong>{quote.title}</strong>:</p>
+        <p><a href="{_quote_link(token)}">View and respond to your quote</a></p>
+        <p>A deposit of KES {deposit:,.0f} ({quote.deposit_percentage}%) gets things started.</p>
+        <p>— CVC</p>
+    """
+    return _send(quote.client_email, quote.client_name, f"Your quote: {quote.title}", html)
+
+
+def send_quote_reminder(quote, token: str) -> bool:
+    """To the client — one nudge if a sent quote hasn't been decided on."""
+    if not quote.client_email:
+        return False
+    html = f"""
+        <p>Hi {quote.client_name},</p>
+        <p>Just a nudge on the quote we sent for <strong>{quote.title}</strong> —
+        it's still open if you'd like to take a look.</p>
+        <p><a href="{_quote_link(token)}">View and respond to your quote</a></p>
+        <p>— CVC</p>
+    """
+    return _send(quote.client_email, quote.client_name, f"Reminder: your quote for {quote.title}", html)
