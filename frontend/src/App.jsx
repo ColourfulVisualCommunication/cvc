@@ -18,10 +18,12 @@ import PortfolioDetail from "./pages/public/PortfolioDetail.jsx";
 import Blog from "./pages/public/Blog.jsx";
 import BlogPost from "./pages/public/BlogPost.jsx";
 import Contact from "./pages/public/Contact.jsx";
+import QuotePage from "./pages/public/QuotePage.jsx";
 
 import Login from "./pages/admin/Login.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
 import LeadsAdmin from "./pages/admin/Leads.jsx";
+import QuotesAdmin from "./pages/admin/Quotes.jsx";
 import PortfolioAdmin from "./pages/admin/Portfolio.jsx";
 import PostsAdmin from "./pages/admin/Posts.jsx";
 import TestimonialsAdmin from "./pages/admin/Testimonials.jsx";
@@ -46,11 +48,14 @@ export default function App() {
           <Route path="/contact" element={<Contact />} />
         </Route>
 
+        <Route path="/quote/:token" element={<QuotePage />} />
+
         <Route path="/admin/login" element={<Login />} />
         <Route element={<ProtectedRoute />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="leads" element={<LeadsAdmin />} />
+            <Route path="quotes" element={<QuotesAdmin />} />
             <Route path="portfolio" element={<PortfolioAdmin />} />
             <Route path="posts" element={<PostsAdmin />} />
             <Route path="testimonials" element={<TestimonialsAdmin />} />

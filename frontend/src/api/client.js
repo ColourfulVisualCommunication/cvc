@@ -99,6 +99,19 @@ export const adminListLeads = () => api.get("/admin/leads");
 export const adminUpdateLead = (id, data) => api.patch(`/admin/leads/${id}`, data);
 export const adminDeleteLead = (id) => api.delete(`/admin/leads/${id}`);
 
+// Quotes
+export const adminListQuotes = () => api.get("/admin/quotes");
+export const adminGetQuote = (id) => api.get(`/admin/quotes/${id}`);
+export const adminCreateQuote = (data) => api.post("/admin/quotes", data);
+export const adminUpdateQuote = (id, data) => api.patch(`/admin/quotes/${id}`, data);
+export const adminDeleteQuote = (id) => api.delete(`/admin/quotes/${id}`);
+export const adminSendQuote = (id) => api.post(`/admin/quotes/${id}/send`);
+export const adminRemindQuote = (id) => api.post(`/admin/quotes/${id}/remind`);
+
+export const getQuote = (token) => api.get(`/quotes/${token}`);
+export const acceptQuote = (token) => api.post(`/quotes/${token}/accept`);
+export const declineQuote = (token) => api.post(`/quotes/${token}/decline`);
+
 // Auth
 export const login = (email, password) => api.post("/auth/login", { email, password });
 export const me = () => api.get("/auth/me");
