@@ -22,6 +22,15 @@ LADDER = [
          summary="A review of an existing brand, digital presence and communication.",
          deliverables=["Written audit", "What is working", "What is not",
                        "Priority-ordered fixes", "Cost to fix each"]),
+    # Moved from tier 1 (Brand identity) — that tier was at 4 cards, one
+    # more than the scroll-timeline panels comfortably fit without
+    # wrapping to a second row. Not a perfect thematic fit for "a place to
+    # start", but it's a small fixed-price add-on like its tier-mates here.
+    dict(slug="motion-identity", name="Motion Identity", tier=0, price_type="fixed",
+         price_cents=35_000 * K, price_max_cents=70_000 * K, duration="Add-on",
+         summary="How the brand behaves when it moves.",
+         deliverables=["Animated logo (3 formats)", "Motion principles",
+                       "5 animated social templates", "Web motion spec"]),
 
     dict(slug="brand-strategy-sprint", name="Brand Strategy Sprint", tier=1, price_type="quoted",
          price_cents=45_000 * K, price_max_cents=90_000 * K, duration="2 weeks",
@@ -39,11 +48,6 @@ LADDER = [
          deliverables=["Logo system & lock-ups", "Palette", "Type system", "Graphic language",
                        "Photography direction", "Full guidelines", "Social system",
                        "Stationery", "Application mock-ups"]),
-    dict(slug="motion-identity", name="Motion Identity", tier=1, price_type="fixed",
-         price_cents=35_000 * K, price_max_cents=70_000 * K, duration="Add-on",
-         summary="How the brand behaves when it moves.",
-         deliverables=["Animated logo (3 formats)", "Motion principles",
-                       "5 animated social templates", "Web motion spec"]),
 
     dict(slug="landing-page", name="Landing Page", tier=2, price_type="fixed",
          price_cents=45_000 * K, duration="2 weeks",
@@ -61,12 +65,6 @@ LADDER = [
          deliverables=["Product catalogue", "Cart", "M-Pesa STK Push", "Card option",
                        "Order management", "Stock", "Receipts", "Admin"]),
 
-    dict(slug="business-operations-tool", name="Business Operations Tool", tier=3,
-         price_type="quoted", price_cents=250_000 * K, price_max_cents=600_000 * K,
-         duration="8 – 16 weeks",
-         summary="The spreadsheet a business has outgrown — wearing its own brand.",
-         deliverables=["Requirements workshop", "Data model", "Custom application",
-                       "User roles", "Reporting", "Training", "Handover documentation"]),
     dict(slug="booking-platform", name="Booking & Scheduling Platform", tier=3,
          price_type="quoted", price_cents=200_000 * K, price_max_cents=450_000 * K,
          duration="8 – 12 weeks",
@@ -95,6 +93,16 @@ LADDER = [
          summary="For a business that has outgrown how it looks and how it works.",
          deliverables=["Audit", "Repositioning", "Identity refresh",
                        "Platform rebuild", "Migration", "Launch"]),
+    # Moved from tier 3 (Applications) — that tier was at 4 cards. Its own
+    # price band and duration (8-16 weeks, the longest in Applications)
+    # already sat closer to Flagship's custom-build territory than to the
+    # shorter platform builds it was grouped with.
+    dict(slug="business-operations-tool", name="Business Operations Tool", tier=4,
+         price_type="quoted", price_cents=250_000 * K, price_max_cents=600_000 * K,
+         duration="8 – 16 weeks",
+         summary="The spreadsheet a business has outgrown — wearing its own brand.",
+         deliverables=["Requirements workshop", "Data model", "Custom application",
+                       "User roles", "Reporting", "Training", "Handover documentation"]),
 
     dict(slug="digital-care", name="Digital Care", tier=5, price_type="fixed",
          price_cents=8_000 * K, price_max_cents=25_000 * K, duration="Monthly", is_retainer=True,
