@@ -10,7 +10,7 @@ from sqlalchemy import update
 from ..extensions import db
 from ..models.invoice import Invoice, Payment
 from ..models.service import utcnow
-from . import email_service, mpesa_service
+from . import email_service, mpesa_service, token_service
 from .mpesa_service import MpesaError
 
 logger = logging.getLogger(__name__)
@@ -28,7 +28,28 @@ def create_for_quote(quote) -> Invoice:
     change an invoice that's already gone out).
     """
     amount_cents = round(quote.deposit_cents / 100) * 100
-    invoice = Invoice(quote_id=quote.id, amount_cents=amount_cents)
+    invoice = Invoice(quote_id=quote.id, kind="deposit", amount_cents=amount_cents)
+    db.session.add(invoice)
+    db.session.commit()
+    return invoice
+
+
+def create_balance_invoice(project):
+    """Called the moment a client approves the final deliverables (Phase
+    6). Whatever's left of quote.total_cents after the deposit (and any
+    other payments) gets its own invoice, reusing the exact same
+    STK-push/manual-payment/idempotency machinery as the deposit. If the
+    deposit (or an over-payment) already covers the total, there's nothing
+    left to invoice — skip creating one rather than asking M-Pesa to
+    process a zero/negative amount.
+    """
+    remaining = project.quote.total_cents - project.paid_cents
+    if remaining <= 0:
+        return None
+    amount_cents = round(remaining / 100) * 100
+    if amount_cents <= 0:
+        return None
+    invoice = Invoice(quote_id=project.quote_id, kind="balance", amount_cents=amount_cents)
     db.session.add(invoice)
     db.session.commit()
     return invoice
@@ -52,11 +73,12 @@ def initiate_payment(invoice: Invoice, phone_number: str) -> tuple[Payment, str 
         return recent_pending, None
 
     try:
+        desc_prefix = "Final balance for" if invoice.kind == "balance" else "Deposit for"
         checkout_request_id, merchant_request_id = mpesa_service.initiate_stk_push(
             phone_number=phone_number,
             amount_cents=invoice.amount_cents,
             account_reference=invoice.number,
-            transaction_desc=f"Deposit for {invoice.quote.title}",
+            transaction_desc=f"{desc_prefix} {invoice.quote.title}",
         )
     except MpesaError as exc:
         payment = Payment(
@@ -169,6 +191,23 @@ def resolve_payment(payment: Payment, result_code, result_desc: str, metadata_it
     invoice.paid_at = utcnow()
     db.session.commit()
 
+    _after_invoice_paid(invoice, payment)
+
+
+def _after_invoice_paid(invoice, payment):
+    """Shared by resolve_payment and record_manual_payment — the one place
+    a newly-paid invoice triggers what comes next, regardless of how it
+    was paid. Lazy import: project_service imports this module (for
+    create_balance_invoice), so a top-level import here would be a cycle.
+    """
+    from . import project_service
+
+    if invoice.kind == "deposit":
+        project_service.create_from_deposit_payment(invoice)
+    elif invoice.kind == "balance":
+        token = token_service.issue("project", invoice.quote.project.id)
+        email_service.send_files_ready(invoice.quote.project, token)
+
     email_service.send_payment_received(invoice, payment)
 
 
@@ -196,6 +235,6 @@ def record_manual_payment(invoice: Invoice, method: str, amount_cents: int, manu
     db.session.commit()
 
     if invoice.status == "paid":
-        email_service.send_payment_received(invoice, payment)
+        _after_invoice_paid(invoice, payment)
 
     return payment
