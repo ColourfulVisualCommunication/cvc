@@ -7,6 +7,7 @@ import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import Breadcrumbs from "../../components/ui/Breadcrumbs.jsx";
 import Seo from "../../components/Seo.jsx";
+import ScrollTimeline from "../../components/ui/ScrollTimeline.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 const TIER_LABELS = {
@@ -17,6 +18,34 @@ const TIER_LABELS = {
   4: "Flagship",
   5: "Retainers",
 };
+
+// Cycled per tier panel — alternating a light and a dark CVC accent keeps
+// consecutive panels visually distinct as they wipe past each other.
+const PANEL_COLORS = [
+  { bg: "var(--color-cvc-ink)", fg: "var(--color-cvc-paper)" },
+  { bg: "var(--color-cvc-cyan)", fg: "var(--color-cvc-ink)" },
+  { bg: "var(--color-cvc-crimson)", fg: "var(--color-cvc-paper)" },
+  { bg: "var(--color-cvc-amber)", fg: "var(--color-cvc-ink)" },
+];
+
+// The scroll-wipe timeline pins each tier into one full-height frame — it
+// only works when a tier's card grid actually fits inside that frame. A
+// 3-column desktop grid does; a single mobile column of 3-4 cards is much
+// taller, so two tiers' content visibly collides mid-wipe. Below this
+// breakpoint, tiers render as plain stacked sections instead (matching
+// how HeroTunnel/the old OrbitProjects also drop their scroll-driven
+// effect on small screens rather than forcing it to not quite fit).
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(true);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    setIsDesktop(mq.matches);
+    const onChange = (e) => setIsDesktop(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return isDesktop;
+}
 
 function formatPrice(s) {
   if (s.price_type === "quoted") {
@@ -30,8 +59,47 @@ function formatPrice(s) {
   return s.price_max_cents ? `${base} – ${(s.price_max_cents / 100).toLocaleString()}` : base;
 }
 
+function TierCards({ items, fg }) {
+  const mutedFg = fg ? { color: fg, opacity: 0.65 } : undefined;
+  return (
+    <motion.div
+      {...(fg ? { initial: "hidden", animate: "visible" } : revealOnce)}
+      variants={stagger(0.08)}
+      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+    >
+      {items.map((s) => (
+        <motion.div key={s.slug} variants={fadeUp}>
+          <Link
+            to={`/services/${s.slug}`}
+            className={`group flex h-full flex-col justify-between border p-5 transition-opacity hover:opacity-80 ${
+              fg ? "" : "border-white/10 hover:border-cvc-paper"
+            }`}
+            style={fg ? { borderColor: `color-mix(in srgb, ${fg} 20%, transparent)`, color: fg } : undefined}
+          >
+            <div>
+              <h3 className="text-lg font-semibold">{s.name}</h3>
+              <p className={`mt-2 text-sm ${fg ? "" : "text-cvc-muted"}`} style={mutedFg}>
+                {s.summary}
+              </p>
+            </div>
+            <div className="mt-6 flex items-center justify-between text-sm">
+              <span className="font-mono">{formatPrice(s)}</span>
+              {s.duration && (
+                <span className={fg ? "" : "text-cvc-muted"} style={mutedFg}>
+                  {s.duration}
+                </span>
+              )}
+            </div>
+          </Link>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+}
+
 export default function Services() {
   const [services, setServices] = useState([]);
+  const isDesktop = useIsDesktop();
 
   useEffect(() => {
     listServices().then((s) => setServices(s.items ?? [])).catch(() => {}).finally(markPrerenderReady);
@@ -41,6 +109,7 @@ export default function Services() {
     (acc[s.tier] ??= []).push(s);
     return acc;
   }, {});
+  const tierEntries = Object.entries(byTier);
 
   return (
     <>
@@ -69,35 +138,41 @@ export default function Services() {
         </Container>
       </section>
 
-      {Object.entries(byTier).map(([tier, items]) => (
-        <section key={tier} className="border-t border-white/10 px-6 py-16">
-          <Container>
-            <motion.h2 {...revealOnce} className="text-sm font-semibold uppercase tracking-wide text-cvc-cyan">
-              {TIER_LABELS[tier] ?? `Tier ${tier}`}
-            </motion.h2>
+      {tierEntries.length > 0 && isDesktop && (
+        <ScrollTimeline
+          totalScrollHeight={`${tierEntries.length * 100}vh`}
+          items={tierEntries.map(([tier, items], i) => {
+            const { bg, fg } = PANEL_COLORS[i % PANEL_COLORS.length];
+            return {
+              bg,
+              fg,
+              header: (
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm" style={{ color: fg, opacity: 0.65 }}>
+                  {TIER_LABELS[tier] ?? `Tier ${tier}`}
+                </p>
+              ),
+              content: <TierCards items={items} fg={fg} />,
+            };
+          })}
+        />
+      )}
 
-            <motion.div {...revealOnce} variants={stagger(0.08)} className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {items.map((s) => (
-                <motion.div key={s.slug} variants={fadeUp}>
-                  <Link
-                    to={`/services/${s.slug}`}
-                    className="group flex h-full flex-col justify-between border border-white/10 p-6 transition-colors hover:border-cvc-paper"
-                  >
-                    <div>
-                      <h3 className="text-lg font-semibold">{s.name}</h3>
-                      <p className="mt-2 text-sm text-cvc-muted">{s.summary}</p>
-                    </div>
-                    <div className="mt-6 flex items-center justify-between text-sm">
-                      <span className="font-mono text-cvc-paper">{formatPrice(s)}</span>
-                      {s.duration && <span className="text-cvc-muted">{s.duration}</span>}
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </motion.div>
-          </Container>
-        </section>
-      ))}
+      {tierEntries.length > 0 && !isDesktop && (
+        <>
+          {tierEntries.map(([tier, items]) => (
+            <section key={tier} className="border-t border-white/10 px-6 py-16">
+              <Container>
+                <motion.h2 {...revealOnce} className="text-sm font-semibold uppercase tracking-wide text-cvc-cyan">
+                  {TIER_LABELS[tier] ?? `Tier ${tier}`}
+                </motion.h2>
+                <div className="mt-6">
+                  <TierCards items={items} />
+                </div>
+              </Container>
+            </section>
+          ))}
+        </>
+      )}
     </>
   );
 }
