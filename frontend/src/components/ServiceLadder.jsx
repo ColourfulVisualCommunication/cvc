@@ -17,17 +17,17 @@ export const TIER_LABELS = {
 };
 
 // Cycled per tier panel — alternating accents keeps consecutive panels
-// visually distinct as they wipe past each other. Starts on cyan (not
-// ink) specifically so tier 0 contrasts with the prepended ink heading
-// panel right before it; with 6 tiers cycling through 4 colors, that also
-// lands the last tier on crimson, which contrasts with the cyan "Work"
-// section immediately after — both boundaries would otherwise wipe
-// between two panels of the *same* color and read as if nothing moved.
+// visually distinct as they wipe past each other. Position matters at
+// both ends: tier 0 (index 0) must not match the prepended ink heading
+// panel right before it, and with 6 tiers cycling through 4 colors,
+// index 5 (the last tier, "Retainers") lands back on index 1's color —
+// ink, deliberately, so the ladder closes on dark before the cyan "Work"
+// section starts (ink contrasts with that cyan; matching it wouldn't).
 const PANEL_COLORS = [
   { bg: "var(--color-cvc-cyan)", fg: "var(--color-cvc-ink)" },
+  { bg: "var(--color-cvc-ink)", fg: "var(--color-cvc-paper)" },
   { bg: "var(--color-cvc-crimson)", fg: "var(--color-cvc-paper)" },
   { bg: "var(--color-cvc-amber)", fg: "var(--color-cvc-ink)" },
-  { bg: "var(--color-cvc-ink)", fg: "var(--color-cvc-paper)" },
 ];
 
 // The scroll-wipe timeline pins each tier into one full-height frame — it
@@ -68,10 +68,17 @@ function TierCards({ items, fg }) {
     <motion.div
       {...(fg ? { initial: "hidden", animate: "visible" } : revealOnce)}
       variants={stagger(0.08)}
-      className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3"
+      // Flexbox, not CSS Grid — a fixed 3-column grid (grid-cols-3) leaves
+      // a visible empty column whenever a tier has fewer than 3 services,
+      // and even auto-fit/minmax grid tracks only center as a whole block,
+      // not per row: a 4th card left over onto its own row still sticks to
+      // column 1 instead of centering under the row above it. flex-wrap +
+      // justify-center centers every row independently, remainder or not,
+      // which is what "centered" actually needs to mean here.
+      className="mx-auto flex max-w-6xl flex-wrap justify-center gap-6"
     >
       {items.map((s) => (
-        <motion.div key={s.slug} variants={fadeUp}>
+        <motion.div key={s.slug} variants={fadeUp} className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[340px]">
           <Link
             to={`/services/${s.slug}`}
             className={`group flex h-full flex-col justify-between border-2 p-7 text-center transition-opacity hover:opacity-80 lg:p-8 ${
@@ -101,6 +108,32 @@ function TierCards({ items, fg }) {
         </motion.div>
       ))}
     </motion.div>
+  );
+}
+
+// Mobile-only compact form — the full TierCards grid (summary, price,
+// duration, CTA per card) stacked one tier after another made for a very
+// long scroll on a single mobile column. This keeps the tier grouping
+// (still its own heading) but collapses each service down to one line:
+// name + link, nothing else. Desktop is unaffected — it still gets the
+// full cards, inside the pinned ScrollTimeline frame.
+function TierLinks({ items }) {
+  return (
+    <motion.ul {...revealOnce} variants={stagger(0.06)} className="mt-6 divide-y divide-white/10">
+      {items.map((s) => (
+        <motion.li key={s.slug} variants={fadeUp}>
+          <Link
+            to={`/services/${s.slug}`}
+            className="group flex items-center justify-between gap-4 py-4 transition-opacity hover:opacity-70"
+          >
+            <span className="text-lg font-bold">{s.name}</span>
+            <span className="inline-flex shrink-0 transition-transform duration-200 group-hover:translate-x-1">
+              <ArrowIcon size={24} />
+            </span>
+          </Link>
+        </motion.li>
+      ))}
+    </motion.ul>
   );
 }
 
@@ -167,14 +200,12 @@ export default function ServiceLadder({ services, headingPanel }) {
         </section>
       )}
       {tierEntries.map(([tier, items]) => (
-        <section key={tier} className="border-t border-white/10 px-6 py-16">
+        <section key={tier} className="border-t border-white/10 px-6 py-10">
           <Container>
             <motion.h2 {...revealOnce} className="text-sm font-semibold uppercase tracking-wide text-cvc-cyan">
               {TIER_LABELS[tier] ?? `Tier ${tier}`}
             </motion.h2>
-            <div className="mt-6">
-              <TierCards items={items} />
-            </div>
+            <TierLinks items={items} />
           </Container>
         </section>
       ))}

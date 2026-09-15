@@ -107,8 +107,20 @@ export default function ScrollTimeline({
             <span
               ref={(el) => (numberRefs.current[i] = el)}
               aria-hidden="true"
-              className="pointer-events-none absolute right-6 top-2 hidden select-none font-black leading-none opacity-10 sm:right-10 sm:block"
-              style={{ fontSize: "min(14vw, 180px)", transformOrigin: "left bottom" }}
+              className="pointer-events-none absolute right-6 top-2 hidden select-none font-black leading-none sm:right-10 sm:block"
+              style={{
+                fontSize: "min(14vw, 180px)",
+                transformOrigin: "left bottom",
+                // A flat low-opacity fg used to wash out to almost nothing
+                // on dark panels: white at 10% opacity over near-black
+                // composites to a grey barely different from the
+                // background it's sitting on. Blending fg into bg instead
+                // (at full opacity) guarantees a fixed, visible step away
+                // from the panel's own color no matter how dark or light
+                // that color is — a muted tint of the panel itself rather
+                // than a translucent overlay that depends on what's under it.
+                color: `color-mix(in srgb, ${item.fg} 30%, ${item.bg})`,
+              }}
             >
               {String(i + 1).padStart(2, "0")}
             </span>
