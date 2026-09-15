@@ -69,11 +69,18 @@ Each phase ends in something deployed and usable. Estimates assume part-time bui
 
 ---
 
-## Phase 5 — Money · ~1.5 weeks
+## Phase 5 — Money · ~1.5 weeks · **shipped**
 
 **Ships:** a client accepts, pays the deposit from their phone, and gets a receipt with no action from Njoroge.
 
-M-Pesa STK Push · callback endpoint with server-side verification · **idempotency** via a unique constraint on the provider reference · `invoice` model and numbering · PDF invoices and receipts · manual payment recording (for cheque and bank transfer — journey 4 needs this) · failed and timed-out payment handling · sandbox test suite.
+- [x] M-Pesa STK Push, triggered from the quote's own signed link — no separate login or token
+- [x] Callback endpoint with server-side verification (`/payments/mpesa/callback`) — the browser never marks anything paid
+- [x] **Idempotency** — an atomic conditional update (not read-then-write) plus a unique constraint on the M-Pesa receipt number; a retried callback is a documented, tested no-op
+- [x] `invoice` model, auto-created the moment a quote is accepted, with a read-time invoice number (`INV-YYYY-NNNN`)
+- [x] PDF invoices and receipts (reportlab), the receipt attached to the "payment received" email
+- [x] Manual payment recording — bank transfer, cheque, cash (admin, `/admin/invoices`)
+- [x] Failed and timed-out payment handling — Daraja's own result codes surfaced (cancelled, timeout, etc.), plus an admin-triggered status-reconciliation query for a stuck pending payment
+- [x] Sandbox test suite — a mocked pytest suite (idempotency, amount-mismatch handling, PDF generation) plus a live pass against Daraja's real sandbox via ngrok: real STK pushes, real callbacks round-tripping in seconds, and a genuine retried-callback no-op confirmed against a live payment row
 
 **Never** mark an order paid because the browser said so. Only the verified callback counts. A retried callback must not create a second payment or send a second receipt.
 
