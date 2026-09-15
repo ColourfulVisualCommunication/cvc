@@ -6,15 +6,15 @@ import { revealOnce } from "../motion/variants.js";
 import Container from "./ui/Container.jsx";
 import LogoShowcaseStack from "./ui/LogoShowcaseStack.jsx";
 
-// The stack's footprint scales directly with `size` (5 cards fanned out
-// at size=140 is ~500px wide) — too wide for a phone screen, so this
-// picks a smaller size below the sm breakpoint rather than overflowing.
+// The stack is a single card's footprint now (logos sit on top of each
+// other, not fanned side by side) — sized to genuinely stand out sitting
+// inline in the middle of the heading, not read as a small decoration.
 function useLogoStackSize() {
-  const [size, setSize] = useState(84);
+  const [size, setSize] = useState(110);
   useEffect(() => {
     const mq = window.matchMedia("(min-width: 640px)");
-    setSize(mq.matches ? 140 : 76);
-    const onChange = (e) => setSize(e.matches ? 140 : 76);
+    setSize(mq.matches ? 160 : 110);
+    const onChange = (e) => setSize(e.matches ? 160 : 110);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
   }, []);
@@ -38,11 +38,10 @@ export default function ClientLogos() {
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-cvc-ink/70 sm:text-sm lg:text-base">
             {logos.length}+ brands that we work with
           </p>
-          <div className="mt-8 flex justify-center sm:mt-10">
+          <h2 className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-3 text-4xl font-bold leading-tight tracking-tight text-cvc-ink sm:mt-8 sm:text-5xl">
+            <span>We thank you</span>
             <LogoShowcaseStack logos={logos} size={stackSize} />
-          </div>
-          <h2 className="mt-8 text-4xl font-bold leading-tight tracking-tight text-cvc-ink sm:mt-10 sm:text-5xl">
-            We thank you for trusting us
+            <span>for trusting us</span>
           </h2>
           <p className="mt-4 text-lg text-cvc-ink/70">The journey has been colourful.</p>
         </motion.div>

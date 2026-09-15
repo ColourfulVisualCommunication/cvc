@@ -1,76 +1,67 @@
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
-import { stagger } from "../../motion/variants.js";
+// A stack of logo cards sitting directly on top of each other — a couple
+// of tilted layers peeking out behind, the front one auto-flipping to the
+// next logo on a timer. Matches the "rotating stack" idiom from a Framer
+// Marketplace component, rebuilt in plain Framer Motion (already a
+// dependency) rather than ported: the original is wired to Framer's own
+// canvas runtime and a fixed image count, whereas this needs to autoplay
+// through however many real client logos the API returns.
+const FLIP_INTERVAL_MS = 2200;
+const PEEK_LAYERS = 2; // how many cards show behind the active one
 
-// A small fanned stack of logo cards, each entering with a staggered
-// spring drop — the visual idiom from a Framer Marketplace component
-// ("Visual Showcase Stack"), rebuilt in plain Framer Motion rather than
-// ported: the original is hard-wired to exactly 5 images and Framer's own
-// canvas runtime (useVariantState, useComponentViewport — none of which
-// exist outside their editor), whereas this needs to work with however
-// many real client logos the API actually returns. Meant to sit inline
-// within a heading (small footprint, like the original's 95x77 default).
-//
-// animate="visible" rather than whileInView: this sits inside an <h2>,
-// nested two motion-component levels deep with absolutely-positioned
-// children — whileInView's own intersection observer never fired there in
-// testing (empirically reproduced: opacity stuck at 0 indefinitely).
-// Animating on mount sidesteps that; since this lives below the fold,
-// visitors never see the "before" state either way.
-const drop = {
-  hidden: { opacity: 0, y: -30 },
-  visible: ({ angle, x, y }) => ({
-    opacity: 1,
-    x,
-    y,
-    rotate: angle,
-    transition: { type: "spring", damping: 15, mass: 0.7, stiffness: 340 },
-  }),
-};
-
-export default function LogoShowcaseStack({ logos, size = 44 }) {
+export default function LogoShowcaseStack({ logos, size = 160 }) {
   const cards = logos.slice(0, 5);
+  const [index, setIndex] = useState(0);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    if (cards.length <= 1 || reduceMotion) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % cards.length), FLIP_INTERVAL_MS);
+    return () => clearInterval(id);
+  }, [cards.length, reduceMotion]);
+
   if (cards.length === 0) return null;
 
-  const rotationSpread = 10; // degrees between adjacent cards' tilt
-  const xSpread = size * 0.62; // horizontal distance between adjacent card centers
-  const mid = (cards.length - 1) / 2;
+  const active = cards[index];
 
   return (
-    <motion.span
-      initial="hidden"
-      animate="visible"
-      variants={stagger(0, 0.12)}
-      className="relative inline-flex shrink-0 align-middle"
-      style={{ width: size + xSpread * (cards.length - 1) + 12, height: size * 1.3 }}
-    >
+    <div className="relative" style={{ width: size, height: size * 0.8, perspective: 800 }}>
       {cards.map((logo, i) => {
-        const offset = i - mid;
+        const depth = (i - index + cards.length) % cards.length;
+        if (depth === 0 || depth > PEEK_LAYERS) return null;
         return (
-          <motion.span
+          <div
             key={logo.id}
-            custom={{ angle: offset * rotationSpread, x: offset * xSpread, y: Math.abs(offset) * (size * 0.08) }}
-            variants={drop}
+            aria-hidden="true"
+            className="absolute inset-0 rounded-lg border border-black/10 bg-white shadow-md"
             style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              width: size,
-              height: size * 0.82,
-              marginLeft: -size / 2,
-              marginTop: (-size * 0.82) / 2,
-              zIndex: i,
+              transform: `translate(${depth * 8}px, ${depth * 8}px) rotate(${depth * 5}deg)`,
+              zIndex: PEEK_LAYERS - depth,
             }}
-            className="flex items-center justify-center overflow-hidden rounded-md border border-black/10 bg-white p-1.5 shadow-md transition-transform duration-200 hover:z-10 hover:scale-110"
-          >
-            <img
-              src={logo.logo_url}
-              alt={logo.name}
-              className="h-full w-full object-contain grayscale transition-all duration-200 [@media(hover:hover)]:hover:grayscale-0"
-            />
-          </motion.span>
+          />
         );
       })}
-    </motion.span>
+
+      <AnimatePresence mode="popLayout" initial={false}>
+        <motion.div
+          key={active.id}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, rotateY: -100 }}
+          animate={{ opacity: 1, rotateY: 0 }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, rotateY: 100 }}
+          transition={{ duration: 0.55, ease: "easeInOut" }}
+          style={{ zIndex: PEEK_LAYERS + 1, transformStyle: "preserve-3d" }}
+          className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-lg border border-black/10 bg-white p-4 shadow-lg"
+        >
+          <img
+            src={active.logo_url}
+            alt={active.name}
+            loading="lazy"
+            className="h-full w-full object-contain grayscale transition-all duration-200 [@media(hover:hover)]:hover:grayscale-0"
+          />
+        </motion.div>
+      </AnimatePresence>
+    </div>
   );
 }
