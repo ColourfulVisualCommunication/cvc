@@ -93,6 +93,12 @@ export const adminDeleteClientLogo = (id) => api.delete(`/admin/client-logos/${i
 export const uploadMedia = (file) => api.upload("/admin/media", file);
 export const uploadLogo = (file) => api.upload("/admin/media", file, "svg,png");
 
+// Leads
+export const submitLead = (data) => api.post("/leads", data);
+export const adminListLeads = () => api.get("/admin/leads");
+export const adminUpdateLead = (id, data) => api.patch(`/admin/leads/${id}`, data);
+export const adminDeleteLead = (id) => api.delete(`/admin/leads/${id}`);
+
 // Auth
 export const login = (email, password) => api.post("/auth/login", { email, password });
 export const me = () => api.get("/auth/me");

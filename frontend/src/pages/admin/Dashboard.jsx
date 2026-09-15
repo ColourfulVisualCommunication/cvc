@@ -1,22 +1,39 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Briefcase, FileText, Quote, Building2, Plus } from "lucide-react";
+import { Inbox, Briefcase, FileText, Quote, Building2, Plus } from "lucide-react";
 
 import {
+  adminListLeads,
   adminListPortfolio,
   adminListPosts,
   adminListTestimonials,
   adminListClientLogos,
 } from "../../api/client.js";
 
+// `highlight` picks out which items count toward the second, smaller
+// number shown under the total — "published" for content, "new" (i.e.
+// not yet followed up) for leads, since those aren't the same kind of
+// state at all.
 const SECTIONS = [
+  {
+    key: "leads",
+    label: "Leads",
+    icon: Inbox,
+    fetch: adminListLeads,
+    newHref: "/admin/leads",
+    color: "bg-cvc-amber/15 text-cvc-amber",
+    highlight: (item) => item.status === "new",
+    highlightLabel: "new",
+  },
   {
     key: "portfolio",
     label: "Portfolio",
     icon: Briefcase,
     fetch: adminListPortfolio,
     newHref: "/admin/portfolio",
-    color: "bg-cvc-amber/15 text-cvc-amber",
+    color: "bg-cvc-cyan/15 text-cvc-cyan",
+    highlight: (item) => item.published,
+    highlightLabel: "published",
   },
   {
     key: "posts",
@@ -24,7 +41,9 @@ const SECTIONS = [
     icon: FileText,
     fetch: adminListPosts,
     newHref: "/admin/posts",
-    color: "bg-cvc-cyan/15 text-cvc-cyan",
+    color: "bg-cvc-crimson/15 text-cvc-crimson",
+    highlight: (item) => item.published,
+    highlightLabel: "published",
   },
   {
     key: "testimonials",
@@ -32,7 +51,9 @@ const SECTIONS = [
     icon: Quote,
     fetch: adminListTestimonials,
     newHref: "/admin/testimonials",
-    color: "bg-cvc-crimson/15 text-cvc-crimson",
+    color: "bg-cvc-grey/20 text-cvc-grey",
+    highlight: (item) => item.published,
+    highlightLabel: "published",
   },
   {
     key: "clients",
@@ -40,7 +61,9 @@ const SECTIONS = [
     icon: Building2,
     fetch: adminListClientLogos,
     newHref: "/admin/clients",
-    color: "bg-cvc-grey/20 text-cvc-grey",
+    color: "bg-cvc-amber/15 text-cvc-amber",
+    highlight: (item) => item.published,
+    highlightLabel: "published",
   },
 ];
 
@@ -51,13 +74,13 @@ export default function Dashboard() {
     Promise.all(SECTIONS.map((s) => s.fetch()))
       .then((results) => {
         setCounts(
-          results.map((r) => ({
+          results.map((r, i) => ({
             total: r.items.length,
-            published: r.items.filter((i) => i.published).length,
+            highlighted: r.items.filter(SECTIONS[i].highlight).length,
           }))
         );
       })
-      .catch(() => setCounts(SECTIONS.map(() => ({ total: 0, published: 0 }))));
+      .catch(() => setCounts(SECTIONS.map(() => ({ total: 0, highlighted: 0 }))));
   }, []);
 
   return (
@@ -87,7 +110,7 @@ export default function Dashboard() {
               <p className="text-sm text-cvc-muted">
                 {s.label}
                 {count && count.total > 0 && (
-                  <> · {count.published} published</>
+                  <> · {count.highlighted} {s.highlightLabel}</>
                 )}
               </p>
             </Link>

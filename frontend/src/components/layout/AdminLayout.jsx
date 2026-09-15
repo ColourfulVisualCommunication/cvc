@@ -3,6 +3,7 @@ import { Helmet } from "react-helmet-async";
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
+  Inbox,
   Briefcase,
   FileText,
   Quote,
@@ -17,6 +18,7 @@ import Logo from "../ui/Logo.jsx";
 
 const LINKS = [
   { to: "/admin", label: "Dashboard", end: true, icon: LayoutDashboard },
+  { to: "/admin/leads", label: "Leads", icon: Inbox },
   { to: "/admin/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/admin/posts", label: "Blog", icon: FileText },
   { to: "/admin/testimonials", label: "Testimonials", icon: Quote },
