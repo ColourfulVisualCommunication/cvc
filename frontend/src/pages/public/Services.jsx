@@ -60,30 +60,30 @@ function formatPrice(s) {
 }
 
 function TierCards({ items, fg }) {
-  const mutedFg = fg ? { color: fg, opacity: 0.65 } : undefined;
+  const mutedFg = fg ? { color: fg, opacity: 0.7 } : undefined;
   return (
     <motion.div
       {...(fg ? { initial: "hidden", animate: "visible" } : revealOnce)}
       variants={stagger(0.08)}
-      className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3"
     >
       {items.map((s) => (
         <motion.div key={s.slug} variants={fadeUp}>
           <Link
             to={`/services/${s.slug}`}
-            className={`group flex h-full flex-col justify-between border p-5 transition-opacity hover:opacity-80 ${
+            className={`group flex h-full flex-col justify-between border-2 p-5 text-center transition-opacity hover:opacity-80 ${
               fg ? "" : "border-white/10 hover:border-cvc-paper"
             }`}
-            style={fg ? { borderColor: `color-mix(in srgb, ${fg} 20%, transparent)`, color: fg } : undefined}
+            style={fg ? { borderColor: `color-mix(in srgb, ${fg} 35%, transparent)`, color: fg } : undefined}
           >
             <div>
-              <h3 className="text-lg font-semibold">{s.name}</h3>
+              <h3 className="text-xl font-extrabold">{s.name}</h3>
               <p className={`mt-2 text-sm ${fg ? "" : "text-cvc-muted"}`} style={mutedFg}>
                 {s.summary}
               </p>
             </div>
-            <div className="mt-6 flex items-center justify-between text-sm">
-              <span className="font-mono">{formatPrice(s)}</span>
+            <div className="mt-6 flex flex-col items-center gap-1 text-sm">
+              <span className="font-mono font-bold">{formatPrice(s)}</span>
               {s.duration && (
                 <span className={fg ? "" : "text-cvc-muted"} style={mutedFg}>
                   {s.duration}
@@ -141,15 +141,21 @@ export default function Services() {
       {tierEntries.length > 0 && isDesktop && (
         <ScrollTimeline
           totalScrollHeight={`${tierEntries.length * 100}vh`}
+          cornerRadius={0}
           items={tierEntries.map(([tier, items], i) => {
             const { bg, fg } = PANEL_COLORS[i % PANEL_COLORS.length];
             return {
               bg,
               fg,
               header: (
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm" style={{ color: fg, opacity: 0.65 }}>
-                  {TIER_LABELS[tier] ?? `Tier ${tier}`}
-                </p>
+                <div className="text-center">
+                  <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm" style={{ color: fg, opacity: 0.65 }}>
+                    {String(i + 1).padStart(2, "0")} / {tierEntries.length}
+                  </p>
+                  <h2 className="mt-2 text-4xl font-extrabold tracking-tight sm:text-5xl">
+                    {TIER_LABELS[tier] ?? `Tier ${tier}`}
+                  </h2>
+                </div>
               ),
               content: <TierCards items={items} fg={fg} />,
             };
