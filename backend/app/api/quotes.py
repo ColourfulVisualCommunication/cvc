@@ -10,7 +10,7 @@ from flask_jwt_extended import jwt_required
 from ..extensions import db
 from ..models import Quote, QuoteItem
 from ..models.quote import QUOTE_STATUSES
-from ..services import email_service, token_service
+from ..services import email_service, invoice_service, token_service
 from . import api_v1
 
 TOKEN_MAX_AGE_DAYS = 180
@@ -186,7 +186,7 @@ def get_quote(token):
             quote.status = "viewed"
         db.session.commit()
 
-    return jsonify(quote.to_dict())
+    return jsonify(quote.to_dict(include_invoice=True))
 
 
 @api_v1.post("/quotes/<token>/accept")
@@ -202,7 +202,12 @@ def accept_quote(token):
     quote.status = "accepted"
     quote.accepted_at = datetime.now(timezone.utc)
     db.session.commit()
-    return jsonify(quote.to_dict())
+
+    # Auto-creates the deposit invoice — no action from Njoroge, per the
+    # Phase 5 build-plan requirement.
+    invoice_service.create_for_quote(quote)
+
+    return jsonify(quote.to_dict(include_invoice=True))
 
 
 @api_v1.post("/quotes/<token>/decline")
