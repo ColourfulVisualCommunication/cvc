@@ -31,9 +31,27 @@ export default function ScrollManager() {
     locationRef.current = location;
     if (navType === "POP") {
       window.scrollTo(0, positions.get(location.key) ?? 0);
-    } else {
-      window.scrollTo(0, 0);
+      return;
     }
+    if (location.hash) {
+      // The target (e.g. #services on the homepage) is often still
+      // rendering — its content loads from the API after mount, so the
+      // element may not exist in the DOM the instant this effect runs.
+      // Poll briefly rather than assume it's already there.
+      const id = location.hash.slice(1);
+      const deadline = Date.now() + 2000;
+      const tryScroll = () => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.scrollIntoView({ block: "start" });
+        } else if (Date.now() < deadline) {
+          requestAnimationFrame(tryScroll);
+        }
+      };
+      tryScroll();
+      return;
+    }
+    window.scrollTo(0, 0);
   }, [location, navType]);
 
   return null;

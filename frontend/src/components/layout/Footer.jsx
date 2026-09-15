@@ -17,7 +17,7 @@ const SOCIALS = [
 
 const SITE_LINKS = [
   { to: "/about", label: "About" },
-  { to: "/services", label: "Services" },
+  { to: "/#services", label: "Services" },
   { to: "/work", label: "Work" },
   { to: "/blog", label: "Blog" },
 ];

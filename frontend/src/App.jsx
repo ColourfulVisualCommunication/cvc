@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import { AuthProvider } from "./admin/AuthContext.jsx";
 import ProtectedRoute from "./admin/ProtectedRoute.jsx";
@@ -11,7 +11,6 @@ import Home from "./pages/public/Home.jsx";
 import About from "./pages/public/About.jsx";
 import OurStory from "./pages/public/OurStory.jsx";
 import Process from "./pages/public/Process.jsx";
-import Services from "./pages/public/Services.jsx";
 import ServiceDetail from "./pages/public/ServiceDetail.jsx";
 import Portfolio from "./pages/public/Portfolio.jsx";
 import PortfolioDetail from "./pages/public/PortfolioDetail.jsx";
@@ -42,7 +41,10 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/about/our-story" element={<OurStory />} />
           <Route path="/process" element={<Process />} />
-          <Route path="/services" element={<Services />} />
+          {/* The ladder overview now lives on the homepage (#services) —
+              redirect rather than 404 for anyone with the old URL bookmarked
+              or indexed. Individual service detail pages are unaffected. */}
+          <Route path="/services" element={<Navigate to="/#services" replace />} />
           <Route path="/services/:slug" element={<ServiceDetail />} />
           <Route path="/work" element={<Portfolio />} />
           <Route path="/work/:slug" element={<PortfolioDetail />} />

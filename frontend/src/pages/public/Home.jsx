@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
-import { Compass, Palette, Globe, LayoutGrid, Rocket, RefreshCw, Sparkles } from "lucide-react";
 
 import { listServices, listPortfolio, listTestimonials, listClientLogos } from "../../api/client.js";
 import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
@@ -15,6 +14,7 @@ import TypewriterEffect from "../../components/ui/TypewriterEffect.jsx";
 import HeroTunnel from "../../components/ui/HeroTunnel.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
+import ServiceLadder from "../../components/ServiceLadder.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 const blink = {
@@ -27,15 +27,21 @@ function testimonialGridClass(count) {
   return "sm:grid-cols-2";
 }
 
-// One icon per service tier (0-5, see backend/seed.py) — derived from real
-// structural data, not decorative guesswork.
-const TIER_ICONS = {
-  0: Compass,
-  1: Palette,
-  2: Globe,
-  3: LayoutGrid,
-  4: Rocket,
-  5: RefreshCw,
+const SERVICES_HEADING_PANEL = {
+  bg: "var(--color-cvc-ink)",
+  fg: "var(--color-cvc-paper)",
+  header: (
+    <div className="text-center">
+      <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] opacity-70 sm:text-sm lg:text-base">
+        What we do
+      </p>
+      <h2 className="mt-3 text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl">A ladder, not a guess.</h2>
+      <p className="mx-auto mt-4 max-w-2xl text-lg opacity-80 sm:text-xl lg:text-2xl">
+        Fixed prices where the scope is clear, quoted work where it isn't — either way, you know the
+        number before we start.
+      </p>
+    </div>
+  ),
 };
 
 export default function Home() {
@@ -57,7 +63,7 @@ export default function Home() {
 
   useEffect(() => {
     Promise.allSettled([
-      listServices().then((s) => setServices((s.items ?? []).slice(0, 6))),
+      listServices().then((s) => setServices(s.items ?? [])),
       listPortfolio().then((p) => setPortfolio(p.items ?? [])),
       listTestimonials().then((t) => setTestimonials(t.items ?? [])),
       listClientLogos().then((c) => setClientLogos(c.items ?? [])),
@@ -131,64 +137,9 @@ export default function Home() {
       </section>
 
       {services.length > 0 && (
-        <section id="services" className="border-t border-white/10 px-6 py-20">
-          <Container>
-            <SectionHeading
-              eyebrow="What we do"
-              title="A ladder, not a guess."
-              subtitle="Fixed prices where the scope is clear, quoted work where it isn't — either way, you know the number before we start."
-            />
-
-            <motion.div
-              {...revealOnce}
-              variants={stagger(0.1)}
-              className="mt-10 grid gap-6 sm:grid-cols-3"
-            >
-              {services.map((s, i) => {
-                const accent = ["bg-cvc-amber", "bg-cvc-cyan", "bg-cvc-crimson"][i % 3];
-                const Icon = TIER_ICONS[s.tier] ?? Sparkles;
-                return (
-                  <motion.div key={s.slug} variants={fadeUp}>
-                    <Link
-                      to={`/services/${s.slug}`}
-                      className={`group block h-full ${accent} p-7 transition-all duration-300 hover:-translate-y-1 hover:bg-cvc-ink hover:shadow-xl`}
-                    >
-                      <div className="flex h-14 w-14 items-center justify-center bg-cvc-ink/10 transition-colors duration-300 group-hover:bg-white/10">
-                        <Icon
-                          size={26}
-                          strokeWidth={2.25}
-                          className="text-cvc-ink transition-all duration-300 group-hover:rotate-6 group-hover:text-white"
-                        />
-                      </div>
-                      <h3 className="mt-6 text-2xl font-bold tracking-tight text-cvc-ink transition-colors duration-300 group-hover:text-white">
-                        {s.name}
-                      </h3>
-                      <p className="mt-2 text-sm text-cvc-ink/70 transition-colors duration-300 group-hover:text-white/70">
-                        {s.summary}
-                      </p>
-                      <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-cvc-ink transition-colors duration-300 group-hover:text-white sm:text-base lg:text-lg">
-                        Learn more
-                        <ArrowIcon size={24} className="transition-transform duration-300 group-hover:translate-x-1" />
-                      </span>
-                    </Link>
-                  </motion.div>
-                );
-              })}
-            </motion.div>
-
-            <motion.div {...revealOnce} className="mt-8">
-              <Link
-                to="/services"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper sm:text-base lg:text-lg"
-              >
-                See the full service ladder
-                <motion.span {...blink} className="inline-flex">
-                  <ArrowIcon size={24} />
-                </motion.span>
-              </Link>
-            </motion.div>
-          </Container>
-        </section>
+        <div id="services">
+          <ServiceLadder services={services} headingPanel={SERVICES_HEADING_PANEL} />
+        </div>
       )}
       </div>
 
@@ -201,7 +152,7 @@ export default function Home() {
         {/* The card grid centers itself with a lot of open gutter on wide
             screens — these fill that empty space rather than leaving it
             bare, without competing with the cards themselves for attention. */}
-        <p className="pointer-events-none absolute left-6 top-6 hidden max-w-56 text-sm leading-relaxed text-cvc-ink/40 lg:block xl:left-10 xl:top-10">
+        <p className="pointer-events-none absolute left-6 top-8 hidden max-w-80 text-sm leading-relaxed text-cvc-ink/40 lg:block xl:left-10 xl:top-10">
           Brand identity, web builds, and everything between — shipped, not just designed.
         </p>
         <p className="pointer-events-none absolute bottom-6 right-6 hidden max-w-56 text-right text-sm leading-relaxed text-cvc-ink/40 lg:block xl:bottom-10 xl:right-10">
@@ -289,6 +240,7 @@ export default function Home() {
               <img
                 src="/founder/njoroge.webp"
                 alt="Njoroge, founder of CVC"
+                loading="lazy"
                 className="h-full w-full object-contain"
               />
             </motion.div>
@@ -328,6 +280,7 @@ export default function Home() {
                       <img
                         src={t.avatar_url}
                         alt={t.client_name}
+                        loading="lazy"
                         className="h-11 w-11 shrink-0 rounded-full object-cover"
                       />
                     ) : (

@@ -34,10 +34,10 @@ export default function ServiceDetail() {
     return (
       <Container className="py-32 text-center">
         <div className="mb-6 flex justify-center">
-          <Breadcrumbs items={[{ label: "Services", to: "/services" }, { label: "Not found" }]} className="mb-0" />
+          <Breadcrumbs items={[{ label: "Services", to: "/#services" }, { label: "Not found" }]} className="mb-0" />
         </div>
         <p className="text-cvc-muted">That service doesn't exist.</p>
-        <Link to="/services" className="mt-4 inline-block text-cvc-paper underline">
+        <Link to="/#services" className="mt-4 inline-block text-cvc-paper underline">
           Back to services
         </Link>
       </Container>
@@ -68,7 +68,7 @@ export default function ServiceDetail() {
 
       <section className="px-6 pb-16 pt-24 sm:pt-32">
         <Container className="max-w-2xl">
-          <Breadcrumbs items={[{ label: "Services", to: "/services" }, { label: service.name }]} />
+          <Breadcrumbs items={[{ label: "Services", to: "/#services" }, { label: service.name }]} />
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible">
             <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
               Service

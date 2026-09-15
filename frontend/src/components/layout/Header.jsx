@@ -12,7 +12,7 @@ import EyeFollowEyes from "../ui/EyeFollowEyes.jsx";
 const LINKS = [
   { to: "/", label: "Home", end: true },
   { to: "/about", label: "About", sectionId: "about" },
-  { to: "/services", label: "Services", sectionId: "services" },
+  { to: "/#services", label: "Services", sectionId: "services", end: true },
   { to: "/work", label: "Work", sectionId: "work" },
   { to: "/blog", label: "Blog" },
   { to: "/contact", label: "Contact", sectionId: "contact" },
