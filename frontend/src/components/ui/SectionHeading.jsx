@@ -19,12 +19,12 @@ export default function SectionHeading({ eyebrow, title, subtitle, center = fals
       {eyebrow && (
         <motion.p
           variants={fadeUp}
-          className={`font-mono text-sm font-semibold uppercase tracking-[0.18em] ${onLight ? "text-cvc-ink/60" : "text-cvc-muted"}`}
+          className={`font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base ${onLight ? "text-cvc-ink/70" : "text-cvc-muted"}`}
         >
           {eyebrow}
         </motion.p>
       )}
-      <h2 className={`mt-3 text-5xl font-bold tracking-tight sm:text-7xl ${onLight ? "text-cvc-ink" : "text-cvc-paper"}`}>
+      <h2 className={`mt-3 text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl ${onLight ? "text-cvc-ink" : "text-cvc-paper"}`}>
         {/* Keyed on the text itself: when a heading's title swaps after its
             first mount (e.g. a loading-state placeholder replaced by real
             data), this forces a full remount instead of React reusing the
@@ -36,7 +36,7 @@ export default function SectionHeading({ eyebrow, title, subtitle, center = fals
         <StaggerText key={title} text={title} />
       </h2>
       {subtitle && (
-        <motion.p variants={fadeUp} className={`mt-4 text-xl ${onLight ? "text-cvc-ink/70" : "text-cvc-paper/80"}`}>
+        <motion.p variants={fadeUp} className={`mt-4 text-lg sm:text-xl lg:text-2xl ${onLight ? "text-cvc-ink/70" : "text-cvc-paper/80"}`}>
           {subtitle}
         </motion.p>
       )}

@@ -28,10 +28,10 @@ export default function Blog() {
         <Container>
           <Breadcrumbs items={[{ label: "Blog" }]} />
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-2xl">
-            <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
+            <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
               Blog
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
               Notes from the studio.
             </motion.h1>
           </motion.div>

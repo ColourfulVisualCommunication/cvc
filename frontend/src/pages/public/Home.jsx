@@ -64,7 +64,7 @@ export default function Home() {
 
         <Container className="relative">
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-4xl">
-            <motion.p variants={fadeUp} className="font-mono text-sm font-semibold uppercase tracking-[0.18em] text-cvc-muted">
+            <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
               Colourful Visual Communication <span className="text-cvc-amber">.</span><span className="text-cvc-crimson">.</span><span className="text-cvc-cyan">.Online!</span>
             </motion.p>
             <motion.h1 variants={fadeUp} className="mt-8 text-6xl font-bold leading-[1.1] tracking-tight sm:text-8xl">
@@ -76,11 +76,13 @@ export default function Home() {
                   own responsive font size — phrases range from "Build
                   it..." to "Put it into the world!", so without this the
                   line wrapping differently per phrase reflows and pushes
-                  the subtitle/CTA below up and down as it cycles. Phone
-                  widths need up to 3 lines for the longest phrase; from
-                  sm+ the container is wide enough that every phrase fits
-                  on one line. */}
-              <span className="block min-h-[3.3em] sm:min-h-[1.1em]">
+                  the subtitle/CTA below up and down as it cycles. The h1
+                  sits in a max-w-4xl column regardless of viewport, so
+                  the longest phrase still wraps to 2 lines even at the
+                  largest desktop font size — verified empirically, not
+                  assumed, after an earlier version wrongly reserved only
+                  1 line from sm+ and still reflowed on wide screens. */}
+              <span className="block min-h-[3.3em] sm:min-h-[2.2em]">
                 <TypewriterEffect
                   prefix=""
                   phrases={[
@@ -102,7 +104,7 @@ export default function Home() {
             </motion.p>
             <motion.div variants={fadeUp} className="mt-12 flex flex-wrap items-center gap-4">
               <WhatsAppCTA />
-              <Link to="/work" className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper">
+              <Link to="/work" className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper sm:text-base lg:text-lg">
                 See our work
                 <motion.span {...blink} className="inline-flex">
                   <ArrowIcon size={32} />
@@ -151,7 +153,7 @@ export default function Home() {
                       <p className="mt-2 text-sm text-cvc-ink/70 transition-colors duration-300 group-hover:text-white/70">
                         {s.summary}
                       </p>
-                      <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-cvc-ink transition-colors duration-300 group-hover:text-white">
+                      <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-cvc-ink transition-colors duration-300 group-hover:text-white sm:text-base lg:text-lg">
                         Learn more
                         <ArrowIcon size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
                       </span>
@@ -164,7 +166,7 @@ export default function Home() {
             <motion.div {...revealOnce} className="mt-8">
               <Link
                 to="/services"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper sm:text-base lg:text-lg"
               >
                 See the full service ladder
                 <motion.span {...blink} className="inline-flex">
@@ -216,7 +218,7 @@ export default function Home() {
           >
             
             <div className="max-w-2xl">
-              <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
+              <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
                 From an idea, to a promise, to a platform
               </motion.p>
               <motion.h2 variants={fadeUp} className="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
@@ -230,7 +232,7 @@ export default function Home() {
               <motion.div variants={fadeUp} className="mt-6">
                 <Link
                   to="/about/our-story"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper sm:text-base lg:text-lg"
                 >
                   Read the full story
                   <motion.span {...blink} className="inline-flex">

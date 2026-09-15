@@ -27,10 +27,10 @@ export default function About() {
         <Container>
           <Breadcrumbs items={[{ label: "About" }]} />
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible" className="max-w-2xl">
-            <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
+            <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
               About
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
               One person, two disciplines most agencies split in two.
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-6 text-xl text-cvc-paper/80">
@@ -42,7 +42,7 @@ export default function About() {
             <motion.div variants={fadeUp} className="mt-6">
               <Link
                 to="/about/our-story"
-                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper sm:text-base lg:text-lg"
               >
                 Read the full story
                 <ArrowIcon size={16} />
