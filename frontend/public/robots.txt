@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /quote/
+Disallow: /project/
 
 Sitemap: https://colourfulvisualcommunication.com/sitemap.xml
