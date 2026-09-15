@@ -35,9 +35,9 @@ export default function LogoShowcaseStack({ logos, size = 160 }) {
           <div
             key={logo.id}
             aria-hidden="true"
-            className="absolute inset-0 rounded-lg border border-black/10 bg-white shadow-md"
+            className="absolute inset-0 border-2 border-cvc-ink/10 bg-white shadow-xl"
             style={{
-              transform: `translate(${depth * 8}px, ${depth * 8}px) rotate(${depth * 5}deg)`,
+              transform: `translate(${depth * 16}px, ${depth * 16}px) rotate(${depth * 7}deg) scale(${1 - depth * 0.05})`,
               zIndex: PEEK_LAYERS - depth,
             }}
           />
@@ -52,7 +52,7 @@ export default function LogoShowcaseStack({ logos, size = 160 }) {
           exit={reduceMotion ? { opacity: 0 } : { opacity: 0, rotateY: 100 }}
           transition={{ duration: 0.55, ease: "easeInOut" }}
           style={{ zIndex: PEEK_LAYERS + 1, transformStyle: "preserve-3d" }}
-          className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-lg border border-black/10 bg-white p-4 shadow-lg"
+          className="absolute inset-0 flex items-center justify-center overflow-hidden border-2 border-black/10 bg-white p-5 shadow-lg"
         >
           <img
             src={active.logo_url}
