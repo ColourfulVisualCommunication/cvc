@@ -112,6 +112,37 @@ export const getQuote = (token) => api.get(`/quotes/${token}`);
 export const acceptQuote = (token) => api.post(`/quotes/${token}/accept`);
 export const declineQuote = (token) => api.post(`/quotes/${token}/decline`);
 
+// Invoices & payments (Phase 5)
+export const adminListInvoices = () => api.get("/admin/invoices");
+export const adminGetInvoice = (id) => api.get(`/admin/invoices/${id}`);
+export const adminRecordPayment = (id, data) => api.post(`/admin/invoices/${id}/payments`, data);
+export const adminCheckPaymentStatus = (id) => api.post(`/admin/invoices/${id}/check-status`);
+
+// PDF endpoints return a file, not JSON — bypass the shared `request()`
+// wrapper (which always calls response.json()) and trigger a browser save
+// via a Blob URL. The admin one needs the bearer token attached by hand
+// since it's a plain fetch, not routed through `request()`.
+async function downloadFile(url, filename, headers = {}) {
+  const response = await fetch(url, { headers });
+  if (!response.ok) throw new ApiError("Could not download the file", response.status);
+  const blob = await response.blob();
+  const blobUrl = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(blobUrl);
+}
+
+export const adminDownloadInvoicePdf = (id, filename) => {
+  const token = getToken();
+  return downloadFile(`${BASE}/admin/invoices/${id}/pdf`, filename, token ? { Authorization: `Bearer ${token}` } : {});
+};
+
+export const payQuoteDeposit = (token, phoneNumber) => api.post(`/quotes/${token}/pay`, { phone_number: phoneNumber });
+export const getQuotePaymentStatus = (token) => api.get(`/quotes/${token}/payment-status`);
+export const downloadQuoteReceipt = (token, filename) => downloadFile(`${BASE}/quotes/${token}/receipt.pdf`, filename);
+
 // Auth
 export const login = (email, password) => api.post("/auth/login", { email, password });
 export const me = () => api.get("/auth/me");
