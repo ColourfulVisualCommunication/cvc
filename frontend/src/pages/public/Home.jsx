@@ -148,7 +148,7 @@ export default function Home() {
         className="fixed right-6 top-1/2 hidden -translate-y-1/2 sm:right-10 sm:flex"
       />
 
-      <section id="work" data-scroll-surface="light" className="relative overflow-hidden bg-cvc-cyan px-6 py-20">
+      <section id="work" data-scroll-surface="light" className="relative overflow-hidden bg-cvc-cyan px-6 pb-20 pt-28">
         {/* The card grid centers itself with a lot of open gutter on wide
             screens — these fill that empty space rather than leaving it
             bare, without competing with the cards themselves for attention. */}

@@ -15,7 +15,17 @@ import { useEffect, useRef } from "react";
 // state) for a smooth 60fps wipe — the same imperative-style-on-scroll
 // technique already used elsewhere in this codebase for scroll-linked
 // effects (see HeroTunnel), not a departure from convention.
-export default function ScrollTimeline({ items, totalScrollHeight, frameInset = 24, cornerRadius = 24 }) {
+export default function ScrollTimeline({
+  items,
+  totalScrollHeight,
+  frameInset = 24,
+  // The sticky frame's own `top` — separate from `frameInset` (which also
+  // sets the side margins and factors into the height calc) because this
+  // needs to clear whatever fixed/sticky chrome sits above the page (the
+  // site header), while the sides and bottom stay at the tighter default.
+  topOffset = frameInset,
+  cornerRadius = 24,
+}) {
   const wrapRef = useRef(null);
   const panelRefs = useRef([]);
   const numberRefs = useRef([]);
@@ -74,8 +84,8 @@ export default function ScrollTimeline({ items, totalScrollHeight, frameInset = 
       <div
         style={{
           position: "sticky",
-          top: frameInset,
-          height: `calc(100svh - ${frameInset * 2}px)`,
+          top: topOffset,
+          height: `calc(100svh - ${topOffset}px - ${frameInset}px)`,
           margin: `0 ${frameInset}px`,
           borderRadius: cornerRadius,
           overflow: "hidden",
@@ -92,7 +102,7 @@ export default function ScrollTimeline({ items, totalScrollHeight, frameInset = 
               background: item.bg,
               color: item.fg,
             }}
-            className="flex flex-col overflow-y-auto p-6 sm:p-10 lg:p-14"
+            className="flex flex-col justify-center overflow-y-auto p-6 sm:p-10 lg:p-14"
           >
             <span
               ref={(el) => (numberRefs.current[i] = el)}
