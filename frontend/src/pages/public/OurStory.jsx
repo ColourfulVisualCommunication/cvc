@@ -129,10 +129,10 @@ export default function OurStory() {
         <Container className="max-w-2xl">
           <Breadcrumbs items={[{ label: "About", to: "/about" }, { label: "Our Story" }]} />
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible">
-            <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-muted">
+            <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
               Our Story
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl">
+            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
               Colourful Visual Communication didn&rsquo;t start in a boardroom. It started in traffic.
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-6 text-xl text-cvc-paper/80">

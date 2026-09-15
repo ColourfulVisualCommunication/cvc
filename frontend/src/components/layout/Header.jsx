@@ -21,8 +21,8 @@ const LINKS = [
 const SECTION_IDS = LINKS.map((l) => l.sectionId).filter(Boolean);
 
 const linkClass = ({ isActive }) =>
-  `text-sm font-medium transition-colors ${
-    isActive ? "text-cvc-ink" : "text-cvc-ink/60 hover:text-cvc-ink"
+  `text-sm font-medium transition-colors lg:text-base ${
+    isActive ? "text-cvc-ink" : "text-cvc-ink/70 hover:text-cvc-ink"
   }`;
 
 function useHomeActiveSection(onHome) {
@@ -92,7 +92,7 @@ export default function Header() {
             href="https://wa.me/254769604255"
             target="_blank"
             rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-cvc-amber px-4 py-2 text-sm font-semibold text-cvc-ink transition-transform hover:scale-105"
+            className="inline-flex items-center gap-2 bg-cvc-amber px-4 py-2 text-sm font-semibold text-cvc-ink transition-transform hover:scale-105 lg:px-5 lg:py-2.5 lg:text-base"
           >
             <EyeFollowEyes size={13} pupilSize={5} gap={4} />
             Start a project
@@ -127,7 +127,7 @@ export default function Header() {
                   onClick={() => setOpen(false)}
                   className={({ isActive }) =>
                     `px-3 py-2.5 text-base font-medium ${
-                      isActiveLink(l, isActive) ? "bg-black/5 text-cvc-ink" : "text-cvc-ink/60"
+                      isActiveLink(l, isActive) ? "bg-black/5 text-cvc-ink" : "text-cvc-ink/70"
                     }`
                   }
                 >

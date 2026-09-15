@@ -12,13 +12,18 @@ import * as THREE from "three";
 // not rendering the tunnel, rather than breaking the build.
 //
 // Kept deliberately light after an earlier version visibly froze scroll
-// on real devices: the original ported logic created a brand-new
-// THREE.Texture (a real GPU upload) for every single slab instance even
-// when several slabs reused the same source image, across a dense 14-
-// segment tunnel — tens of redundant GPU textures uploaded synchronously
-// on mount. This version shares one texture per URL, uses far fewer
-// segments/slabs, and skips entirely on small screens and for
-// prefers-reduced-motion, since it's a decorative flourish, not content.
+// on real devices — confirmed via Chrome's own "Page Unresponsive" dialog
+// on a normal desktop-width load, not a mobile device. The original ported
+// logic created a brand-new THREE.Texture (a real GPU upload) for every
+// single slab instance even when several slabs reused the same source
+// image, across a dense 14-segment tunnel — tens of redundant GPU
+// textures uploaded synchronously on mount, then rendered every animation
+// frame forever at up to 2x pixel density with antialiasing on. This
+// version shares one texture per URL, uses far fewer segments/slabs, caps
+// pixel ratio, drops antialiasing, and skips re-rendering once the camera
+// has settled — the actual fix, and it applies at every screen size.
+// Only `prefers-reduced-motion` skips it outright, since that's a real
+// accessibility signal independent of the performance bug.
 export default function HeroTunnel({ images = [], className = "" }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
@@ -32,7 +37,7 @@ export default function HeroTunnel({ images = [], className = "" }) {
 
   useEffect(() => {
     const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-    setEnabled(!reduceMotion && window.innerWidth >= 768);
+    setEnabled(!reduceMotion);
   }, []);
 
   // Build-time prerendering runs in a headless, GPU-less Chromium — a real

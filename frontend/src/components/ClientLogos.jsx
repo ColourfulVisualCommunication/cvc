@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 import { listClientLogos } from "../api/client.js";
-import { fadeUp, stagger, revealOnce } from "../motion/variants.js";
 import Container from "./ui/Container.jsx";
+import SectionHeading from "./ui/SectionHeading.jsx";
 
 // Repeat the real logos enough times that the base set alone is wider than
 // any realistic viewport — with only a handful of real logos, [...logos,
@@ -32,14 +32,7 @@ export default function ClientLogos() {
   return (
     <section className="overflow-hidden border-t border-black/10 bg-cvc-paper py-20">
       <Container>
-        <motion.div {...revealOnce} variants={stagger(0.08)} className="text-center">
-          <motion.p variants={fadeUp} className="font-mono text-xs uppercase tracking-[0.18em] text-cvc-ink/60">
-            Who we've worked with
-          </motion.p>
-          <motion.h2 variants={fadeUp} className="mx-auto mt-3 text-3xl font-bold tracking-tight text-cvc-ink sm:text-4xl">
-            In good company.
-          </motion.h2>
-        </motion.div>
+        <SectionHeading eyebrow="Who we've worked with" title="In good company." center onLight />
       </Container>
 
       {/* No edge fade — the logos should read clearly all the way to the

@@ -63,7 +63,7 @@ export default function BlogPost() {
         <Container className="max-w-2xl">
           <Breadcrumbs items={[{ label: "Blog", to: "/blog" }, { label: post.title }]} />
           <motion.div variants={stagger(0, 0.1)} initial="hidden" animate="visible">
-            <motion.h1 variants={fadeUp} className="text-5xl font-bold tracking-tight sm:text-6xl">
+            <motion.h1 variants={fadeUp} className="text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
               {post.title}
             </motion.h1>
             {post.published_at && (
