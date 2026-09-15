@@ -122,7 +122,7 @@ export default function Home() {
               <Link to="/work" className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper sm:text-base lg:text-lg">
                 See our work
                 <motion.span {...blink} className="inline-flex">
-                  <ArrowIcon size={36} />
+                  <ArrowIcon size={24} />
                 </motion.span>
               </Link>
             </motion.div>
@@ -168,7 +168,7 @@ export default function Home() {
                       </p>
                       <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-cvc-ink transition-colors duration-300 group-hover:text-white sm:text-base lg:text-lg">
                         Learn more
-                        <ArrowIcon size={36} className="transition-transform duration-300 group-hover:translate-x-1" />
+                        <ArrowIcon size={24} className="transition-transform duration-300 group-hover:translate-x-1" />
                       </span>
                     </Link>
                   </motion.div>
@@ -183,7 +183,7 @@ export default function Home() {
               >
                 See the full service ladder
                 <motion.span {...blink} className="inline-flex">
-                  <ArrowIcon size={36} />
+                  <ArrowIcon size={24} />
                 </motion.span>
               </Link>
             </motion.div>
@@ -210,11 +210,11 @@ export default function Home() {
 
         <Container>
           <SectionHeading
-            eyebrow="Work"
-            title={portfolio.length > 0 ? "Proof, not promises." : "Something's brewing."}
+            eyebrow="Work? No, we craft!"
+            title={portfolio.length > 0 ? "From an idea, to an experience" : "Something's brewing."}
             subtitle={
               portfolio.length > 0
-                ? "A look at what's actually shipped — real problems, real solutions."
+                ? "Defined, designed, built and shipped to the world — Watch how we turn ideas to reality."
                 : "Case studies are being written up. Ask on WhatsApp and we'll share examples of recent brand and web work directly."
             }
             onLight
@@ -279,7 +279,7 @@ export default function Home() {
                 >
                   Read the full story
                   <motion.span {...blink} className="inline-flex">
-                    <ArrowIcon size={36} />
+                    <ArrowIcon size={24} />
                   </motion.span>
                 </Link>
               </motion.div>
@@ -361,7 +361,7 @@ export default function Home() {
               className="inline-flex items-center gap-3 bg-cvc-ink px-6 py-3 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105 sm:text-base lg:text-lg"
             >
               Let&rsquo;s talk
-              <ArrowIcon size={36} />
+              <ArrowIcon size={24} />
             </Link>
           </div>
         </Container>

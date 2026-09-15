@@ -53,7 +53,7 @@ export default function ScrollToTop() {
             onLight ? "bg-cvc-ink text-cvc-amber" : "bg-cvc-amber text-cvc-ink"
           }`}
         >
-          <ArrowIcon size={20} className="-rotate-90" />
+          <ArrowIcon size={24} className="-rotate-90" />
         </motion.button>
       )}
     </AnimatePresence>
