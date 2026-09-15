@@ -5,6 +5,7 @@ import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import Breadcrumbs from "../../components/ui/Breadcrumbs.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
+import LeadForm from "../../components/LeadForm.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
@@ -58,6 +59,17 @@ export default function Contact() {
               <div>
                 <p className="text-xs uppercase tracking-wide text-cvc-muted">Based in</p>
                 <p className="mt-1 font-medium text-cvc-paper">Ndeiya, Limuru, Kenya</p>
+              </div>
+            </motion.div>
+
+            <motion.div variants={fadeUp} className="mt-14 border-t border-white/10 pt-10">
+              <h2 className="text-2xl font-bold tracking-tight">Or send the details directly.</h2>
+              <p className="mt-2 text-cvc-muted">
+                Prefer to write it all out once? Fill this in and we&rsquo;ll follow up —
+                usually on WhatsApp.
+              </p>
+              <div className="mt-6">
+                <LeadForm />
               </div>
             </motion.div>
           </motion.div>
