@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Inbox, Receipt, Wallet, Briefcase, FileText, Quote, Building2, Plus } from "lucide-react";
+import { Inbox, Receipt, Wallet, FolderOpen, Briefcase, FileText, Quote, Building2, Plus } from "lucide-react";
 
 import {
   adminListLeads,
   adminListQuotes,
   adminListInvoices,
+  adminListProjects,
   adminListPortfolio,
   adminListPosts,
   adminListTestimonials,
@@ -46,6 +47,16 @@ const SECTIONS = [
     color: "bg-cvc-amber/15 text-cvc-amber",
     highlight: (item) => item.status !== "paid",
     highlightLabel: "unpaid",
+  },
+  {
+    key: "projects",
+    label: "Projects",
+    icon: FolderOpen,
+    fetch: adminListProjects,
+    newHref: "/admin/projects",
+    color: "bg-cvc-cyan/15 text-cvc-cyan",
+    highlight: (item) => item.status === "awaiting_approval",
+    highlightLabel: "awaiting review",
   },
   {
     key: "portfolio",

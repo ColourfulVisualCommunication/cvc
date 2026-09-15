@@ -19,12 +19,14 @@ import Blog from "./pages/public/Blog.jsx";
 import BlogPost from "./pages/public/BlogPost.jsx";
 import Contact from "./pages/public/Contact.jsx";
 import QuotePage from "./pages/public/QuotePage.jsx";
+import ProjectPage from "./pages/public/ProjectPage.jsx";
 
 import Login from "./pages/admin/Login.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
 import LeadsAdmin from "./pages/admin/Leads.jsx";
 import QuotesAdmin from "./pages/admin/Quotes.jsx";
 import InvoicesAdmin from "./pages/admin/Invoices.jsx";
+import ProjectsAdmin from "./pages/admin/Projects.jsx";
 import PortfolioAdmin from "./pages/admin/Portfolio.jsx";
 import PostsAdmin from "./pages/admin/Posts.jsx";
 import TestimonialsAdmin from "./pages/admin/Testimonials.jsx";
@@ -50,6 +52,7 @@ export default function App() {
         </Route>
 
         <Route path="/quote/:token" element={<QuotePage />} />
+        <Route path="/project/:token" element={<ProjectPage />} />
 
         <Route path="/admin/login" element={<Login />} />
         <Route element={<ProtectedRoute />}>
@@ -58,6 +61,7 @@ export default function App() {
             <Route path="leads" element={<LeadsAdmin />} />
             <Route path="quotes" element={<QuotesAdmin />} />
             <Route path="invoices" element={<InvoicesAdmin />} />
+            <Route path="projects" element={<ProjectsAdmin />} />
             <Route path="portfolio" element={<PortfolioAdmin />} />
             <Route path="posts" element={<PostsAdmin />} />
             <Route path="testimonials" element={<TestimonialsAdmin />} />

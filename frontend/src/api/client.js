@@ -143,6 +143,53 @@ export const payQuoteDeposit = (token, phoneNumber) => api.post(`/quotes/${token
 export const getQuotePaymentStatus = (token) => api.get(`/quotes/${token}/payment-status`);
 export const downloadQuoteReceipt = (token, filename) => downloadFile(`${BASE}/quotes/${token}/receipt.pdf`, filename);
 
+// Projects & delivery (Phase 6)
+export const adminListProjects = () => api.get("/admin/projects");
+export const adminGetProject = (id) => api.get(`/admin/projects/${id}`);
+export const adminAddDeliverable = (projectId, data) => api.post(`/admin/projects/${projectId}/deliverables`, data);
+export const adminPublishProject = (id) => api.post(`/admin/projects/${id}/publish`);
+export const adminDownloadDeliverable = (projectId, deliverableId) =>
+  api.get(`/admin/projects/${projectId}/deliverables/${deliverableId}/download`);
+
+export const getProject = (token) => api.get(`/projects/${token}`);
+export const submitProjectBrief = (token, briefText) => api.post(`/projects/${token}/brief`, { brief_text: briefText });
+export const addProjectBriefAsset = (token, data) => api.post(`/projects/${token}/brief/assets`, data);
+export const viewDeliverable = (token, deliverableId) => api.get(`/projects/${token}/deliverables/${deliverableId}/view`);
+export const downloadDeliverable = (token, deliverableId) =>
+  api.get(`/projects/${token}/deliverables/${deliverableId}/download`);
+export const approveProject = (token) => api.post(`/projects/${token}/approve`);
+export const requestProjectChanges = (token, note) => api.post(`/projects/${token}/request-changes`, { note });
+export const payProjectBalance = (token, phoneNumber) => api.post(`/projects/${token}/pay`, { phone_number: phoneNumber });
+export const getProjectPaymentStatus = (token) => api.get(`/projects/${token}/payment-status`);
+
+// Direct-to-Cloudinary uploads — file bytes never transit our own server.
+// adminGetUploadSignature/getProjectUploadSignature return a short-lived
+// signature from our backend; uploadFileDirect posts the file straight to
+// Cloudinary using it, then the caller reports the result to our own
+// persist endpoint (adminAddDeliverable / addProjectBriefAsset above) so
+// it can be verified (see file_service.verify_upload_report) before
+// anything is written to the database.
+export const adminGetUploadSignature = (projectId) => api.post("/admin/uploads/sign", { project_id: projectId });
+export const getProjectUploadSignature = (token) => api.post(`/projects/${token}/uploads/sign`);
+
+export async function uploadFileDirect(file, signatureData) {
+  const form = new FormData();
+  form.append("file", file);
+  form.append("api_key", signatureData.api_key);
+  form.append("timestamp", signatureData.timestamp);
+  form.append("signature", signatureData.signature);
+  form.append("folder", signatureData.folder);
+  form.append("type", signatureData.type);
+
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${signatureData.cloud_name}/auto/upload`, {
+    method: "POST",
+    body: form,
+  });
+  const result = await response.json();
+  if (!response.ok) throw new ApiError(result.error?.message || "Upload failed", response.status);
+  return result; // { public_id, version, signature, resource_type, format, ... }
+}
+
 // Auth
 export const login = (email, password) => api.post("/auth/login", { email, password });
 export const me = () => api.get("/auth/me");
