@@ -40,6 +40,12 @@ class Quote(db.Model):
     items = db.relationship(
         "QuoteItem", backref="quote", order_by="QuoteItem.sort_order", cascade="all, delete-orphan"
     )
+    # 1:1 for this phase — see Invoice.quote_id's unique constraint.
+    # cascade="all, delete-orphan": deleting a quote (admin_delete_quote
+    # exists) must not leave an orphaned invoice violating quote_id's
+    # NOT NULL FK — this cascades to the invoice, which itself cascades to
+    # its payments (see Invoice.payments), same pattern as Quote.items.
+    invoice = db.relationship("Invoice", uselist=False, backref="quote", cascade="all, delete-orphan")
 
     @property
     def total_cents(self):
@@ -49,7 +55,7 @@ class Quote(db.Model):
     def deposit_cents(self):
         return round(self.total_cents * self.deposit_percentage / 100)
 
-    def to_dict(self, include_items=True):
+    def to_dict(self, include_items=True, include_invoice=False):
         data = {
             "id": self.id,
             "lead_id": self.lead_id,
@@ -72,6 +78,8 @@ class Quote(db.Model):
         }
         if include_items:
             data["items"] = [i.to_dict() for i in self.items]
+        if include_invoice:
+            data["invoice"] = self.invoice.to_public_dict() if self.invoice else None
         return data
 
     def __repr__(self):
