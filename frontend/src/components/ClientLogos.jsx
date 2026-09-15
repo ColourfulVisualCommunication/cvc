@@ -24,7 +24,7 @@ export default function ClientLogos() {
           </p>
           <h2 className="mt-4 text-4xl font-bold leading-tight tracking-tight text-cvc-ink sm:text-5xl">
             We thank you{" "}
-            <LogoShowcaseStack logos={logos} size={56} />
+            <LogoShowcaseStack logos={logos} size={84} />
             {" "}for trusting us
           </h2>
           <p className="mt-4 text-lg text-cvc-ink/70">The journey has been colourful.</p>

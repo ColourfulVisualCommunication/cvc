@@ -63,7 +63,11 @@ export default function LogoShowcaseStack({ logos, size = 44 }) {
             }}
             className="flex items-center justify-center overflow-hidden rounded-md border border-black/10 bg-white p-1.5 shadow-md transition-transform duration-200 hover:z-10 hover:scale-110"
           >
-            <img src={logo.logo_url} alt={logo.name} className="h-full w-full object-contain" />
+            <img
+              src={logo.logo_url}
+              alt={logo.name}
+              className="h-full w-full object-contain grayscale transition-all duration-200 [@media(hover:hover)]:hover:grayscale-0"
+            />
           </motion.span>
         );
       })}
