@@ -62,11 +62,20 @@ function formatPrice(s) {
   return s.price_max_cents ? `${base} – ${(s.price_max_cents / 100).toLocaleString()}` : base;
 }
 
-function TierCards({ items, fg }) {
-  const mutedFg = fg ? { color: fg, opacity: 0.7 } : undefined;
+// Cards used to pick up each panel's own accent color (an outline tinted
+// toward the panel's fg, text colored to match) so they'd read against
+// whatever background they landed on. In practice that made every panel
+// look like a different component — same layout, different sizes and
+// weights of color everywhere. Cards are now a fixed solid-dark chip on
+// every panel regardless of that panel's own color, with white text
+// throughout (white belongs on a dark background, and every card now has
+// one) — the panel color shows through only as the space around the
+// cards, not inside them.
+function TierCards({ items }) {
   return (
     <motion.div
-      {...(fg ? { initial: "hidden", animate: "visible" } : revealOnce)}
+      initial="hidden"
+      animate="visible"
       variants={stagger(0.08)}
       // Flexbox, not CSS Grid — a fixed 3-column grid (grid-cols-3) leaves
       // a visible empty column whenever a tier has fewer than 3 services,
@@ -81,24 +90,15 @@ function TierCards({ items, fg }) {
         <motion.div key={s.slug} variants={fadeUp} className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[340px]">
           <Link
             to={`/services/${s.slug}`}
-            className={`group flex h-full flex-col justify-between border-2 p-7 text-center transition-opacity hover:opacity-80 lg:p-8 ${
-              fg ? "" : "border-white/10 hover:border-cvc-paper"
-            }`}
-            style={fg ? { borderColor: `color-mix(in srgb, ${fg} 35%, transparent)`, color: fg } : undefined}
+            className="group flex h-full flex-col justify-between border-2 border-white/10 bg-black/85 p-7 text-center text-cvc-paper transition-opacity hover:opacity-80 hover:border-white/30 lg:p-8"
           >
             <div>
               <h3 className="text-2xl font-extrabold sm:text-[1.7rem]">{s.name}</h3>
-              <p className={`mt-3 text-base ${fg ? "" : "text-cvc-muted"}`} style={mutedFg}>
-                {s.summary}
-              </p>
+              <p className="mt-3 text-base text-cvc-paper/70">{s.summary}</p>
             </div>
             <div className="mt-8 flex flex-col items-center gap-1.5 text-base">
               <span className="font-mono text-lg font-bold">{formatPrice(s)}</span>
-              {s.duration && (
-                <span className={fg ? "" : "text-cvc-muted"} style={mutedFg}>
-                  {s.duration}
-                </span>
-              )}
+              {s.duration && <span className="text-cvc-paper/70">{s.duration}</span>}
               <span className="mt-4 inline-flex items-center gap-1.5 text-base font-bold transition-transform duration-200 group-hover:translate-x-1">
                 Learn more
                 <ArrowIcon size={24} />
@@ -171,7 +171,7 @@ export default function ServiceLadder({ services, headingPanel }) {
           </h2>
         </div>
       ),
-      content: <TierCards items={items} fg={fg} />,
+      content: <TierCards items={items} />,
     };
   });
 
