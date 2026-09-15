@@ -94,7 +94,7 @@ These were in an earlier, much larger plan. Each was cut for a reason:
 
 ## Build phases
 
-Current position: **Phase 2 shipped** — colourfulvisualcommunication.com is live (Cloudflare Workers, DNS cut over from Netlify), with Home, About, Our Story, Process, Services + detail pages, Portfolio (real case studies), Blog, Contact, admin CRUD for portfolio/posts/testimonials/client logos, build-time prerendering with meta/OG/JSON-LD, and a full typography system. Services remain public-read-only (edited via seed data, not an admin panel) — the ladder rarely changes and a fixed price list didn't justify the CRUD yet. **Phase 3 next.** See `docs/02-build-plan.md` for full detail.
+Current position: **Phase 3 shipped** — Home, About, Our Story, Process, Services + detail pages, Portfolio, Blog, and Contact are all live at colourfulvisualcommunication.com (Cloudflare Workers), with admin CRUD for portfolio/posts/testimonials/client logos, build-time prerendering with meta/OG/JSON-LD, a full typography system, and now lead capture: a "Start a project" form on the Contact page (honeypot spam check, server-side validation) creates a `lead` record, notifies the admin and acknowledges the enquirer by email (Brevo), and surfaces in a new admin Leads inbox with status tracking. Services remain public-read-only (edited via seed data, not an admin panel) — the ladder rarely changes and a fixed price list didn't justify the CRUD yet. **Phase 4 next.** See `docs/02-build-plan.md` for full detail.
 
 | # | Phase | Ships |
 |---|---|---|

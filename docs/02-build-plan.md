@@ -39,11 +39,15 @@ Each phase ends in something deployed and usable. Estimates assume part-time bui
 
 ---
 
-## Phase 3 — Leads · ~4 days
+## Phase 3 — Leads · ~4 days · **shipped**
 
 **Ships:** a "Start a project" form producing a record with a budget and a deadline, with instant notification.
 
-Enquiry form and server-side validation · `lead` model and statuses · admin lead inbox · email notification to Njoroge · auto-acknowledgement to the enquirer · spam protection.
+- [x] Enquiry form (on the Contact page, alongside the existing WhatsApp CTA) with server-side validation
+- [x] `lead` model and statuses (new · contacted · quoted · closed · archived)
+- [x] Admin lead inbox — list, expand for full details, change status, delete
+- [x] Email notification to Njoroge and auto-acknowledgement to the enquirer (Brevo REST API, best-effort — never fails the lead creation itself)
+- [x] Spam protection — a honeypot field, the simplest option that needed no new dependency
 
 *Learning: server-side validation — never trust anything the browser sends.*
 
