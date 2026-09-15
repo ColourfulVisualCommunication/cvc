@@ -88,11 +88,19 @@ Each phase ends in something deployed and usable. Estimates assume part-time bui
 
 ---
 
-## Phase 6 — Projects & delivery · ~1.5 weeks
+## Phase 6 — Projects & delivery · ~1.5 weeks · **shipped**
 
 **Ships:** a private project page per client — status, brief, files, approvals, outstanding balance. Final files unlock when the balance clears.
 
-Project created from an accepted quote · brief form and asset upload at full resolution · four-state status (brief / in progress / awaiting approval / complete) · versioned deliverables · approve or request changes · approval audit trail · payment-gated downloads · signed, expiring file URLs.
+- [x] Project auto-created the moment the deposit is paid (not at quote acceptance) — reached by its own signed link, same pattern as a quote
+- [x] Brief form (client-submitted text) and asset upload at full resolution, direct-to-Cloudinary (bytes never transit our server)
+- [x] Four-state status: brief → in progress → awaiting approval → complete
+- [x] Versioned deliverables — a new upload round only starts once the current one has been decided
+- [x] Approve or request changes, with a required note on changes requested
+- [x] Approval audit trail — every decision is its own row, never overwritten
+- [x] **Payment-gated downloads** — "view" (for approval) always serves a resized/compressed preview; "download" serves the original and is hard-gated on the balance being fully paid. Verified live against the real Cloudinary API: view works pre-payment, download 403s pre-payment, download unlocks with the original the instant the balance clears
+- [x] Signed, expiring file URLs — every upload report is verified against Cloudinary's own signature and scoped to the uploading project's folder before anything is persisted, closing a cross-tenant file-leak a naive version of this would have had
+- [x] `invoice` extended to many-per-quote (deposit + balance) — approving the final round auto-creates a balance invoice for whatever's left of the quote total, reusing Phase 5's STK-push/manual-payment/idempotency machinery unchanged
 
 *Learning: file storage done properly — why client brand files must never sit at a guessable URL.*
 
