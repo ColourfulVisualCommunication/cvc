@@ -84,3 +84,15 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Hides the native pointer wherever CustomCursor.jsx replaces it (see
+   components/ui/CustomCursor.jsx) — scoped to .cvc-cursor-none (the public
+   Layout only) and gated behind the same pointer:fine/hover:hover check
+   that component makes in JS, so the two can never disagree about which
+   devices get the swap. */
+@media (pointer: fine) and (hover: hover) {
+  .cvc-cursor-none,
+  .cvc-cursor-none * {
+    cursor: none !important;
+  }
+}
