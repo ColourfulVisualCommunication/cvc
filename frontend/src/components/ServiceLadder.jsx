@@ -16,13 +16,18 @@ export const TIER_LABELS = {
   5: "Retainers",
 };
 
-// Cycled per tier panel — alternating a light and a dark CVC accent keeps
-// consecutive panels visually distinct as they wipe past each other.
+// Cycled per tier panel — alternating accents keeps consecutive panels
+// visually distinct as they wipe past each other. Starts on cyan (not
+// ink) specifically so tier 0 contrasts with the prepended ink heading
+// panel right before it; with 6 tiers cycling through 4 colors, that also
+// lands the last tier on crimson, which contrasts with the cyan "Work"
+// section immediately after — both boundaries would otherwise wipe
+// between two panels of the *same* color and read as if nothing moved.
 const PANEL_COLORS = [
-  { bg: "var(--color-cvc-ink)", fg: "var(--color-cvc-paper)" },
   { bg: "var(--color-cvc-cyan)", fg: "var(--color-cvc-ink)" },
   { bg: "var(--color-cvc-crimson)", fg: "var(--color-cvc-paper)" },
   { bg: "var(--color-cvc-amber)", fg: "var(--color-cvc-ink)" },
+  { bg: "var(--color-cvc-ink)", fg: "var(--color-cvc-paper)" },
 ];
 
 // The scroll-wipe timeline pins each tier into one full-height frame — it
@@ -63,31 +68,31 @@ function TierCards({ items, fg }) {
     <motion.div
       {...(fg ? { initial: "hidden", animate: "visible" } : revealOnce)}
       variants={stagger(0.08)}
-      className="mx-auto grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-3"
+      className="mx-auto grid max-w-6xl gap-6 sm:grid-cols-2 lg:grid-cols-3"
     >
       {items.map((s) => (
         <motion.div key={s.slug} variants={fadeUp}>
           <Link
             to={`/services/${s.slug}`}
-            className={`group flex h-full flex-col justify-between border-2 p-5 text-center transition-opacity hover:opacity-80 ${
+            className={`group flex h-full flex-col justify-between border-2 p-7 text-center transition-opacity hover:opacity-80 lg:p-8 ${
               fg ? "" : "border-white/10 hover:border-cvc-paper"
             }`}
             style={fg ? { borderColor: `color-mix(in srgb, ${fg} 35%, transparent)`, color: fg } : undefined}
           >
             <div>
-              <h3 className="text-xl font-extrabold">{s.name}</h3>
-              <p className={`mt-2 text-sm ${fg ? "" : "text-cvc-muted"}`} style={mutedFg}>
+              <h3 className="text-2xl font-extrabold sm:text-[1.7rem]">{s.name}</h3>
+              <p className={`mt-3 text-base ${fg ? "" : "text-cvc-muted"}`} style={mutedFg}>
                 {s.summary}
               </p>
             </div>
-            <div className="mt-6 flex flex-col items-center gap-1 text-sm">
-              <span className="font-mono font-bold">{formatPrice(s)}</span>
+            <div className="mt-8 flex flex-col items-center gap-1.5 text-base">
+              <span className="font-mono text-lg font-bold">{formatPrice(s)}</span>
               {s.duration && (
                 <span className={fg ? "" : "text-cvc-muted"} style={mutedFg}>
                   {s.duration}
                 </span>
               )}
-              <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-bold transition-transform duration-200 group-hover:translate-x-1">
+              <span className="mt-4 inline-flex items-center gap-1.5 text-base font-bold transition-transform duration-200 group-hover:translate-x-1">
                 Learn more
                 <ArrowIcon size={24} />
               </span>
@@ -139,7 +144,19 @@ export default function ServiceLadder({ services, headingPanel }) {
 
   if (isDesktop) {
     const items = headingPanel ? [headingPanel, ...tierPanels] : tierPanels;
-    return <ScrollTimeline totalScrollHeight={`${items.length * 100}vh`} cornerRadius={0} items={items} />;
+    return (
+      <ScrollTimeline
+        totalScrollHeight={`${items.length * 100}vh`}
+        cornerRadius={0}
+        // The site header is a sticky ~105px bar — without this the pinned
+        // panel frame starts 24px from the very top of the viewport and
+        // its heading/cards render underneath the header instead of below
+        // it (the header wins on stacking order, so the content is simply
+        // hidden behind it, not just visually close).
+        topOffset={120}
+        items={items}
+      />
+    );
   }
 
   return (
