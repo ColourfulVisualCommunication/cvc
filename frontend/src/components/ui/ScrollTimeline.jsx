@@ -102,8 +102,8 @@ export default function ScrollTimeline({ items, totalScrollHeight, frameInset = 
             >
               {String(i + 1).padStart(2, "0")}
             </span>
-            <div className="relative max-w-2xl">{item.header}</div>
-            <div className="relative mt-6">{item.content}</div>
+            <div className="relative mx-auto max-w-2xl">{item.header}</div>
+            <div className="relative mt-8">{item.content}</div>
           </section>
         ))}
       </div>
