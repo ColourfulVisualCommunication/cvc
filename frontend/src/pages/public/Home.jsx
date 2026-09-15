@@ -113,7 +113,7 @@ export default function Home() {
                 <span className="font-bold">Strategic Brand identity</span>
               </RoughNotation>{" "}
               and{" "}
-              <RoughNotation type="circle" show={annotate} color="var(--color-cvc-crimson)" strokeWidth={2} padding={4} animationDuration={800}>
+              <RoughNotation type="line" show={annotate} color="var(--color-cvc-crimson)" strokeWidth={2} padding={4} animationDuration={800}>
                 <span className="font-bold">digital development</span>
               </RoughNotation>{" "}
               from one team — most brand designers can't build, most developers can't brand.{" "}
@@ -124,7 +124,7 @@ export default function Home() {
               <Link to="/work" className="inline-flex items-center gap-1.5 text-sm font-semibold text-cvc-paper sm:text-base lg:text-lg">
                 See our work
                 <motion.span {...blink} className="inline-flex">
-                  <ArrowIcon size={32} />
+                  <ArrowIcon size={36} />
                 </motion.span>
               </Link>
             </motion.div>
@@ -170,7 +170,7 @@ export default function Home() {
                       </p>
                       <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold text-cvc-ink transition-colors duration-300 group-hover:text-white sm:text-base lg:text-lg">
                         Learn more
-                        <ArrowIcon size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                        <ArrowIcon size={36} className="transition-transform duration-300 group-hover:translate-x-1" />
                       </span>
                     </Link>
                   </motion.div>
@@ -185,7 +185,7 @@ export default function Home() {
               >
                 See the full service ladder
                 <motion.span {...blink} className="inline-flex">
-                  <ArrowIcon size={16} />
+                  <ArrowIcon size={36} />
                 </motion.span>
               </Link>
             </motion.div>
@@ -234,8 +234,9 @@ export default function Home() {
                 label: p.title,
                 onOpen: () => navigate(`/work/${p.slug}`),
               }))}
+            motion={{ scrollLength: 140, smoothness: 12 }}
             background="transparent"
-            content={{ leftTitle: "IDEAS", centerText: "WE'VE BUILT", rightTitle: "WORK", textColor: "rgba(22, 24, 26, 0.4)" }}
+            content={{ leftTitle: "IDEAS", centerText: "THE JOURNEY HAS BEEN COLURFUL", rightTitle: "WORK", textColor: "rgba(22, 24, 26, 0.4)" }}
             cards={{ radius: 0, background: "var(--color-cvc-paper)" }}
           />
         )}
@@ -249,7 +250,7 @@ export default function Home() {
             className="grid items-center gap-10 sm:grid-cols-[minmax(0,240px)_1fr]"
           >
             
-            <div className="max-w-2xl">
+            <div className="max-w-1/2">
               <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
                 From an idea, to a promise, to a platform
               </motion.p>
@@ -268,7 +269,7 @@ export default function Home() {
                 >
                   Read the full story
                   <motion.span {...blink} className="inline-flex">
-                    <ArrowIcon size={16} />
+                    <ArrowIcon size={36} />
                   </motion.span>
                 </Link>
               </motion.div>
@@ -353,7 +354,7 @@ export default function Home() {
               className="inline-flex items-center gap-3 bg-cvc-ink px-6 py-3 text-sm font-semibold text-cvc-paper transition-transform hover:scale-105 sm:text-base lg:text-lg"
             >
               Let&rsquo;s talk
-              <ArrowIcon size={20} />
+              <ArrowIcon size={36} />
             </Link>
           </div>
         </Container>
