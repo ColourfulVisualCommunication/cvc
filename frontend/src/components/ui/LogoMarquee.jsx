@@ -25,7 +25,14 @@ function mod(n, m) {
   return ((n % m) + m) % m;
 }
 
-export default function LogoMarquee({ logos, height = 72 }) {
+// 72 was too small for the wider/more detailed logos in the actual set —
+// several run 2.5-3.8:1 (width:height), often a wordmark stacked over a
+// tagline or a swirl mark beside text, designed to read clearly at normal
+// size but not at a 72px-tall render — elements that are simply close
+// together in the source artwork start looking like they overlap once
+// scaled down that far. 96 gives them enough room without making the
+// strip's overall height feel oversized next to its own gap-16 spacing.
+export default function LogoMarquee({ logos, height = 96 }) {
   const trackRef = useRef(null);
   const offsetRef = useRef(0);
   const boostRef = useRef(0);
