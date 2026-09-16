@@ -247,7 +247,7 @@ export default function Home() {
           <div
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-20"
-            style={{ backgroundImage: "url(/backgrounds/testimonials-bg.svg)" }}
+            style={{ backgroundImage: "url(/backgrounds/we craft.svg)" }}
           />
           <Container className="relative">
             <SectionHeading
