@@ -215,7 +215,7 @@ export default function Home() {
               </motion.p>
               <ScrollRevealText
                 as="h2"
-                text="It started with KSh 200, a cracked copy of Photoshop, and a stranger’s trust."
+                text=" Ksh 200,  a cracked photoshop, & a strangers Trust."
                 className="mt-3 block text-5xl font-bold leading-tight tracking-tight sm:text-7xl lg:text-8xl"
               />
               <motion.p variants={fadeUp} className="mt-4 text-lg text-cvc-muted sm:text-xl lg:text-2xl">
@@ -248,7 +248,7 @@ export default function Home() {
                   lens itself on purpose, a bold seal rather than a detail
                   inscribed inside the small circle. */}
               <div className="absolute" style={{ left: "46%", top: "67%", transform: "translate(-50%, -50%)" }}>
-                <CircularSpinText text=" DEFINE . POSITION . BUILD . SHIP ." size={220} radius={95} fontSize={15} fontWeight={900} />
+                <CircularSpinText text=" DEFINE . POSITION . BUILD . SHIP ." radius={95} fontSize={15} fontWeight={900} />
               </div>
             </motion.div>
           </motion.div>
