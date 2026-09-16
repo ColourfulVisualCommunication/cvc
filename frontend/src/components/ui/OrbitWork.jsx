@@ -332,8 +332,12 @@ export default function OrbitWork({ items }) {
     // fallback is plain content and should sit in the same column as the
     // heading above it — it had no padding at all before this, so cards
     // ran edge-to-edge while the heading was inset by Container's px-6.
+    // pb-20 restores the bottom breathing room the old grid had for free
+    // (it used to live inside the Work section's own pb-20) — OrbitWork
+    // is a separate sibling with no padding of its own, so without this
+    // the last card ran flush into the About section below it.
     return (
-      <Container>
+      <Container className="pb-20">
         <CompactGrid items={items} />
       </Container>
     );
