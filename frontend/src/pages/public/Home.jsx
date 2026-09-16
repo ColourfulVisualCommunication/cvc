@@ -15,6 +15,8 @@ import HeroTunnel from "../../components/ui/HeroTunnel.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
 import ServiceLadder from "../../components/ServiceLadder.jsx";
+import CircularSpinText from "../../components/ui/CircularSpinText.jsx";
+import ScrollRevealText from "../../components/ui/ScrollRevealText.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
 const blink = {
@@ -215,9 +217,11 @@ export default function Home() {
               <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
                 From an idea, to a promise, to a platform
               </motion.p>
-              <motion.h2 variants={fadeUp} className="mt-4 text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
-                It started with KSh 200, a cracked copy of Photoshop, and a stranger&rsquo;s trust.
-              </motion.h2>
+              <ScrollRevealText
+                as="h2"
+                text="It started with KSh 200, a cracked copy of Photoshop, and a stranger’s trust."
+                className="mt-4 block text-3xl font-bold leading-tight tracking-tight sm:text-4xl"
+              />
               <motion.p variants={fadeUp} className="mt-5 text-lg text-cvc-muted">
                 CVC didn&rsquo;t start in a boardroom — it started on a matatu, in traffic, with a
                 promise a stranger had no reason to keep. Everything since has just been proving
@@ -236,13 +240,21 @@ export default function Home() {
               </motion.div>
             </div>
 
-            <motion.div variants={fadeUp} className="flex items-center justify-center overflow-hidden">
+            <motion.div variants={fadeUp} className="relative flex items-center justify-center overflow-hidden">
               <img
                 src="/founder/njoroge.webp"
                 alt="Njoroge, founder of CVC"
                 loading="lazy"
                 className="h-full w-full object-contain"
               />
+              {/* Centered on the camera lens in the photo (measured at
+                  ~46%/67% of the image's own box) — the badge is sized
+                  bigger than the lens itself on purpose, sitting over it
+                  as a decorative seal rather than being inscribed inside
+                  the small circle. */}
+              <div className="absolute" style={{ left: "46%", top: "67%", transform: "translate(-50%, -50%)" }}>
+                <CircularSpinText text="CRAFTING ... CRAFTING ... " size={110} radius={50} fontSize={11} />
+              </div>
             </motion.div>
           </motion.div>
         </Container>
