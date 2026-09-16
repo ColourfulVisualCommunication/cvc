@@ -88,7 +88,15 @@ export default function LogoMarquee({ logos, height = 96 }) {
 
   return (
     <div
-      className="relative w-full overflow-hidden"
+      // overflow-hidden is required here (it's what clips the infinite
+      // track and what the edge-fade mask below needs to bound itself
+      // to) but a CSS transform doesn't affect layout — a hovered logo's
+      // scale-110 doesn't grow this wrapper's own height, so the scaled
+      // image was extending past it and getting clipped at the top and
+      // bottom. py-3 reserves enough headroom for that (at height=96,
+      // 110% adds ~5px each side) without affecting the mask, which only
+      // fades horizontally.
+      className="relative w-full overflow-hidden py-3"
       style={{
         WebkitMaskImage: "linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%)",
         maskImage: "linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%)",
