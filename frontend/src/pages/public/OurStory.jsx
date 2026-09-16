@@ -135,7 +135,17 @@ export default function OurStory() {
             <motion.p variants={fadeUp} className="font-mono text-xs font-semibold uppercase tracking-[0.18em] sm:text-sm lg:text-base text-cvc-muted">
               Our Story
             </motion.p>
-            <motion.h1 variants={fadeUp} className="mt-5 text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl">
+            {/* hyphens-auto: "Communication" alone is wide enough at this
+                font size to force horizontal scroll on narrow phones
+                before wrapping would otherwise kick in — letting the
+                browser hyphenate it (lang="en" is set on <html>, which
+                hyphens:auto needs to pick the right dictionary) breaks
+                it mid-word instead. wrap-break-word is the fallback for
+                any browser without hyphenation support. */}
+            <motion.h1
+              variants={fadeUp}
+              className="mt-5 hyphens-auto wrap-break-word text-5xl font-bold tracking-tight sm:text-6xl lg:text-7xl"
+            >
               Colourful Visual Communication didn&rsquo;t start in a boardroom. It started in traffic.
             </motion.h1>
             <motion.p variants={fadeUp} className="mt-6 text-xl text-cvc-paper/80">
