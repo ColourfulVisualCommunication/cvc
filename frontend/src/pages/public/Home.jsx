@@ -200,7 +200,7 @@ export default function Home() {
               </motion.p>
               <ScrollRevealText
                 as="h2"
-                text="Ksh 200, cracked photoshop, strangers Trust."
+                text="Ksh 200, cracked photoshop, stranger's Trust."
                 className="mt-3 block text-5xl font-bold leading-tight tracking-tight sm:text-7xl lg:text-8xl"
               />
               <motion.p variants={fadeUp} className="mt-4 text-lg text-cvc-muted sm:text-xl lg:text-2xl">
