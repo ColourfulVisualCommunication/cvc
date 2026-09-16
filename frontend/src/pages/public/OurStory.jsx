@@ -19,12 +19,14 @@ const SECTIONS = [
     title: "At least we're moving now",
     subtitle: "The matatu, the jam, the sentence that started it all",
     paragraphs: [
-      "It started on a matatu, in traffic, on a Saturday.",
+      "It started on a matatu, in traffic, on a Saturday Evening.",
       "I was a second-year ICT student, three legs into a journey from the Technical University of Mombasa back home to Ndeiya, Limuru — a bus to Nairobi, then two matatus to carry me the rest of the way. The country was still recovering from lockdown. A 10 p.m. curfew was still in force. A two-lane road was carrying four lines of traffic, all racing the clock. We sat still for close to two hours.",
       "Next to me sat a stranger. Jackie.",
-      "I told her about my day — missing the bus in Mombasa by a whisker, chasing it down in a TukTuk, borrowing the last KSh 100 to pay the fare while the TukTuk was still moving. It felt like a bad day at the office.",
+      "At Rwaka town, a random standby man signalled the driver to take a right diversion, a differnet route that would see us in Limuru in time for the curfew. The driver hesistated unfamiliar with the route but trusted his instincts. I was relieved. Jackie was to the contrally worried. WHere is the driver taking us? Does he even know the route? An it is at this point I felt the urge to tell her about my day.",
+      "At least we're moving now.", "I told her from a point of aggitation and relief, and somehow hoping to find my last leg home from limuru. Then I told her about my day — missing the bus in Mombasa by a whisker, chasing it down in a TukTuk, borrowing the last KSh 100 to pay the fare while the TukTuk was still moving. It felt like a bad day at the office.",
       "Somewhere in that jam, the conversation became bigger than traffic. I told her I believed in connections — that in a country where hard work doesn't always guarantee a job, who you know matters as much as what you can do. She disagreed. She believed in hard work.",
       "But she made me a promise anyway: if I believed in connections that strongly, she'd give me one, someday.",
+      "Did I mention that she had too lived in Mombasa? And coincidentally she was visiting her friend who happened to by my neigbour? That she was actually my last leg home?",
       "Then we went our separate ways.",
     ],
     quote: {
@@ -38,23 +40,24 @@ const SECTIONS = [
     subtitle: "The first paying client — a stranger who trusted a beginner",
     paragraphs: [
       "Almost a year passed. Then Jackie texted: she was getting married, and she needed her wedding invitation designed.",
-      "I had no real experience. All I'd ever made were dummy flyers, posted to my WhatsApp status for practice — nothing a client had ever paid for. I said yes anyway.",
-      "I was renting a room near campus at the time, surviving more than living. No proper bed — a mattress on the floor and a cardboard packaging box, stuffed with old exam papers to make it solid enough to hold a laptop. My laptop was a refurbished HP EliteBook, bought for KSh 18,000 pooled with my dad's money, that only ran while plugged in and sounded like it was preparing for takeoff. My only software was a cracked copy of Photoshop, passed on by a coursemate. My only teacher was YouTube, watched on mobile data because there was no internet where I stayed.",
+      "I had no real experience. All I had ever made were dummy flyers, posted to my WhatsApp status for practice — nothing a client had ever paid for. I said yes anyway.",
+      "I was renting a room in Kisauni, fairly cheap for a comrade but quite a distance to my campus at the time, I walked, surviving more than living. No proper bed — a mattress on the floor and a cardboard packaging box, stuffed with old exam papers to make it solid enough to hold a laptop. My laptop was a refurbished HP EliteBook, bought for KSh 18,000 pooled fund between me and my dad, that only ran while plugged in and sounded like it was preparing for takeoff. Did I mention the heating could fry an egg? And that we had been conned for the laptop? My only software was a cracked copy of Photoshop, passed on by a coursemate. My only teacher was YouTube, watched on mobile data because there was no internet where I stayed.",
       "It took a full week. The laptop crashed constantly. I lost progress, restarted, kept going.",
-      "I charged Jackie KSh 200 — what I felt I was worth at the time.",
+      "I charged Jackie KSh 200 — what I felt I was worth at the time. And somehow still felt like I was asking too much.",
       "She paid without hesitation. Then added another KSh 150. Unasked.",
     ],
     quote: {
       text: "It's one thing to get an opportunity. It's another to get a reward for it. You can miss both. I'm grateful I didn't.",
     },
     trailingParagraphs: [
-      "The wedding was held at Wellington Gardens in Nyali, Mombasa — invitation-only, and every guest had been let in by something I'd made.",
-      "I learned much later that Jackie worked at Rockledge, a company her husband founded — and that Rockledge, not a wedding card, was almost certainly the connection she'd meant to give me all along. What she gave me instead wasn't a lesser thing. A wedding invitation, trusted to a total beginner, never is.",
+      "The wedding was held at Wellington Gardens in Nyali, Mombasa — invitation-only, and every guest had been let in by something I had made.",
+      "I learned much later that Jackie worked at Rockledge, a company her husband founded — and that Rockledge, not a wedding card, was almost certainly the connection she had meant to give me all along. She, unaware till today, gave me something else. A moment that I felt I had grown wings, and I could take the flight my laptop never could. An dnot even the sky was the limit. A wedding invitation, trusted to a total beginner, a stranger, a whatsApp conversation, online, was not a small thing I realized. It was a turning point.",
+      "Despite missing food somehow at the wedding, I felt full, and the table I sat they had to know that I made the card that invited them to the occassion.",
     ],
     closingStatement: (
       <>
         <strong className="font-semibold text-cvc-paper">Colourful Visual Communication was born here.</strong> Not
-        from the connection she'd promised — from the belief she extended instead.
+        from the connection she had promised — from the belief she extended instead.
       </>
     ),
   },
@@ -63,9 +66,9 @@ const SECTIONS = [
     title: "From a face to a full system",
     subtitle: "Gemalocs — the project that taught me what brand identity actually is",
     paragraphs: [
-      "The second project came in fourth year: Gemalocs, a full-service salon offering barbershop services, manicure, pedicure, makeup artistry and braiding. A referral, through a coursemate, to a couple starting from nothing but a name.",
+      "The second project came in fourth year: Gemalocs, a full-service salon offering barbershop services, manicure, pedicure, makeup artistry and braiding. A referral, through a coursemate, to a Loctician starting from nothing but a name.",
       "I built the full identity — a face-and-spiral mark in magenta and deep purple — and carried it across business cards, product packaging for the salon's own makeup line, signage and apparel.",
-      "Watching a brand come together as one complete system was beautiful. It also clarified something I'd overlooked about myself for years: as a child I loved drawing, and I was good at it. I'd assumed real time on a canvas could never be economically viable — an assumption built on a lack of exposure, not on truth.",
+      "Watching a brand come together as one complete system was beautiful. Another moment of trust that clarified something I'had overlooked about myself for years: as a child I loved drawing, and I was good at it. I had assumed real time on a canvas could never be economically viable — an assumption built on a lack of exposure, not on truth.",
     ],
     quote: {
       text: "That was the purpose, all along.",
@@ -77,18 +80,18 @@ const SECTIONS = [
     title: "Self-taught stops meaning improvised",
     subtitle: "Finishing the degree, adding development to the design",
     paragraphs: [
-      "I finished my ICT degree. I kept teaching myself design and brand strategy the same way I'd learned that first Photoshop card — one project, one client, one late night at a time.",
+      "I finished my ICT degree. And this came with the realization of my purpose: I had been a creative all along. That somehow through the struggles, the strangers, the trust, and showing up, the universe had landed me in a place where I could finally see myself for who I truly am. I kept teaching myself design and brand strategy the same way I'd learned that first Photoshop card — one project, one client, one late night at a time.",
       "Eventually, “self-taught” stopped meaning improvised and started meaning practiced.",
-      "Then I added full-stack development to the same toolkit: Python and Flask, React, PostgreSQL, Framer, the full Adobe suite. Design that could also function — not just look right, but work.",
+      "Then I added full-stack development to the same toolkit: Python and Flask, React, PostgreSQL, Framer, the full Adobe suite. Design that could also function — not just work, but could tranform.",
     ],
   },
   {
     number: "05",
     title: "Thank you, in colour",
-    subtitle: "The people who taught me the craft",
+    subtitle: "The Youtube that taught me the craft",
     paragraphs: [
-      "None of this was built alone. Thanks to Will Paterson, whose work in logo design, hand lettering and brand identity taught me how to think about a mark. To Abi Connick, who taught me strategic brand identity development — and who still gets a mention every time she replies to my emails. And to Peter, of Peter's Design Company in Minneapolis, who taught me the craft of building marks meant to last.",
-      "I owe a piece of this to all three.",
+      "None of this was built alone. Thanks to Will Paterson, whose work in logo design, hand lettering and brand identity taught me how to think about a mark. To Abi Connick, who taught me strategic brand identity development — and who still gets a mention now and then for a time she replied to my emails. And to Peter, founder of Peter's Design Company in Minneapolis, who taught me the craft of building Logos that last, and family",
+      "I owe a piece of this to you all.",
     ],
   },
   {
@@ -97,7 +100,7 @@ const SECTIONS = [
     subtitle: "Where the work stands now",
     paragraphs: [
       "Today I work across 31 brands. Some built from the ground up. Some I'm still growing alongside their owners. And the everyday work in between — a flyer here, a small IT fix there, a brand audit, a clarity session.",
-      "The scale changed. The work changed. I changed — I've become better.",
+      "The scale changed. The work changed. I changed — I am growing",
     ],
   },
   {
