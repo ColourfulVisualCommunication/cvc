@@ -34,15 +34,13 @@ const PANEL_COLORS = [
   { bg: "var(--color-cvc-amber)", fg: "var(--color-cvc-ink)" },
 ];
 
-// Mobile accordion — same cycling idea as PANEL_COLORS but its own order:
-// index 0 (the first accordion) needs to land on crimson and, with 6
-// tiers cycling through 4 colors, index 5 (the last) needs to land on
-// ink — 5 % 4 === 1, so ink goes in slot 1 to satisfy both at once.
+// Mobile accordion — a strict two-color alternation (crimson/dark) rather
+// than PANEL_COLORS' full four-color cycle: simpler and bolder on a
+// narrow single-column list. With 6 tiers alternating two colors, index 0
+// (first) lands on crimson and index 5 (last) lands on ink automatically.
 const ACCORDION_COLORS = [
   { bg: "var(--color-cvc-crimson)", fg: "var(--color-cvc-ink)" },
   { bg: "var(--color-cvc-ink)", fg: "var(--color-cvc-paper)" },
-  { bg: "var(--color-cvc-amber)", fg: "var(--color-cvc-ink)" },
-  { bg: "var(--color-cvc-cyan)", fg: "var(--color-cvc-ink)" },
 ];
 
 // The scroll-wipe timeline pins each tier into one full-height frame — it
