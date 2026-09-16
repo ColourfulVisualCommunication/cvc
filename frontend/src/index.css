@@ -34,21 +34,23 @@
 
 html {
   -webkit-font-smoothing: antialiased;
-  /* A root-level clip, not a wrapper div's — an intermediate element with
-     overflow:hidden between a position:sticky descendant and the
-     viewport breaks that stickiness (this codebase leans on sticky
-     heavily: ServiceLadder's ScrollTimeline, OrbitWork, the mobile nav
-     bar), but html/body already *are* the sticky positioning root, so
-     clipping overflow here doesn't introduce a new container the way an
-     inner div would. This exists purely as a last-resort backstop against
-     a stray element (an oversized word, a transform) pushing the page
-     wider than the viewport — fix the actual cause when one shows up
-     rather than relying on this alone. */
-  overflow-x: hidden;
 }
 
 body {
-  overflow-x: hidden;
+  /* overflow-x: hidden used to live here as a horizontal-scroll backstop.
+     Removed — it was wrong. The CSS spec requires overflow-x and
+     overflow-y to agree on visible vs. non-visible: setting overflow-x
+     to anything but visible forces the browser to compute a left-at-
+     default overflow-y as auto too, turning html/body into an explicit
+     scroll container. That's a well-documented way to break
+     position:sticky for the whole page — confirmed directly here: with
+     it in place, a sticky child's own top matched its parent's top
+     instead of clamping to 0, so ServiceLadder's timeline and OrbitWork
+     never pinned at all, just scrolled straight past (the empty-cyan/
+     empty-dark screenshots this was chasing). The actual fix for the
+     one real overflow case (the Our Story heading) is the hyphens-auto
+     + wrap-break-word on that heading itself, in OurStory.jsx — fix the
+     specific cause, don't paper over it at the root and risk this. */
   font-family: var(--font-body);
   font-weight: 400;
   background: var(--color-cvc-ink);
