@@ -48,7 +48,6 @@ const SERVICES_HEADING_PANEL = {
 
 export default function Home() {
   const heroRef = useRef(null);
-  const heroThroughServicesRef = useRef(null);
   const [services, setServices] = useState([]);
   const [portfolio, setPortfolio] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
@@ -76,7 +75,7 @@ export default function Home() {
     <>
       <Seo path="/" jsonLd={localBusinessJsonLd} />
 
-      <div ref={heroThroughServicesRef} className="relative">
+      <div className="relative">
       <section ref={heroRef} className="relative overflow-hidden px-6 pb-24 pt-24 sm:pb-36 sm:pt-40">
         <HeroTunnel images={clientLogos.map((l) => l.logo_url)} />
 
@@ -145,10 +144,7 @@ export default function Home() {
       )}
       </div>
 
-      <ScrollArrow
-        targetRef={heroThroughServicesRef}
-        className="fixed right-6 top-1/2 hidden -translate-y-1/2 sm:right-10 sm:flex"
-      />
+      <ScrollArrow className="fixed right-6 top-1/2 hidden -translate-y-1/2 sm:right-10 sm:flex" />
 
       <section id="work" data-scroll-surface="light" className="relative overflow-hidden bg-cvc-cyan px-6 pb-20 pt-28">
         {/* The card grid centers itself with a lot of open gutter on wide
@@ -220,9 +216,9 @@ export default function Home() {
               <ScrollRevealText
                 as="h2"
                 text="It started with KSh 200, a cracked copy of Photoshop, and a stranger’s trust."
-                className="mt-4 block text-3xl font-bold leading-tight tracking-tight sm:text-4xl"
+                className="mt-3 block text-5xl font-bold leading-tight tracking-tight sm:text-7xl lg:text-8xl"
               />
-              <motion.p variants={fadeUp} className="mt-5 text-lg text-cvc-muted">
+              <motion.p variants={fadeUp} className="mt-4 text-lg text-cvc-muted sm:text-xl lg:text-2xl">
                 CVC didn&rsquo;t start in a boardroom — it started on a matatu, in traffic, with a
                 promise a stranger had no reason to keep. Everything since has just been proving
                 that trust right.
@@ -248,12 +244,11 @@ export default function Home() {
                 className="h-full w-full object-contain"
               />
               {/* Centered on the camera lens in the photo (measured at
-                  ~46%/67% of the image's own box) — the badge is sized
-                  bigger than the lens itself on purpose, sitting over it
-                  as a decorative seal rather than being inscribed inside
-                  the small circle. */}
+                  ~46%/67% of the image's own box) — sized well beyond the
+                  lens itself on purpose, a bold seal rather than a detail
+                  inscribed inside the small circle. */}
               <div className="absolute" style={{ left: "46%", top: "67%", transform: "translate(-50%, -50%)" }}>
-                <CircularSpinText text="CRAFTING ... CRAFTING ... " size={110} radius={50} fontSize={11} />
+                <CircularSpinText text=" DEFINE . POSITION . BUILD . SHIP ." size={220} radius={95} fontSize={15} fontWeight={900} />
               </div>
             </motion.div>
           </motion.div>

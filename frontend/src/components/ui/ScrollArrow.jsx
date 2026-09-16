@@ -1,29 +1,50 @@
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useEffect } from "react";
+import { motion, useMotionValue, useTransform } from "framer-motion";
 
-// Ported from a Framer community component ("Arrow") — a vertical
-// line-and-arrowhead scroll hint whose tail retracts toward the fixed head
-// as the visitor scrolls, then fades out. Scoped to a single section via
-// `targetRef` (the hero) rather than the whole page, like the original
-// defaulted to, so it disappears once that section is behind them instead
-// of lingering the entire way down a long homepage.
+// Ported/adapted from a Framer community component ("Arrow") — a vertical
+// line-and-arrowhead scroll hint whose tail retracts toward the fixed
+// head. Originally scoped to one target section's own scroll range (the
+// hero), fading out once that section was behind you; now it reacts to
+// scroll DIRECTION across the whole page instead — shrinking while
+// scrolling down, growing back while scrolling up — so it keeps
+// prompting "scroll down" the entire way through the page rather than
+// disappearing after the first section or two.
 export default function ScrollArrow({
-  targetRef,
   color = "var(--color-cvc-paper)",
   startHeight = 64,
   headSize = 12,
   thickness = 2,
   className = "",
 }) {
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ["start start", "end start"],
-  });
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-
+  const tailHeight = useMotionValue(startHeight);
   const tipY = startHeight + headSize + 10;
-  const tailHeight = useTransform(smoothProgress, [0, 1], [startHeight, 0]);
-  const tailTopY = useTransform(tailHeight, (latest) => tipY - latest);
-  const opacity = useTransform(scrollYProgress, [0, 0.85, 1], [1, 1, 0]);
+  const tailTopY = useTransform(tailHeight, (h) => tipY - h);
+
+  useEffect(() => {
+    let target = startHeight;
+    let current = startHeight;
+    let raf;
+    let lastY = window.scrollY;
+
+    function onScroll() {
+      const y = window.scrollY;
+      target = y > lastY ? 0 : startHeight;
+      lastY = y;
+    }
+
+    function loop() {
+      current += (target - current) * 0.12;
+      tailHeight.set(current);
+      raf = requestAnimationFrame(loop);
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    raf = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [startHeight, tailHeight]);
 
   const arm = headSize / 1.5;
   const tipPath = `M ${headSize - arm} ${tipY - arm} L ${headSize} ${tipY} L ${headSize + arm} ${tipY - arm}`;
@@ -31,7 +52,6 @@ export default function ScrollArrow({
   return (
     <motion.div
       aria-hidden="true"
-      style={{ opacity }}
       className={`pointer-events-none flex w-[50px] items-end justify-center ${className}`}
     >
       <svg
