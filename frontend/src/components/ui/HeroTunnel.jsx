@@ -66,21 +66,40 @@ export default function HeroTunnel({ images = [], className = "" }) {
     // needs it, cached for the lifetime of this mount.
     const textureCache = new Map();
     const textureLoader = new THREE.TextureLoader();
+    // Client logos are hosted cross-origin on Cloudinary. Without this, the
+    // browser still loads the image fine (no network error, onLoad fires)
+    // but the resulting canvas is CORS-tainted, and WebGL then refuses to
+    // read its pixel data — surfacing as "texSubImage2D: bad image data"
+    // on every single render call forever, since nothing ever marks the
+    // upload as given up on. crossOrigin="anonymous" makes the browser
+    // request it with CORS instead, which Cloudinary's public URLs support.
+    textureLoader.setCrossOrigin("anonymous");
     const getTexture = (url) => {
       let entry = textureCache.get(url);
       if (!entry) {
-        entry = { texture: null, materials: [] };
+        entry = { texture: null, failed: false, materials: [] };
         textureCache.set(url, entry);
-        textureLoader.load(url, (tex) => {
-          tex.minFilter = THREE.LinearFilter;
-          entry.texture = tex;
-          entry.materials.forEach((mat) => {
-            mat.map = tex;
-            mat.needsUpdate = true;
-            gsap.to(mat, { opacity: 0.85, duration: 1 });
-          });
-          entry.materials = [];
-        });
+        textureLoader.load(
+          url,
+          (tex) => {
+            tex.minFilter = THREE.LinearFilter;
+            entry.texture = tex;
+            entry.materials.forEach((mat) => {
+              mat.map = tex;
+              mat.needsUpdate = true;
+              gsap.to(mat, { opacity: 0.85, duration: 1 });
+            });
+            entry.materials = [];
+          },
+          undefined,
+          // A genuinely broken logo file (404, corrupt, unreadable) hits
+          // this instead — mark it failed so its slabs just stay invisible
+          // rather than retrying the same failing load indefinitely.
+          () => {
+            entry.failed = true;
+            entry.materials = [];
+          }
+        );
       }
       return entry;
     };
@@ -96,9 +115,12 @@ export default function HeroTunnel({ images = [], className = "" }) {
           mat.map = entry.texture;
           mat.needsUpdate = true;
           gsap.to(mat, { opacity: 0.85, duration: 1 });
-        } else {
+        } else if (!entry.failed) {
           entry.materials.push(mat);
         }
+        // else: this logo failed to load — leave the slab fully
+        // transparent (opacity stays 0) rather than waiting on a texture
+        // that's never coming.
         const m = new THREE.Mesh(geom, mat);
         m.position.copy(pos);
         m.rotation.copy(rot);
