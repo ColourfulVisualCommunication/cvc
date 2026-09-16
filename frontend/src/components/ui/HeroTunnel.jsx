@@ -2,6 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import * as THREE from "three";
 
+// A WebGL texture needs a source with well-defined pixel dimensions.
+// Client logos are frequently SVGs uploaded with only a viewBox and no
+// explicit width/height (valid SVG, renders fine as a normal <img> in
+// document flow) — but a detached <img> used purely as a texture source,
+// with no layout context to resolve percentage/viewBox-only sizing
+// against, can report inconsistent or zero natural dimensions depending
+// on the browser. That's what a "texSubImage2D: bad image data" /
+// "Texture is immutable" error loop actually is: not a broken file, a
+// source WebGL can't determine concrete pixels for. Routing every logo
+// through Cloudinary's own transformation (rasterize to a fixed
+// 512x512 PNG, regardless of source format) sidesteps the ambiguity
+// entirely rather than trying to out-guess which SVGs happen to have
+// explicit sizing.
+function toWebglSafeTextureUrl(url) {
+  return url.replace("/upload/", "/upload/f_png,w_512,h_512,c_pad,b_transparent/");
+}
+
 // Ported from a Framer community component ("Infinite scroll" / HeroTunnel)
 // into plain React + three.js — a scroll-driven 3D tunnel of image slabs
 // on the floor/ceiling/walls, replacing the Framer-editor-only static/canvas
@@ -47,7 +64,8 @@ export default function HeroTunnel({ images = [], className = "" }) {
   // flourish with nothing worth capturing in a static snapshot anyway, so
   // it's skipped entirely rather than risk breaking the build.
   const isPrerendering = typeof window !== "undefined" && window.__CVC_PRERENDER__ === true;
-  const imageUrls = enabled && !isPrerendering && images.length > 0 ? images : null;
+  const imageUrls =
+    enabled && !isPrerendering && images.length > 0 ? images.map(toWebglSafeTextureUrl) : null;
 
   const TUNNEL_WIDTH = 24;
   const TUNNEL_HEIGHT = 16;
