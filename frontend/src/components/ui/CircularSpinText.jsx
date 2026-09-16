@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // Rebuilt to match a specific reference exactly (a CodePen the user
 // pointed at) after the earlier Framer-ported version had a real bug:
@@ -11,17 +11,36 @@ import { useEffect, useRef } from "react";
 // after mount.
 const CHARACTER_OFFSET_ANGLE = 8;
 const toRadians = (deg) => deg * (Math.PI / 180);
+// Below this width the badge scales down a step so it doesn't overwhelm
+// the (also smaller) photo it sits on.
+const MOBILE_BREAKPOINT = 640;
+const MOBILE_SCALE = 0.75;
+
+function useResponsiveScale() {
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const mq = window.matchMedia(`(min-width: ${MOBILE_BREAKPOINT}px)`);
+    setScale(mq.matches ? 1 : MOBILE_SCALE);
+    const onChange = (e) => setScale(e.matches ? 1 : MOBILE_SCALE);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return scale;
+}
 
 export default function CircularSpinText({
   text,
-  radius = 95,
-  fontSize = 15,
+  radius = 80,
+  fontSize = 17,
   fontWeight = 900,
   color = "var(--color-cvc-crimson)",
   duration = 14,
   className = "",
 }) {
   const ref = useRef(null);
+  const scale = useResponsiveScale();
+  const scaledRadius = radius * scale;
+  const scaledFontSize = fontSize * scale;
 
   useEffect(() => {
     const el = ref.current;
@@ -33,18 +52,18 @@ export default function CircularSpinText({
 
     characters.forEach((ch, i) => {
       const span = document.createElement("span");
-      span.textContent = ch === " " ? " " : ch;
+      span.textContent = ch === " " ? " " : ch;
       span.style.position = "absolute";
       span.style.transformOrigin = "top left";
-      const xPos = radius * (1 + Math.cos(toRadians(currentAngle)));
-      const yPos = radius * (1 + Math.sin(toRadians(currentAngle)));
+      const xPos = scaledRadius * (1 + Math.cos(toRadians(currentAngle)));
+      const yPos = scaledRadius * (1 + Math.sin(toRadians(currentAngle)));
       span.style.transform = `translate(${xPos}px, ${yPos}px) rotate(${i * deltaAngle + CHARACTER_OFFSET_ANGLE}deg)`;
       el.appendChild(span);
       currentAngle += deltaAngle;
     });
-  }, [text, radius]);
+  }, [text, scaledRadius]);
 
-  const diameter = radius * 2;
+  const diameter = scaledRadius * 2;
 
   return (
     <>
@@ -63,8 +82,10 @@ export default function CircularSpinText({
           width: diameter,
           height: diameter,
           borderRadius: "50%",
-          fontSize,
+          fontFamily: "var(--font-heading)",
+          fontSize: scaledFontSize,
           fontWeight,
+          letterSpacing: "-0.02em",
           color,
           animation: `cvc-circular-spin ${duration}s infinite linear`,
         }}

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
 
 import { listServices, listPortfolio, listTestimonials, listClientLogos } from "../../api/client.js";
-import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
+import { fadeUp, stagger, revealOnce, revealBold } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import SectionHeading from "../../components/ui/SectionHeading.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
@@ -172,23 +172,23 @@ export default function Home() {
           {portfolio.length > 0 && (
             <motion.div
               {...revealOnce}
-              variants={stagger(0.08)}
+              variants={stagger(0.12)}
               className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
             >
               {portfolio
                 .filter((p) => p.cover_image_url)
                 .map((p) => (
-                  <motion.div key={p.slug} variants={fadeUp}>
+                  <motion.div key={p.slug} variants={revealBold}>
                     <Link
                       to={`/work/${p.slug}`}
-                      className="group block overflow-hidden bg-cvc-paper shadow-lg transition-transform duration-300 hover:-translate-y-1"
+                      className="group block overflow-hidden bg-cvc-paper shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
                     >
                       <div className="aspect-4/3 overflow-hidden">
                         <img
                           src={p.cover_image_url}
                           alt={p.title}
                           loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                       </div>
                       <div className="p-5">
@@ -248,7 +248,7 @@ export default function Home() {
                   lens itself on purpose, a bold seal rather than a detail
                   inscribed inside the small circle. */}
               <div className="absolute" style={{ left: "46%", top: "67%", transform: "translate(-50%, -50%)" }}>
-                <CircularSpinText text=" DEFINE . POSITION . BUILD . SHIP ." radius={95} fontSize={15} fontWeight={1200} />
+                <CircularSpinText text=" DEFINE . POSITION . BUILD . SHIP ." />
               </div>
             </motion.div>
           </motion.div>
