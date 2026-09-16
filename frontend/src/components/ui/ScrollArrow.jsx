@@ -1,45 +1,49 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 
-// Ported/adapted from a Framer community component ("Arrow") — a vertical
-// line-and-arrowhead scroll hint whose tail retracts toward the fixed
-// head. Originally scoped to one target section's own scroll range (the
-// hero), fading out once that section was behind you; now it tracks
-// scroll DISTANCE across the whole page instead — a first attempt at
-// this reacted only to scroll direction (any scroll-down event snapped a
-// target to "shrunk", any scroll-up event snapped it to "full"), which
-// meant it fully shrank or fully grew back after the smallest scroll
-// tick regardless of how far you'd actually moved. `progress` here is a
-// running value that a downward scroll of THRESHOLD px drains from 1 to
-// 0, and an upward scroll refills at the same rate — proportional to
-// distance covered either way, and it naturally cycles start-to-shrunk
-// repeatedly down a long page rather than settling into one state.
-const THRESHOLD = 400;
-
-export default function ScrollArrow({
-  color = "var(--color-cvc-paper)",
-  startHeight = 64,
-  headSize = 12,
-  thickness = 2,
-  className = "",
-}) {
+// A vertical line-and-arrowhead scroll hint whose tail retracts toward
+// the fixed head as you scroll down — full tail at the top of the page,
+// fully retracted at the bottom, growing back on the way up. Progress is
+// an absolute scroll fraction (scrollY / total scrollable distance), not
+// an incremental per-event accumulator — a fixed pixel threshold meant
+// the exact same 400px of scroll fully drained or refilled it regardless
+// of how tall the page actually was. Computing it directly from total
+// document height instead means the same scroll position always shows
+// the same tail length no matter how you got there, doubles as a real
+// whole-page progress indicator (the shrinking tail is itself the "keep
+// going" cue), and needs no direction-specific logic — one formula
+// covers scrolling down or back up.
+//
+// Color auto-inverts against whatever section currently sits behind its
+// fixed position, via the same data-scroll-surface="light" probe
+// ScrollToTop uses — without it, the light-paper-on-dark default
+// disappears over the cyan Work / amber Contact sections.
+export default function ScrollArrow({ startHeight = 96, headSize = 12, thickness = 2, className = "" }) {
   const tailHeight = useMotionValue(startHeight);
   const tipY = startHeight + headSize + 10;
   const tailTopY = useTransform(tailHeight, (h) => tipY - h);
+  const [onLight, setOnLight] = useState(false);
 
   useEffect(() => {
-    let progress = 1;
     let target = startHeight;
     let current = startHeight;
     let raf;
-    let lastY = window.scrollY;
 
-    function onScroll() {
-      const y = window.scrollY;
-      const dy = y - lastY;
-      lastY = y;
-      progress = Math.max(0, Math.min(1, progress - dy / THRESHOLD));
+    function updateProgress() {
+      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = scrollable > 0 ? 1 - Math.min(1, Math.max(0, window.scrollY / scrollable)) : 1;
       target = startHeight * progress;
+
+      const probeY = window.innerHeight / 2; // matches the arrow's own fixed top-1/2 position
+      let matched = false;
+      for (const el of document.querySelectorAll("[data-scroll-surface]")) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= probeY && rect.bottom >= probeY) {
+          matched = el.dataset.scrollSurface === "light";
+          break;
+        }
+      }
+      setOnLight(matched);
     }
 
     function loop() {
@@ -48,21 +52,33 @@ export default function ScrollArrow({
       raf = requestAnimationFrame(loop);
     }
 
-    window.addEventListener("scroll", onScroll, { passive: true });
+    updateProgress();
+    current = target;
+    window.addEventListener("scroll", updateProgress, { passive: true });
+    window.addEventListener("resize", updateProgress);
     raf = requestAnimationFrame(loop);
     return () => {
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", updateProgress);
+      window.removeEventListener("resize", updateProgress);
       cancelAnimationFrame(raf);
     };
   }, [startHeight, tailHeight]);
 
+  const color = onLight ? "var(--color-cvc-ink)" : "var(--color-cvc-paper)";
   const arm = headSize / 1.5;
   const tipPath = `M ${headSize - arm} ${tipY - arm} L ${headSize} ${tipY} L ${headSize + arm} ${tipY - arm}`;
 
   return (
     <motion.div
       aria-hidden="true"
-      className={`pointer-events-none flex w-[50px] items-end justify-center ${className}`}
+      // z-50, not the z-index:auto default — position:sticky content (the
+      // ServiceLadder timeline, OrbitWork's pinned viewport) unconditionally
+      // opens its own stacking context, and an auto-z-index fixed element
+      // that comes earlier in the DOM than a later sticky section loses the
+      // paint-order tiebreak and ends up hidden behind it while that
+      // section is pinned. z-50 matches the header/ScrollToTop convention
+      // for fixed chrome, which is exactly why those don't have this bug.
+      className={`pointer-events-none z-50 flex w-[50px] items-end justify-center ${className}`}
     >
       <svg
         width={headSize * 2}
