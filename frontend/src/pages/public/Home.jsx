@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { RoughNotation } from "react-rough-notation";
 
 import { listServices, listPortfolio, listTestimonials, listClientLogos } from "../../api/client.js";
-import { fadeUp, stagger, revealOnce, revealBold } from "../../motion/variants.js";
+import { fadeUp, stagger, revealOnce } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import SectionHeading from "../../components/ui/SectionHeading.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
@@ -15,6 +15,7 @@ import HeroTunnel from "../../components/ui/HeroTunnel.jsx";
 import Seo, { localBusinessJsonLd } from "../../components/Seo.jsx";
 import ClientLogos from "../../components/ClientLogos.jsx";
 import ServiceLadder from "../../components/ServiceLadder.jsx";
+import OrbitWork from "../../components/ui/OrbitWork.jsx";
 import CircularSpinText from "../../components/ui/CircularSpinText.jsx";
 import ScrollRevealText from "../../components/ui/ScrollRevealText.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
@@ -146,60 +147,39 @@ export default function Home() {
 
       <ScrollArrow className="fixed right-6 top-1/2 hidden -translate-y-1/2 sm:right-10 sm:flex" />
 
-      <section id="work" data-scroll-surface="light" className="relative overflow-hidden bg-cvc-cyan px-6 pb-20 pt-28">
-        {/* The card grid centers itself with a lot of open gutter on wide
-            screens — these fill that empty space rather than leaving it
-            bare, without competing with the cards themselves for attention. */}
-        <p className="pointer-events-none absolute left-6 top-8 hidden max-w-80 text-sm leading-relaxed text-cvc-ink/40 lg:block xl:left-10 xl:top-10">
-          Brand identity, web builds, and everything between — shipped, not just designed.
-        </p>
-        <p className="pointer-events-none absolute bottom-6 right-6 hidden max-w-56 text-right text-sm leading-relaxed text-cvc-ink/40 lg:block xl:bottom-10 xl:right-10">
-          From Idea to Action. From Action to Reality.
-        </p>
+      <section id="work" data-scroll-surface="light" className="relative bg-cvc-cyan">
+        {/* overflow-hidden is scoped to this intro block, not the whole
+            section — OrbitWork below is much taller (it's the scroll
+            track for a pinned effect) and nesting its sticky viewport
+            inside an overflow-hidden ancestor risks breaking the pin. */}
+        <div className="relative overflow-hidden px-6 pb-12 pt-28">
+          {/* The heading centers itself with a lot of open gutter on wide
+              screens — these fill that empty space rather than leaving it
+              bare, without competing with the heading for attention. */}
+          <p className="pointer-events-none absolute left-6 top-8 hidden max-w-80 text-sm leading-relaxed text-cvc-ink/40 lg:block xl:left-10 xl:top-10">
+            Brand identity, web builds, and everything between — shipped, not just designed.
+          </p>
+          <p className="pointer-events-none absolute bottom-6 right-6 hidden max-w-56 text-right text-sm leading-relaxed text-cvc-ink/40 lg:block xl:bottom-10 xl:right-10">
+            From Idea to Action. From Action to Reality.
+          </p>
 
-        <Container>
-          <SectionHeading
-            eyebrow="Work? No, we craft!"
-            title={portfolio.length > 0 ? "From an idea, to an experience" : "Something's brewing."}
-            subtitle={
-              portfolio.length > 0
-                ? "Defined, designed, built and shipped to the world — Watch how we turn ideas to reality."
-                : "Case studies are being written up. Ask on WhatsApp and we'll share examples of recent brand and web work directly."
-            }
-            onLight
-          />
+          <Container>
+            <SectionHeading
+              eyebrow="Work? No, we craft!"
+              title={portfolio.length > 0 ? "From an idea, to an experience" : "Something's brewing."}
+              subtitle={
+                portfolio.length > 0
+                  ? "Defined, designed, built and shipped to the world — Watch how we turn ideas to reality."
+                  : "Case studies are being written up. Ask on WhatsApp and we'll share examples of recent brand and web work directly."
+              }
+              onLight
+            />
+          </Container>
+        </div>
 
-          {portfolio.length > 0 && (
-            <motion.div
-              {...revealOnce}
-              variants={stagger(0.12)}
-              className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-            >
-              {portfolio
-                .filter((p) => p.cover_image_url)
-                .map((p) => (
-                  <motion.div key={p.slug} variants={revealBold}>
-                    <Link
-                      to={`/work/${p.slug}`}
-                      className="group block overflow-hidden bg-cvc-paper shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl"
-                    >
-                      <div className="aspect-4/3 overflow-hidden">
-                        <img
-                          src={p.cover_image_url}
-                          alt={p.title}
-                          loading="lazy"
-                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                        />
-                      </div>
-                      <div className="p-5">
-                        <h3 className="text-lg font-bold text-cvc-ink">{p.title}</h3>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-            </motion.div>
-          )}
-        </Container>
+        {portfolio.length > 0 ? (
+          <OrbitWork items={portfolio.filter((p) => p.cover_image_url)} />
+        ) : null}
       </section>
 
       <section id="about" className="border-t border-white/10 px-6 py-20">

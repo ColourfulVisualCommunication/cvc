@@ -17,15 +17,6 @@ export const fade = {
   visible: { opacity: 1, transition: { duration: 0.5, ease: EASE } },
 };
 
-/** A heavier scroll-in reveal (scale + blur, not just a fade/offset) for
- * content that should land with more weight than fadeUp — a grid of
- * portfolio cards, say, where a plain fade read as flat next to the
- * rest of the page's bolder motion. */
-export const revealBold = {
-  hidden: { opacity: 0, y: 48, scale: 0.92, filter: "blur(10px)" },
-  visible: { opacity: 1, y: 0, scale: 1, filter: "blur(0px)", transition: { duration: 0.7, ease: EASE } },
-};
-
 /** Put on a parent so children animate in sequence rather than together. */
 export const stagger = (delayChildren = 0, staggerChildren = 0.08) => ({
   hidden: {},
