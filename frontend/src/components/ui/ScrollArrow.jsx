@@ -4,11 +4,18 @@ import { motion, useMotionValue, useTransform } from "framer-motion";
 // Ported/adapted from a Framer community component ("Arrow") — a vertical
 // line-and-arrowhead scroll hint whose tail retracts toward the fixed
 // head. Originally scoped to one target section's own scroll range (the
-// hero), fading out once that section was behind you; now it reacts to
-// scroll DIRECTION across the whole page instead — shrinking while
-// scrolling down, growing back while scrolling up — so it keeps
-// prompting "scroll down" the entire way through the page rather than
-// disappearing after the first section or two.
+// hero), fading out once that section was behind you; now it tracks
+// scroll DISTANCE across the whole page instead — a first attempt at
+// this reacted only to scroll direction (any scroll-down event snapped a
+// target to "shrunk", any scroll-up event snapped it to "full"), which
+// meant it fully shrank or fully grew back after the smallest scroll
+// tick regardless of how far you'd actually moved. `progress` here is a
+// running value that a downward scroll of THRESHOLD px drains from 1 to
+// 0, and an upward scroll refills at the same rate — proportional to
+// distance covered either way, and it naturally cycles start-to-shrunk
+// repeatedly down a long page rather than settling into one state.
+const THRESHOLD = 400;
+
 export default function ScrollArrow({
   color = "var(--color-cvc-paper)",
   startHeight = 64,
@@ -21,6 +28,7 @@ export default function ScrollArrow({
   const tailTopY = useTransform(tailHeight, (h) => tipY - h);
 
   useEffect(() => {
+    let progress = 1;
     let target = startHeight;
     let current = startHeight;
     let raf;
@@ -28,12 +36,14 @@ export default function ScrollArrow({
 
     function onScroll() {
       const y = window.scrollY;
-      target = y > lastY ? 0 : startHeight;
+      const dy = y - lastY;
       lastY = y;
+      progress = Math.max(0, Math.min(1, progress - dy / THRESHOLD));
+      target = startHeight * progress;
     }
 
     function loop() {
-      current += (target - current) * 0.12;
+      current += (target - current) * 0.25;
       tailHeight.set(current);
       raf = requestAnimationFrame(loop);
     }
