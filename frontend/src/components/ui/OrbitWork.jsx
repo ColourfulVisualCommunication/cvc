@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
+import Container from "./Container.jsx";
+
 // A pinned, scroll-driven 3D card carousel — ported from a Framer
 // Marketplace component ("OrbitProject") into plain React/DOM. Only the
 // Framer-editor-only surface was dropped: `addPropertyControls`,
@@ -326,7 +328,15 @@ export default function OrbitWork({ items }) {
   }, [isDesktop, items, viewport.width, viewport.height]);
 
   if (!isDesktop) {
-    return <CompactGrid items={items} />;
+    // Unlike the desktop orbit (intentionally full-bleed), the compact
+    // fallback is plain content and should sit in the same column as the
+    // heading above it — it had no padding at all before this, so cards
+    // ran edge-to-edge while the heading was inset by Container's px-6.
+    return (
+      <Container>
+        <CompactGrid items={items} />
+      </Container>
+    );
   }
 
   return (

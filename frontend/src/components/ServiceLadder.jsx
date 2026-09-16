@@ -237,37 +237,48 @@ export default function ServiceLadder({ services, headingPanel }) {
           <Container>{headingPanel.header}</Container>
         </section>
       )}
-      {tierEntries.map(([tier, items], i) => {
-        const isOpen = openTier === tier;
-        const { bg, fg } = ACCORDION_COLORS[i % ACCORDION_COLORS.length];
-        return (
-          <section key={tier} className="px-6" style={{ background: bg, color: fg }}>
-            <Container>
-              <button
-                onClick={() => setOpenTier(isOpen ? null : tier)}
-                className="flex w-full items-center justify-between py-6 text-left"
-                aria-expanded={isOpen}
-              >
-                <span className="text-sm font-semibold uppercase tracking-wide">{TIER_LABELS[tier] ?? `Tier ${tier}`}</span>
-                <ArrowIcon size={20} className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`} />
-              </button>
-              <AnimatePresence initial={false}>
-                {isOpen && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.25, ease: "easeInOut" }}
-                    className="overflow-hidden"
+      {/* Each accordion's own color used to fill edge-to-edge (the section's
+          own px-6 is padding, not margin, so it insets the button's text
+          but not its background) — full-bleed color bars didn't align with
+          anything else on the page, including the heading panel's own text
+          column above them. Confining the color to a div inside Container
+          instead makes each pill start/end exactly where that heading text
+          does, with the page's own background as the gutter on either side. */}
+      <section className="px-6 py-2">
+        <Container>
+          <div className="space-y-3 py-4">
+            {tierEntries.map(([tier, items], i) => {
+              const isOpen = openTier === tier;
+              const { bg, fg } = ACCORDION_COLORS[i % ACCORDION_COLORS.length];
+              return (
+                <div key={tier} className="px-5" style={{ background: bg, color: fg }}>
+                  <button
+                    onClick={() => setOpenTier(isOpen ? null : tier)}
+                    className="flex w-full items-center justify-between py-6 text-left"
+                    aria-expanded={isOpen}
                   >
-                    <TierLinks items={items} fg={fg} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </Container>
-          </section>
-        );
-      })}
+                    <span className="text-sm font-semibold uppercase tracking-wide">{TIER_LABELS[tier] ?? `Tier ${tier}`}</span>
+                    <ArrowIcon size={20} className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`} />
+                  </button>
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: "easeInOut" }}
+                        className="overflow-hidden"
+                      >
+                        <TierLinks items={items} fg={fg} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              );
+            })}
+          </div>
+        </Container>
+      </section>
     </>
   );
 }

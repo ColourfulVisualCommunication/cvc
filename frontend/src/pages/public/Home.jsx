@@ -34,12 +34,17 @@ const SERVICES_HEADING_PANEL = {
   bg: "var(--color-cvc-ink)",
   fg: "var(--color-cvc-paper)",
   header: (
-    <div className="text-center">
+    // text-left below md, text-center from md up — matching ServiceLadder's
+    // own 768px switch from the stacked mobile accordion to the pinned
+    // desktop ScrollTimeline, rather than an arbitrary different breakpoint
+    // that would leave a tablet width centered while still on the mobile
+    // layout.
+    <div className="text-left md:text-center">
       <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] opacity-70 sm:text-sm lg:text-base">
         What we do
       </p>
       <h2 className="mt-3 text-5xl font-bold tracking-tight sm:text-7xl lg:text-8xl">A ladder, not a guess.</h2>
-      <p className="mx-auto mt-4 max-w-2xl text-lg opacity-80 sm:text-xl lg:text-2xl">
+      <p className="mt-4 max-w-2xl text-lg opacity-80 sm:text-xl lg:text-2xl md:mx-auto">
         Fixed prices where the scope is clear, quoted work where it isn't — either way, you know the
         number before we start.
       </p>
