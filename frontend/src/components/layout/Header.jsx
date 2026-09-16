@@ -87,17 +87,20 @@ export default function Header() {
 
   return (
     <header>
-      {/* Two independent floating elements, each in its own corner
-          outside the content column, rather than one grouped chip — the
-          logo stays put top-right for the whole scroll, the menu trigger
-          sits top-left, and neither ever sits over the middle of a
-          section the way even a small centered/grouped chip eventually
-          would on a narrow viewport. */}
+      {/* Desktop/tablet: two independent floating elements, each in its
+          own corner outside the content column, rather than one grouped
+          chip — the logo stays put top-right for the whole scroll, the
+          menu trigger sits top-left, neither ever sits over the middle
+          of a section. Hidden below sm in favor of the single mobile bar
+          below — two small disconnected corner marks read fine with the
+          extra width of a tablet+ screen either side of the content
+          column, but there's no equivalent "outside the column" gutter
+          on a phone for them to sit in without crowding the content. */}
       <NavLink
         to="/"
-        className="fixed right-4 top-4 z-50 flex items-center border border-white/10 bg-cvc-ink p-2 shadow-lg sm:right-6 sm:top-6"
+        className="fixed right-4 top-4 z-50 hidden items-center border border-white/10 bg-cvc-ink p-2.5 shadow-lg sm:right-6 sm:top-6 sm:flex"
       >
-        <img src="/favicon.svg" alt="Colourful Visual Communication" className="h-6 w-6 sm:h-7 sm:w-7" />
+        <img src="/favicon.svg" alt="Colourful Visual Communication" className="h-9 w-9 sm:h-10 sm:w-10" />
       </NavLink>
 
       <button
@@ -105,13 +108,32 @@ export default function Header() {
         // group + lg:group-hover so the morph is a mouse-hover flourish
         // on desktop only — a touch device has no hover state to get
         // stuck mid-animation on.
-        className="group fixed left-4 top-4 z-50 flex h-10 w-10 flex-col items-center justify-center gap-1 border border-white/10 bg-cvc-ink shadow-lg sm:left-6 sm:top-6 sm:h-11 sm:w-11"
+        className="group fixed left-4 top-4 z-50 hidden h-14 w-14 flex-col items-center justify-center gap-1.5 border border-white/10 bg-cvc-ink shadow-lg sm:left-6 sm:top-6 sm:flex"
         aria-expanded={open}
         aria-label="Open menu"
       >
-        <span className="h-0.5 w-3.5 bg-cvc-paper transition-transform duration-300 lg:group-hover:translate-y-[3px] lg:group-hover:rotate-45" />
-        <span className="h-0.5 w-3.5 bg-cvc-paper transition-transform duration-300 lg:group-hover:-translate-y-[3px] lg:group-hover:-rotate-45" />
+        <span className="h-0.5 w-6 bg-cvc-paper transition-transform duration-300 lg:group-hover:translate-y-[4px] lg:group-hover:rotate-45" />
+        <span className="h-0.5 w-6 bg-cvc-paper transition-transform duration-300 lg:group-hover:-translate-y-[4px] lg:group-hover:-rotate-45" />
       </button>
+
+      {/* Mobile: one conventional sticky bar — full logo on the left,
+          menu trigger on the right — rather than two floating marks,
+          which crowd a phone-width viewport with no side gutter to sit
+          in outside the content column. */}
+      <div className="sticky top-0 z-50 flex items-center justify-between border-b border-white/10 bg-cvc-ink px-4 py-3 sm:hidden">
+        <NavLink to="/" className="flex items-center">
+          <Logo dark size="h-11" />
+        </NavLink>
+        <button
+          onClick={() => setOpen(true)}
+          className="flex h-12 w-12 flex-col items-center justify-center gap-1.5 border border-white/15"
+          aria-expanded={open}
+          aria-label="Open menu"
+        >
+          <span className="h-0.5 w-5 bg-cvc-paper" />
+          <span className="h-0.5 w-5 bg-cvc-paper" />
+        </button>
+      </div>
 
       <AnimatePresence>
         {open && (
@@ -122,18 +144,18 @@ export default function Header() {
             transition={{ duration: 0.25 }}
             className="fixed inset-0 z-[70] flex h-dvh flex-col bg-cvc-ink text-cvc-paper"
           >
-            <div className="mx-auto flex h-16 w-full max-w-6xl shrink-0 items-center justify-between px-6">
+            <div className="mx-auto flex h-24 w-full max-w-6xl shrink-0 items-center justify-between px-6">
               <NavLink to="/" className="flex items-center" onClick={() => setOpen(false)}>
-                <Logo dark size="h-9" />
+                <Logo dark size="h-14" />
               </NavLink>
               <button
                 onClick={() => setOpen(false)}
-                className="flex h-9 w-9 items-center justify-center border border-white/15 text-cvc-paper"
+                className="flex h-14 w-14 items-center justify-center border border-white/15 text-cvc-paper"
                 aria-label="Close menu"
               >
-                <span className="relative block h-4 w-4">
-                  <span className="absolute left-1/2 top-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-cvc-paper" />
-                  <span className="absolute left-1/2 top-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-cvc-paper" />
+                <span className="relative block h-6 w-6">
+                  <span className="absolute left-1/2 top-1/2 h-0.5 w-6 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-cvc-paper" />
+                  <span className="absolute left-1/2 top-1/2 h-0.5 w-6 -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-cvc-paper" />
                 </span>
               </button>
             </div>
