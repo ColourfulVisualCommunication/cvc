@@ -72,6 +72,14 @@ export default function ScrollTimeline({
     let current = 0;
     let raf;
 
+    // getBoundingClientRect/offsetHeight both force a synchronous layout
+    // recalc. This used to run directly from the 'scroll' event, which
+    // fires far more often than animation frames during a real fast
+    // scroll gesture — colliding with this loop's own per-frame style
+    // writes (and every other pinned section's) for a textbook layout-
+    // thrash that visibly lagged the wipe behind the actual scroll
+    // position. Computing it only here, once per frame, throttles it to
+    // what the browser can actually paint.
     function computeTarget() {
       const rect = wrap.getBoundingClientRect();
       const total = wrap.offsetHeight - window.innerHeight;
@@ -80,22 +88,17 @@ export default function ScrollTimeline({
     }
 
     function loop() {
+      computeTarget();
       current += (target - current) * 0.18;
       if (Math.abs(target - current) < 0.0004) current = target;
       applyAt(current * (n - 1));
       raf = requestAnimationFrame(loop);
     }
 
-    window.addEventListener("scroll", computeTarget, { passive: true });
-    window.addEventListener("resize", computeTarget);
     computeTarget();
     current = target;
     raf = requestAnimationFrame(loop);
-    return () => {
-      window.removeEventListener("scroll", computeTarget);
-      window.removeEventListener("resize", computeTarget);
-      cancelAnimationFrame(raf);
-    };
+    return () => cancelAnimationFrame(raf);
   }, [items.length]);
 
   return (
