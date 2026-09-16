@@ -86,31 +86,32 @@ export default function Header() {
   }, [location.pathname, location.hash]);
 
   return (
-    <header className="fixed left-4 top-4 z-50 sm:left-6 sm:top-6">
-      {/* A compact floating chip instead of a full-width bar — it never
-          spans (or shades) the content behind it beyond its own small
-          footprint, which is the whole point: the old bar's width was
-          exactly what kept it "overlying on sections" no matter how
-          short its height got. Just the icon mark (not the full
-          logo+wordmark, which was tall enough to overlap hero content on
-          its own) opposite the menu trigger — nothing else in the chip. */}
-      <div className="flex items-center gap-4 border border-white/10 bg-cvc-ink px-3 py-2 shadow-lg">
-        <NavLink to="/" className="flex items-center">
-          <img src="/favicon.svg" alt="Colourful Visual Communication" className="h-6 w-6 sm:h-7 sm:w-7" />
-        </NavLink>
-        <button
-          onClick={() => setOpen(true)}
-          // group + lg:group-hover so the morph is a mouse-hover flourish
-          // on desktop only — a touch device has no hover state to get
-          // stuck mid-animation on.
-          className="group flex h-7 w-7 flex-col items-center justify-center gap-1 border border-white/15 sm:h-8 sm:w-8"
-          aria-expanded={open}
-          aria-label="Open menu"
-        >
-          <span className="h-0.5 w-3.5 bg-cvc-paper transition-transform duration-300 lg:group-hover:translate-y-[3px] lg:group-hover:rotate-45" />
-          <span className="h-0.5 w-3.5 bg-cvc-paper transition-transform duration-300 lg:group-hover:-translate-y-[3px] lg:group-hover:-rotate-45" />
-        </button>
-      </div>
+    <header>
+      {/* Two independent floating elements, each in its own corner
+          outside the content column, rather than one grouped chip — the
+          logo stays put top-right for the whole scroll, the menu trigger
+          sits top-left, and neither ever sits over the middle of a
+          section the way even a small centered/grouped chip eventually
+          would on a narrow viewport. */}
+      <NavLink
+        to="/"
+        className="fixed right-4 top-4 z-50 flex items-center border border-white/10 bg-cvc-ink p-2 shadow-lg sm:right-6 sm:top-6"
+      >
+        <img src="/favicon.svg" alt="Colourful Visual Communication" className="h-6 w-6 sm:h-7 sm:w-7" />
+      </NavLink>
+
+      <button
+        onClick={() => setOpen(true)}
+        // group + lg:group-hover so the morph is a mouse-hover flourish
+        // on desktop only — a touch device has no hover state to get
+        // stuck mid-animation on.
+        className="group fixed left-4 top-4 z-50 flex h-10 w-10 flex-col items-center justify-center gap-1 border border-white/10 bg-cvc-ink shadow-lg sm:left-6 sm:top-6 sm:h-11 sm:w-11"
+        aria-expanded={open}
+        aria-label="Open menu"
+      >
+        <span className="h-0.5 w-3.5 bg-cvc-paper transition-transform duration-300 lg:group-hover:translate-y-[3px] lg:group-hover:rotate-45" />
+        <span className="h-0.5 w-3.5 bg-cvc-paper transition-transform duration-300 lg:group-hover:-translate-y-[3px] lg:group-hover:-rotate-45" />
+      </button>
 
       <AnimatePresence>
         {open && (
