@@ -13,10 +13,22 @@ import { useReducedMotion } from "framer-motion";
 // smooth regardless of how many logos there are, plus the edge-fade mask
 // for a seamless infinite feel.
 const SPEED_PX_S = 40;
+// Page-scroll input temporarily overrides the free-run speed above —
+// scrolling down speeds the strip up (same direction), scrolling up
+// pushes hard enough the other way to actually reverse it, and the
+// impulse decays back to the free-run speed once scrolling stops. Same
+// idea as the original Framer component's own "scroll boost" property.
+const SCROLL_BOOST = 6;
+const BOOST_DECAY = 0.45;
+
+function mod(n, m) {
+  return ((n % m) + m) % m;
+}
 
 export default function LogoMarquee({ logos, height = 72 }) {
   const trackRef = useRef(null);
   const offsetRef = useRef(0);
+  const boostRef = useRef(0);
   const [setWidth, setSetWidth] = useState(0);
   const reduceMotion = useReducedMotion();
 
@@ -36,14 +48,27 @@ export default function LogoMarquee({ logos, height = 72 }) {
   }, [logos]);
 
   useEffect(() => {
+    if (reduceMotion) return;
+    let lastY = window.scrollY;
+    function onScroll() {
+      const y = window.scrollY;
+      boostRef.current = Math.max(-400, Math.min(400, boostRef.current + (y - lastY) * SCROLL_BOOST));
+      lastY = y;
+    }
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [reduceMotion]);
+
+  useEffect(() => {
     if (reduceMotion || !setWidth) return;
     let raf;
     let last = 0;
     const step = (ts) => {
       if (!last) last = ts;
-      const dt = (ts - last) / 1000;
+      const dt = Math.min(0.05, (ts - last) / 1000);
       last = ts;
-      offsetRef.current = (offsetRef.current + SPEED_PX_S * dt) % setWidth;
+      boostRef.current *= Math.exp(-dt / BOOST_DECAY);
+      offsetRef.current = mod(offsetRef.current + (SPEED_PX_S + boostRef.current) * dt, setWidth);
       if (trackRef.current) trackRef.current.style.transform = `translateX(${-offsetRef.current}px)`;
       raf = requestAnimationFrame(step);
     };

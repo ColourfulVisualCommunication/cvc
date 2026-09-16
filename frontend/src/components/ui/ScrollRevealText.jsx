@@ -25,6 +25,24 @@ export default function ScrollRevealText({
   const containerRef = useRef(null);
   const spanRefs = useRef([]);
   const chars = useMemo(() => Array.from(text), [text]);
+  // Rendering flat per-character spans (each `display:inline-block`, its
+  // own atomic inline box) let the browser wrap a line between ANY two
+  // characters, including mid-word — exactly the mid-word break the
+  // original avoids by grouping each word's characters into one
+  // `white-space: nowrap` wrapper first. The per-character spans for the
+  // reveal animation still live inside that wrapper; only the grouping
+  // for line-wrapping purposes was missing.
+  const words = useMemo(() => {
+    let index = 0;
+    return String(text)
+      .split(/(\s+)/)
+      .filter(Boolean)
+      .map((token) => {
+        const isSpace = /^\s+$/.test(token);
+        const tokenChars = Array.from(token).map((ch) => ({ ch, index: index++ }));
+        return { isSpace, chars: tokenChars };
+      });
+  }, [text]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -88,17 +106,27 @@ export default function ScrollRevealText({
     };
   }, [chars, stagger, xOffset, blur, offsetStart, offsetEnd, colorHidden, colorRevealed]);
 
+  const charSpan = ({ ch, index }) => (
+    <span
+      key={index}
+      ref={(el) => (spanRefs.current[index] = el)}
+      style={{ display: "inline-block", willChange: "transform, opacity, color, filter" }}
+    >
+      {ch === " " ? "\u00A0" : ch}
+    </span>
+  );
+
   return (
     <Tag ref={containerRef} className={className}>
-      {chars.map((ch, i) => (
-        <span
-          key={i}
-          ref={(el) => (spanRefs.current[i] = el)}
-          style={{ display: "inline-block", willChange: "transform, opacity, color, filter" }}
-        >
-          {ch === " " ? " " : ch}
-        </span>
-      ))}
+      {words.map((word, wi) =>
+        word.isSpace ? (
+          word.chars.map(charSpan)
+        ) : (
+          <span key={`w-${wi}`} style={{ whiteSpace: "nowrap", display: "inline-block" }}>
+            {word.chars.map(charSpan)}
+          </span>
+        )
+      )}
     </Tag>
   );
 }
