@@ -33,7 +33,7 @@ export default function CircularSpinText({
   radius = 80,
   fontSize = 17,
   fontWeight = 900,
-  color = "var(--color-cvc-crimson)",
+  color = "var(--color-cvc-ink)",
   duration = 14,
   className = "",
 }) {
