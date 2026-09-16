@@ -20,11 +20,6 @@ const LINKS = [
 
 const SECTION_IDS = LINKS.map((l) => l.sectionId).filter(Boolean);
 
-const linkClass = ({ isActive }) =>
-  `text-sm font-medium transition-colors lg:text-base ${
-    isActive ? "text-cvc-ink" : "text-cvc-ink/70 hover:text-cvc-ink"
-  }`;
-
 function useHomeActiveSection(onHome) {
   const [activeSection, setActiveSection] = useState(null);
 
@@ -70,81 +65,115 @@ export default function Header() {
     return link.sectionId ? activeSection === link.sectionId : false;
   }
 
+  // A full-screen takeover behind an open menu shouldn't let the page
+  // scroll underneath it, and should close on Escape like any modal.
+  useEffect(() => {
+    if (!open) return;
+    document.body.style.overflow = "hidden";
+    const onKey = (e) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = "";
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  // Closes on every route change (including a same-page hash link like
+  // "/#services", which doesn't unmount anything React Router would
+  // otherwise treat as "navigating away from" the open menu).
+  useEffect(() => {
+    setOpen(false);
+  }, [location.pathname, location.hash]);
+
   return (
     <header className="sticky top-0 z-50 border-b border-black/10 bg-cvc-paper/90 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
         <NavLink to="/" className="flex items-center">
           <Logo />
         </NavLink>
 
-        <nav className="hidden items-center gap-8 md:flex">
-          {LINKS.map((l) => (
-            <NavLink
-              key={l.to}
-              to={l.to}
-              end={l.end}
-              className={({ isActive }) => linkClass({ isActive: isActiveLink(l, isActive) })}
-            >
-              {l.label}
-            </NavLink>
-          ))}
-          <a
-            href="https://wa.me/254769604255"
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 bg-cvc-amber px-4 py-2 text-sm font-semibold text-cvc-ink transition-transform hover:scale-105 lg:px-5 lg:py-2.5 lg:text-base"
-          >
-            <EyeFollowEyes size={13} pupilSize={5} gap={4} />
-            Start a project
-          </a>
-        </nav>
-
         <button
-          className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 md:hidden"
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Toggle menu"
+          onClick={() => setOpen(true)}
+          className="flex items-center gap-3 text-sm font-bold uppercase tracking-[0.18em] text-cvc-ink"
+          aria-expanded={open}
+          aria-label="Open menu"
         >
-          <span className={`h-0.5 w-6 bg-cvc-ink transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
-          <span className={`h-0.5 w-6 bg-cvc-ink transition-opacity ${open ? "opacity-0" : ""}`} />
-          <span className={`h-0.5 w-6 bg-cvc-ink transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
+          Menu
+          <span className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 border border-cvc-ink/15">
+            <span className="h-0.5 w-4 bg-cvc-ink" />
+            <span className="h-0.5 w-4 bg-cvc-ink" />
+          </span>
         </button>
       </div>
 
       <AnimatePresence>
         {open && (
-          <motion.nav
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t border-black/10 md:hidden"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[70] flex h-dvh flex-col bg-cvc-ink text-cvc-paper"
           >
-            <div className="flex flex-col gap-1 px-6 py-4">
-              {LINKS.map((l) => (
-                <NavLink
+            <div className="mx-auto flex h-16 w-full max-w-6xl shrink-0 items-center justify-between px-6">
+              <NavLink to="/" className="flex items-center" onClick={() => setOpen(false)}>
+                <Logo dark />
+              </NavLink>
+              <button
+                onClick={() => setOpen(false)}
+                className="flex h-9 w-9 items-center justify-center border border-white/15 text-cvc-paper"
+                aria-label="Close menu"
+              >
+                <span className="relative block h-4 w-4">
+                  <span className="absolute left-1/2 top-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-cvc-paper" />
+                  <span className="absolute left-1/2 top-1/2 h-0.5 w-4 -translate-x-1/2 -translate-y-1/2 -rotate-45 bg-cvc-paper" />
+                </span>
+              </button>
+            </div>
+
+            <nav className="flex flex-1 flex-col items-center justify-center gap-1 px-6">
+              {LINKS.map((l, i) => (
+                <motion.div
                   key={l.to}
-                  to={l.to}
-                  end={l.end}
-                  onClick={() => setOpen(false)}
-                  className={({ isActive }) =>
-                    `px-3 py-2.5 text-base font-medium ${
-                      isActiveLink(l, isActive) ? "bg-black/5 text-cvc-ink" : "text-cvc-ink/70"
-                    }`
-                  }
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.06 * i, duration: 0.35, ease: "easeOut" }}
+                  className="flex items-center gap-4 sm:gap-6"
                 >
-                  {l.label}
-                </NavLink>
+                  <span className="font-mono text-sm text-cvc-paper/40 sm:text-base">{String(i + 1).padStart(2, "0")}</span>
+                  <NavLink
+                    to={l.to}
+                    end={l.end}
+                    onClick={() => setOpen(false)}
+                    className={({ isActive }) =>
+                      `text-5xl font-bold tracking-tight transition-colors sm:text-7xl ${
+                        isActiveLink(l, isActive) ? "text-cvc-amber" : "text-cvc-paper hover:text-cvc-amber"
+                      }`
+                    }
+                  >
+                    {l.label}
+                  </NavLink>
+                </motion.div>
               ))}
+            </nav>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.06 * LINKS.length + 0.1 }}
+              className="mx-auto w-full max-w-6xl shrink-0 px-6 pb-10"
+            >
               <a
                 href="https://wa.me/254769604255"
                 target="_blank"
                 rel="noreferrer"
-                className="mt-2 flex items-center justify-center gap-2 bg-cvc-amber px-3 py-2.5 text-center text-base font-semibold text-cvc-ink"
+                className="inline-flex items-center gap-2 bg-cvc-amber px-5 py-3 text-sm font-semibold text-cvc-ink transition-transform hover:scale-105 sm:text-base"
               >
-                <EyeFollowEyes size={15} pupilSize={5} gap={4} />
+                <EyeFollowEyes size={13} pupilSize={5} gap={4} />
                 Start a project
               </a>
-            </div>
-          </motion.nav>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </header>
