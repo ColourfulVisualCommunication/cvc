@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
-import { fadeUp, stagger, revealOnce } from "../motion/variants.js";
+import { fadeUp, stagger } from "../motion/variants.js";
 import Container from "./ui/Container.jsx";
 import ScrollTimeline from "./ui/ScrollTimeline.jsx";
 import ArrowIcon from "./ui/ArrowIcon.jsx";
@@ -23,10 +23,14 @@ export const TIER_LABELS = {
 // index 5 (the last tier, "Retainers") lands back on index 1's color —
 // ink, deliberately, so the ladder closes on dark before the cyan "Work"
 // section starts (ink contrasts with that cyan; matching it wouldn't).
+// Only the ink panel is "dark" in the sense that matters for text: its fg
+// is paper (white belongs on a dark background). The other three are
+// light/saturated enough that fg stays ink — dark text on a colored
+// background, not white on a mid-tone.
 const PANEL_COLORS = [
   { bg: "var(--color-cvc-cyan)", fg: "var(--color-cvc-ink)" },
   { bg: "var(--color-cvc-ink)", fg: "var(--color-cvc-paper)" },
-  { bg: "var(--color-cvc-crimson)", fg: "var(--color-cvc-paper)" },
+  { bg: "var(--color-cvc-crimson)", fg: "var(--color-cvc-ink)" },
   { bg: "var(--color-cvc-amber)", fg: "var(--color-cvc-ink)" },
 ];
 
@@ -62,16 +66,19 @@ function formatPrice(s) {
   return s.price_max_cents ? `${base} – ${(s.price_max_cents / 100).toLocaleString()}` : base;
 }
 
-// Cards used to pick up each panel's own accent color (an outline tinted
-// toward the panel's fg, text colored to match) so they'd read against
-// whatever background they landed on. In practice that made every panel
-// look like a different component — same layout, different sizes and
-// weights of color everywhere. Cards are now a fixed solid-dark chip on
-// every panel regardless of that panel's own color, with white text
-// throughout (white belongs on a dark background, and every card now has
-// one) — the panel color shows through only as the space around the
-// cards, not inside them.
-function TierCards({ items }) {
+// Cards invert each panel's own colors rather than matching them: the one
+// dark panel (ink) gets white cards with ink text, the three light/accent
+// panels (cyan, crimson, amber) get dark cards with that panel's own
+// accent color as the text. Card fill is always one of exactly two fixed,
+// fully opaque values — never alpha-blended over the panel's background,
+// which is what previously made "dark" cards read as a different shade
+// on every panel (black at a fixed opacity composites differently
+// depending on what's underneath it; an opaque color never does).
+function TierCards({ items, bg, fg }) {
+  const isDarkPanel = fg === "var(--color-cvc-paper)";
+  const cardBg = isDarkPanel ? "var(--color-cvc-paper)" : "var(--color-cvc-ink)";
+  const textColor = isDarkPanel ? "var(--color-cvc-ink)" : bg;
+
   return (
     <motion.div
       initial="hidden"
@@ -90,15 +97,24 @@ function TierCards({ items }) {
         <motion.div key={s.slug} variants={fadeUp} className="w-full sm:w-[calc(50%-0.75rem)] lg:w-[340px]">
           <Link
             to={`/services/${s.slug}`}
-            className="group flex h-full flex-col justify-between border-2 border-white/10 bg-black/85 p-7 text-center text-cvc-paper transition-opacity hover:opacity-80 hover:border-white/30 lg:p-8"
+            // A fixed height (not h-full) — h-full only equalizes cards
+            // within the same flex row, so two different tiers' cards
+            // (visible together mid-wipe, or compared shot to shot) could
+            // still be different heights. One fixed height everywhere
+            // means every card is identical regardless of which panel or
+            // how long that service's summary happens to be; justify-
+            // between still pushes the price block to the bottom so a
+            // short summary just leaves more breathing room above it.
+            className="group flex h-[420px] flex-col justify-between border-2 p-7 text-center transition-opacity hover:opacity-80 lg:p-8"
+            style={{ backgroundColor: cardBg, color: textColor, borderColor: `color-mix(in srgb, ${textColor} 25%, transparent)` }}
           >
             <div>
               <h3 className="text-2xl font-extrabold sm:text-[1.7rem]">{s.name}</h3>
-              <p className="mt-3 text-base text-cvc-paper/70">{s.summary}</p>
+              <p className="mt-3 text-base opacity-70">{s.summary}</p>
             </div>
             <div className="mt-8 flex flex-col items-center gap-1.5 text-base">
               <span className="font-mono text-lg font-bold">{formatPrice(s)}</span>
-              {s.duration && <span className="text-cvc-paper/70">{s.duration}</span>}
+              {s.duration && <span className="opacity-70">{s.duration}</span>}
               <span className="mt-4 inline-flex items-center gap-1.5 text-base font-bold transition-transform duration-200 group-hover:translate-x-1">
                 Learn more
                 <ArrowIcon size={24} />
@@ -119,7 +135,7 @@ function TierCards({ items }) {
 // full cards, inside the pinned ScrollTimeline frame.
 function TierLinks({ items }) {
   return (
-    <motion.ul {...revealOnce} variants={stagger(0.06)} className="mt-6 divide-y divide-white/10">
+    <motion.ul initial="hidden" animate="visible" variants={stagger(0.06)} className="divide-y divide-white/10 pb-6">
       {items.map((s) => (
         <motion.li key={s.slug} variants={fadeUp}>
           <Link
@@ -148,6 +164,7 @@ function TierLinks({ items }) {
  */
 export default function ServiceLadder({ services, headingPanel }) {
   const isDesktop = useIsDesktop();
+  const [openTier, setOpenTier] = useState(null);
 
   const byTier = services.reduce((acc, s) => {
     (acc[s.tier] ??= []).push(s);
@@ -171,7 +188,7 @@ export default function ServiceLadder({ services, headingPanel }) {
           </h2>
         </div>
       ),
-      content: <TierCards items={items} />,
+      content: <TierCards items={items} bg={bg} fg={fg} />,
     };
   });
 
@@ -181,12 +198,12 @@ export default function ServiceLadder({ services, headingPanel }) {
       <ScrollTimeline
         totalScrollHeight={`${items.length * 100}vh`}
         cornerRadius={0}
-        // The site header is a sticky ~105px bar — without this the pinned
+        // The site header is a sticky ~65px bar — without this the pinned
         // panel frame starts 24px from the very top of the viewport and
         // its heading/cards render underneath the header instead of below
         // it (the header wins on stacking order, so the content is simply
         // hidden behind it, not just visually close).
-        topOffset={120}
+        topOffset={80}
         items={items}
       />
     );
@@ -199,16 +216,39 @@ export default function ServiceLadder({ services, headingPanel }) {
           <Container>{headingPanel.header}</Container>
         </section>
       )}
-      {tierEntries.map(([tier, items]) => (
-        <section key={tier} className="border-t border-white/10 px-6 py-10">
-          <Container>
-            <motion.h2 {...revealOnce} className="text-sm font-semibold uppercase tracking-wide text-cvc-cyan">
-              {TIER_LABELS[tier] ?? `Tier ${tier}`}
-            </motion.h2>
-            <TierLinks items={items} />
-          </Container>
-        </section>
-      ))}
+      {tierEntries.map(([tier, items]) => {
+        const isOpen = openTier === tier;
+        return (
+          <section key={tier} className="border-t border-white/10 px-6">
+            <Container>
+              <button
+                onClick={() => setOpenTier(isOpen ? null : tier)}
+                className="flex w-full items-center justify-between py-6 text-left"
+                aria-expanded={isOpen}
+              >
+                <span className="text-sm font-semibold uppercase tracking-wide text-cvc-cyan">
+                  {TIER_LABELS[tier] ?? `Tier ${tier}`}
+                  <span className="ml-2 font-mono text-cvc-muted">({items.length})</span>
+                </span>
+                <ArrowIcon size={20} className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`} />
+              </button>
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: "easeInOut" }}
+                    className="overflow-hidden"
+                  >
+                    <TierLinks items={items} />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </Container>
+          </section>
+        );
+      })}
     </>
   );
 }
