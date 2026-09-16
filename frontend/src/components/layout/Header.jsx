@@ -86,22 +86,27 @@ export default function Header() {
   }, [location.pathname, location.hash]);
 
   return (
-    <header className="sticky top-0 z-50 border-b border-black/10 bg-cvc-paper/90 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-6">
+    <header className="fixed left-4 top-4 z-50 sm:left-6 sm:top-6">
+      {/* A compact floating chip instead of a full-width bar — it never
+          spans (or shades) the content behind it beyond its own small
+          footprint, which is the whole point: the old bar's width was
+          exactly what kept it "overlying on sections" no matter how
+          short its height got. */}
+      <div className="flex items-center gap-3 border border-white/10 bg-cvc-ink px-3 py-2 shadow-lg sm:gap-4 sm:px-4 sm:py-2.5">
         <NavLink to="/" className="flex items-center">
-          <Logo />
+          <Logo dark />
         </NavLink>
-
+        <div className="h-6 w-px bg-white/10" />
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-3 text-sm font-bold uppercase tracking-[0.18em] text-cvc-ink"
+          className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-cvc-paper sm:text-sm"
           aria-expanded={open}
           aria-label="Open menu"
         >
           Menu
-          <span className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 border border-cvc-ink/15">
-            <span className="h-0.5 w-4 bg-cvc-ink" />
-            <span className="h-0.5 w-4 bg-cvc-ink" />
+          <span className="flex h-7 w-7 flex-col items-center justify-center gap-1 border border-white/15 sm:h-8 sm:w-8">
+            <span className="h-0.5 w-3.5 bg-cvc-paper" />
+            <span className="h-0.5 w-3.5 bg-cvc-paper" />
           </span>
         </button>
       </div>
