@@ -34,6 +34,17 @@ const PANEL_COLORS = [
   { bg: "var(--color-cvc-amber)", fg: "var(--color-cvc-ink)" },
 ];
 
+// Mobile accordion — same cycling idea as PANEL_COLORS but its own order:
+// index 0 (the first accordion) needs to land on crimson and, with 6
+// tiers cycling through 4 colors, index 5 (the last) needs to land on
+// ink — 5 % 4 === 1, so ink goes in slot 1 to satisfy both at once.
+const ACCORDION_COLORS = [
+  { bg: "var(--color-cvc-crimson)", fg: "var(--color-cvc-ink)" },
+  { bg: "var(--color-cvc-ink)", fg: "var(--color-cvc-paper)" },
+  { bg: "var(--color-cvc-amber)", fg: "var(--color-cvc-ink)" },
+  { bg: "var(--color-cvc-cyan)", fg: "var(--color-cvc-ink)" },
+];
+
 // The scroll-wipe timeline pins each tier into one full-height frame — it
 // only works when a tier's card grid actually fits inside that frame. A
 // 3-column desktop grid does; a single mobile column of 3-4 cards is much
@@ -133,11 +144,22 @@ function TierCards({ items, bg, fg }) {
 // (still its own heading) but collapses each service down to one line:
 // name + link, nothing else. Desktop is unaffected — it still gets the
 // full cards, inside the pinned ScrollTimeline frame.
-function TierLinks({ items }) {
+function TierLinks({ items, fg }) {
+  const dividerStyle = fg ? { borderColor: `color-mix(in srgb, ${fg} 15%, transparent)` } : undefined;
   return (
-    <motion.ul initial="hidden" animate="visible" variants={stagger(0.06)} className="divide-y divide-white/10 pb-6">
-      {items.map((s) => (
-        <motion.li key={s.slug} variants={fadeUp}>
+    <motion.ul
+      initial="hidden"
+      animate="visible"
+      variants={stagger(0.06)}
+      className={`pb-6 ${fg ? "" : "divide-y divide-white/10"}`}
+    >
+      {items.map((s, i) => (
+        <motion.li
+          key={s.slug}
+          variants={fadeUp}
+          className={fg && i < items.length - 1 ? "border-b" : ""}
+          style={fg && i < items.length - 1 ? dividerStyle : undefined}
+        >
           <Link
             to={`/services/${s.slug}`}
             className="group flex items-center justify-between gap-4 py-4 transition-opacity hover:opacity-70"
@@ -198,12 +220,13 @@ export default function ServiceLadder({ services, headingPanel }) {
       <ScrollTimeline
         totalScrollHeight={`${items.length * 100}vh`}
         cornerRadius={0}
-        // The site header is a sticky ~65px bar — without this the pinned
-        // panel frame starts 24px from the very top of the viewport and
-        // its heading/cards render underneath the header instead of below
-        // it (the header wins on stacking order, so the content is simply
-        // hidden behind it, not just visually close).
-        topOffset={80}
+        // The floating logo icon sits fixed at top-6 (24px) with its own
+        // padding, ending around y=84px — without this the pinned panel
+        // frame starts above that, so the panel's own top edge (and its
+        // decorative corner number, anchored at the same right-6 inset as
+        // the icon) visibly collides with it instead of sitting cleanly
+        // below.
+        topOffset={110}
         items={items}
       />
     );
@@ -216,20 +239,18 @@ export default function ServiceLadder({ services, headingPanel }) {
           <Container>{headingPanel.header}</Container>
         </section>
       )}
-      {tierEntries.map(([tier, items]) => {
+      {tierEntries.map(([tier, items], i) => {
         const isOpen = openTier === tier;
+        const { bg, fg } = ACCORDION_COLORS[i % ACCORDION_COLORS.length];
         return (
-          <section key={tier} className="border-t border-white/10 px-6">
+          <section key={tier} className="px-6" style={{ background: bg, color: fg }}>
             <Container>
               <button
                 onClick={() => setOpenTier(isOpen ? null : tier)}
                 className="flex w-full items-center justify-between py-6 text-left"
                 aria-expanded={isOpen}
               >
-                <span className="text-sm font-semibold uppercase tracking-wide text-cvc-cyan">
-                  {TIER_LABELS[tier] ?? `Tier ${tier}`}
-                  <span className="ml-2 font-mono text-cvc-muted">({items.length})</span>
-                </span>
+                <span className="text-sm font-semibold uppercase tracking-wide">{TIER_LABELS[tier] ?? `Tier ${tier}`}</span>
                 <ArrowIcon size={20} className={`shrink-0 transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`} />
               </button>
               <AnimatePresence initial={false}>
@@ -241,7 +262,7 @@ export default function ServiceLadder({ services, headingPanel }) {
                     transition={{ duration: 0.25, ease: "easeInOut" }}
                     className="overflow-hidden"
                   >
-                    <TierLinks items={items} />
+                    <TierLinks items={items} fg={fg} />
                   </motion.div>
                 )}
               </AnimatePresence>
