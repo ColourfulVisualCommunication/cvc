@@ -34,9 +34,21 @@
 
 html {
   -webkit-font-smoothing: antialiased;
+  /* A root-level clip, not a wrapper div's — an intermediate element with
+     overflow:hidden between a position:sticky descendant and the
+     viewport breaks that stickiness (this codebase leans on sticky
+     heavily: ServiceLadder's ScrollTimeline, OrbitWork, the mobile nav
+     bar), but html/body already *are* the sticky positioning root, so
+     clipping overflow here doesn't introduce a new container the way an
+     inner div would. This exists purely as a last-resort backstop against
+     a stray element (an oversized word, a transform) pushing the page
+     wider than the viewport — fix the actual cause when one shows up
+     rather than relying on this alone. */
+  overflow-x: hidden;
 }
 
 body {
+  overflow-x: hidden;
   font-family: var(--font-body);
   font-weight: 400;
   background: var(--color-cvc-ink);
