@@ -27,8 +27,24 @@ export default function ScrollArrow({ startHeight = 96, headSize = 12, thickness
   useEffect(() => {
     let target = startHeight;
     let current = startHeight;
+    let lastOnLight = null;
     let raf;
 
+    // Reads scrollHeight and getBoundingClientRect — both force a
+    // synchronous layout recalc. Doing this from a 'scroll' event
+    // listener (as the first version did) means it runs as often as the
+    // browser fires scroll events, which during a real fast scroll
+    // gesture can be far more often than once per rendered frame — and
+    // right when OrbitWork/ServiceLadder are also writing transform,
+    // width, height and opacity to many DOM nodes every rAF tick. That
+    // read/write interleaving across two different event loops is
+    // textbook layout thrashing, and it was severe enough in practice to
+    // visibly desync those sections' own pinned scroll animations —
+    // cards settling at the wrong point because the main thread was
+    // jammed, not because their own math changed. Calling this only once
+    // per rAF tick throttles it to what the browser can actually paint,
+    // in step with everything else already reading/writing layout on the
+    // same tick.
     function updateProgress() {
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       const progress = scrollable > 0 ? 1 - Math.min(1, Math.max(0, window.scrollY / scrollable)) : 1;
@@ -43,25 +59,21 @@ export default function ScrollArrow({ startHeight = 96, headSize = 12, thickness
           break;
         }
       }
-      setOnLight(matched);
+      if (matched !== lastOnLight) {
+        lastOnLight = matched;
+        setOnLight(matched);
+      }
     }
 
     function loop() {
+      updateProgress();
       current += (target - current) * 0.25;
       tailHeight.set(current);
       raf = requestAnimationFrame(loop);
     }
 
-    updateProgress();
-    current = target;
-    window.addEventListener("scroll", updateProgress, { passive: true });
-    window.addEventListener("resize", updateProgress);
     raf = requestAnimationFrame(loop);
-    return () => {
-      window.removeEventListener("scroll", updateProgress);
-      window.removeEventListener("resize", updateProgress);
-      cancelAnimationFrame(raf);
-    };
+    return () => cancelAnimationFrame(raf);
   }, [startHeight, tailHeight]);
 
   const color = onLight ? "var(--color-cvc-ink)" : "var(--color-cvc-paper)";

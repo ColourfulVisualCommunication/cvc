@@ -188,14 +188,22 @@ export default function OrbitWork({ items }) {
     const root = rootRef.current;
     if (!root) return;
 
-    let isNear = false;
+    // Optimistic default, not false — IntersectionObserver's first
+    // callback is asynchronous and not guaranteed to land promptly,
+    // especially under the exact main-thread load a fast scroll gesture
+    // creates. Gating the loop's very first start on that callback meant
+    // a fast scroll could reach this section before the observer ever
+    // confirmed it was near, leaving every card frozen at its initial
+    // (fully transparent, unrevealed) state with nothing left to wake it
+    // — reproduced directly: fast-scroll in, stop, wait, still empty.
+    // Starting optimistically costs nothing (the loop is cheap, and the
+    // observer corrects `isNear` to false soon after if it's ever wrong)
+    // and makes correctness independent of the callback's timing.
+    let isNear = true;
     const io = new IntersectionObserver(
       ([entry]) => {
         isNear = entry.isIntersecting;
-        if (isNear) {
-          computeTarget();
-          raf = requestAnimationFrame(loop);
-        }
+        if (isNear) wake();
       },
       { rootMargin: "100% 0px 100% 0px" },
     );
@@ -203,7 +211,7 @@ export default function OrbitWork({ items }) {
 
     let target = 0;
     let current = 0;
-    let raf;
+    let raf = null;
     let lastTime = performance.now();
 
     function computeTarget() {
@@ -293,7 +301,21 @@ export default function OrbitWork({ items }) {
       }
     }
 
+    // computeTarget() (a getBoundingClientRect read — forces a synchronous
+    // layout recalc) used to be called directly from the 'scroll' event
+    // handler, which also decided whether to restart the loop based on
+    // whether it had already stopped. That's a race: if a scroll event's
+    // computeTarget() landed in between this loop's own settle-check and
+    // its `raf = null`, the loop could stop on a target that was already
+    // stale by the time it stopped — and since nothing else would ever
+    // restart it once the user stopped scrolling, the section could get
+    // stuck mid-orbit indefinitely (reproduced with fast real scrolling:
+    // cards gone, still gone 800ms after scrolling stopped). Now
+    // computeTarget() runs only here, fresh, immediately before it's
+    // used, every frame — target and its use are always in the same
+    // synchronous tick, so there's no window for a stale read.
     function loop(time) {
+      computeTarget();
       const deltaSeconds = Math.min((time - lastTime) / 1000, 0.1);
       lastTime = time;
       const dampingRate = 1 - Math.exp(-SMOOTHNESS * deltaSeconds);
@@ -305,24 +327,28 @@ export default function OrbitWork({ items }) {
       else raf = null;
     }
 
-    function onScrollOrResize() {
-      computeTarget();
+    // Scroll/resize now only ever ensure the loop is running — no DOM
+    // reads here, so this costs nothing even at native scroll-event
+    // frequency (which can far exceed the frame rate during a fast real
+    // scroll gesture, unlike a scripted scrollTo-and-wait test).
+    function wake() {
       if (isNear && raf == null) {
         lastTime = performance.now();
         raf = requestAnimationFrame(loop);
       }
     }
 
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize);
+    window.addEventListener("scroll", wake, { passive: true });
+    window.addEventListener("resize", wake);
     computeTarget();
     current = target;
     applyAt(current);
+    wake(); // start immediately on mount rather than waiting on the observer's first callback
 
     return () => {
       io.disconnect();
-      window.removeEventListener("scroll", onScrollOrResize);
-      window.removeEventListener("resize", onScrollOrResize);
+      window.removeEventListener("scroll", wake);
+      window.removeEventListener("resize", wake);
       if (raf) cancelAnimationFrame(raf);
     };
   }, [isDesktop, items, viewport.width, viewport.height]);
@@ -352,7 +378,6 @@ export default function OrbitWork({ items }) {
           top: 0,
           height: "100svh",
           overflow: "hidden",
-          perspective: 1300,
         }}
       >
         <span
@@ -364,7 +389,19 @@ export default function OrbitWork({ items }) {
           Our Work
         </span>
 
-        <div style={{ position: "absolute", inset: 0, transformStyle: "preserve-3d" }}>
+        {/* perspective lives here, not on the sticky element itself —
+            perspective (like transform) makes an element establish a new
+            3D rendering context, and setting it directly on a
+            position:sticky element is a known way to corrupt that
+            element's own sticky-offset calculation in some browsers.
+            Reproduced directly: under fast real scrolling the sticky
+            viewport's own getBoundingClientRect().top measured -872px —
+            fully unstuck — at a scroll position well within its
+            documented "should still be pinned" range, which is exactly
+            this failure mode. perspective only needs to be on an
+            ancestor of the 3D-transformed cards, not on the sticky
+            element carrying it. */}
+        <div style={{ position: "absolute", inset: 0, perspective: 1300, transformStyle: "preserve-3d" }}>
           {items.map((item, i) => (
             <OrbitCard
               key={item.slug}
