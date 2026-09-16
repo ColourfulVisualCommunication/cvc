@@ -91,23 +91,24 @@ export default function Header() {
           spans (or shades) the content behind it beyond its own small
           footprint, which is the whole point: the old bar's width was
           exactly what kept it "overlying on sections" no matter how
-          short its height got. */}
-      <div className="flex items-center gap-3 border border-white/10 bg-cvc-ink px-3 py-2 shadow-lg sm:gap-4 sm:px-4 sm:py-2.5">
+          short its height got. Just the icon mark (not the full
+          logo+wordmark, which was tall enough to overlap hero content on
+          its own) opposite the menu trigger — nothing else in the chip. */}
+      <div className="flex items-center gap-4 border border-white/10 bg-cvc-ink px-3 py-2 shadow-lg">
         <NavLink to="/" className="flex items-center">
-          <Logo dark />
+          <img src="/favicon.svg" alt="Colourful Visual Communication" className="h-6 w-6 sm:h-7 sm:w-7" />
         </NavLink>
-        <div className="h-6 w-px bg-white/10" />
         <button
           onClick={() => setOpen(true)}
-          className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-cvc-paper sm:text-sm"
+          // group + lg:group-hover so the morph is a mouse-hover flourish
+          // on desktop only — a touch device has no hover state to get
+          // stuck mid-animation on.
+          className="group flex h-7 w-7 flex-col items-center justify-center gap-1 border border-white/15 sm:h-8 sm:w-8"
           aria-expanded={open}
           aria-label="Open menu"
         >
-          Menu
-          <span className="flex h-7 w-7 flex-col items-center justify-center gap-1 border border-white/15 sm:h-8 sm:w-8">
-            <span className="h-0.5 w-3.5 bg-cvc-paper" />
-            <span className="h-0.5 w-3.5 bg-cvc-paper" />
-          </span>
+          <span className="h-0.5 w-3.5 bg-cvc-paper transition-transform duration-300 lg:group-hover:translate-y-[3px] lg:group-hover:rotate-45" />
+          <span className="h-0.5 w-3.5 bg-cvc-paper transition-transform duration-300 lg:group-hover:-translate-y-[3px] lg:group-hover:-rotate-45" />
         </button>
       </div>
 
@@ -122,7 +123,7 @@ export default function Header() {
           >
             <div className="mx-auto flex h-16 w-full max-w-6xl shrink-0 items-center justify-between px-6">
               <NavLink to="/" className="flex items-center" onClick={() => setOpen(false)}>
-                <Logo dark />
+                <Logo dark size="h-9" />
               </NavLink>
               <button
                 onClick={() => setOpen(false)}
