@@ -61,21 +61,40 @@ export default function ScrollTimeline({
       });
     }
 
-    function update() {
+    // Scroll position drove the wipe directly — each scroll event snapped
+    // straight to its exact clip fraction, which looks fine on a smooth
+    // trackpad but visibly jumps on a notched mouse wheel or a fast flick,
+    // since there's nothing between one scroll event's value and the
+    // next. A target/current pair with a rAF loop easing current toward
+    // target every frame turns that into a continuous, damped motion
+    // regardless of how coarse the underlying scroll events are.
+    let target = 0;
+    let current = 0;
+    let raf;
+
+    function computeTarget() {
       const rect = wrap.getBoundingClientRect();
       const total = wrap.offsetHeight - window.innerHeight;
       let raw = total > 0 ? -rect.top / total : 0;
-      raw = Math.min(1, Math.max(0, raw));
-      applyAt(raw * (n - 1));
+      target = Math.min(1, Math.max(0, raw));
     }
 
-    window.addEventListener("scroll", update, { passive: true });
-    window.addEventListener("resize", update);
-    applyAt(0);
-    update();
+    function loop() {
+      current += (target - current) * 0.18;
+      if (Math.abs(target - current) < 0.0004) current = target;
+      applyAt(current * (n - 1));
+      raf = requestAnimationFrame(loop);
+    }
+
+    window.addEventListener("scroll", computeTarget, { passive: true });
+    window.addEventListener("resize", computeTarget);
+    computeTarget();
+    current = target;
+    raf = requestAnimationFrame(loop);
     return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", computeTarget);
+      window.removeEventListener("resize", computeTarget);
+      cancelAnimationFrame(raf);
     };
   }, [items.length]);
 
