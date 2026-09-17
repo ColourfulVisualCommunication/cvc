@@ -41,6 +41,17 @@ class Project(db.Model):
     brief_assets = db.Column(db.JSON, default=list)
     brief_submitted_at = db.Column(db.DateTime(timezone=True))
 
+    # Set inside project_service.approve(), alongside status="complete" —
+    # matches how every other lifecycle timestamp in this codebase is
+    # stored directly (quote.accepted_at, invoice.paid_at) rather than
+    # inferred from a child row. Phase 7's post-project follow-up sweep
+    # anchors its six-week clock to this.
+    completed_at = db.Column(db.DateTime(timezone=True))
+    # Mirrors Quote.reminder_sent_at's exact idempotency-gate role — set
+    # once the follow-up email actually goes out (or the client is
+    # opted-out), never re-sent after.
+    followup_sent_at = db.Column(db.DateTime(timezone=True))
+
     created_at = db.Column(db.DateTime(timezone=True), default=utcnow, nullable=False)
     updated_at = db.Column(db.DateTime(timezone=True), default=utcnow, onupdate=utcnow)
 
@@ -86,6 +97,8 @@ class Project(db.Model):
             "paid_cents": self.paid_cents,
             "balance_due_cents": self.balance_due_cents,
             "is_fully_paid": self.is_fully_paid,
+            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
+            "followup_sent_at": self.followup_sent_at.isoformat() if self.followup_sent_at else None,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
         if include_deliverables:

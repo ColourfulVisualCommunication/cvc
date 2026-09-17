@@ -57,17 +57,37 @@ def _items_table(items):
     return table
 
 
+def _bill_to(invoice):
+    """(name, title, items) for either an invoice's quote or its retainer
+    — a retainer invoice has no QuoteItem rows, so it gets a single
+    synthesized line instead. Both PDF functions below go through this
+    rather than touching invoice.quote directly, which used to crash
+    unconditionally on a retainer invoice (invoice.quote is None)."""
+    if invoice.kind == "retainer":
+        r = invoice.retainer
+        line = type("Item", (), {
+            "description": f"Monthly retainer — {r.plan_name}",
+            "quantity": 1,
+            "unit_price_cents": invoice.amount_cents,
+        })
+        return r.client.name, r.plan_name, [line]
+    q = invoice.quote
+    return q.client_name, q.title, q.items
+
+
 def invoice_pdf_bytes(invoice) -> bytes:
     buffer, doc, styles = _document(invoice.number)
-    quote = invoice.quote
+    client_name, title, items = _bill_to(invoice)
     story = _header(styles, f"Invoice {invoice.number}")
-    story.append(Paragraph(f"Bill to: {quote.client_name}", styles["Normal"]))
-    story.append(Paragraph(f"For: {quote.title}", styles["Normal"]))
+    story.append(Paragraph(f"Bill to: {client_name}", styles["Normal"]))
+    story.append(Paragraph(f"For: {title}", styles["Normal"]))
     story.append(Spacer(1, 8 * mm))
-    story.append(_items_table(quote.items))
+    story.append(_items_table(items))
     story.append(Spacer(1, 8 * mm))
-    story.append(Paragraph(f"Quote total: {_kes(quote.total_cents)}", styles["Normal"]))
-    story.append(Paragraph(f"<b>Deposit due: {_kes(invoice.amount_cents)}</b>", styles["Normal"]))
+    if invoice.quote:
+        story.append(Paragraph(f"Quote total: {_kes(invoice.quote.total_cents)}", styles["Normal"]))
+    label = "Retainer due" if invoice.kind == "retainer" else "Deposit due"
+    story.append(Paragraph(f"<b>{label}: {_kes(invoice.amount_cents)}</b>", styles["Normal"]))
     story.append(Paragraph(f"Status: {invoice.status.upper()}", styles["Normal"]))
     doc.build(story)
     return buffer.getvalue()
@@ -75,12 +95,12 @@ def invoice_pdf_bytes(invoice) -> bytes:
 
 def receipt_pdf_bytes(invoice, payment) -> bytes:
     buffer, doc, styles = _document(f"Receipt for {invoice.number}")
-    quote = invoice.quote
+    client_name, title, _items = _bill_to(invoice)
     reference = payment.provider_reference or payment.manual_reference or "—"
     story = _header(styles, f"Receipt — {invoice.number}")
     story.append(Paragraph("<b>PAID</b>", styles["Heading2"]))
-    story.append(Paragraph(f"Received from: {quote.client_name}", styles["Normal"]))
-    story.append(Paragraph(f"For: {quote.title}", styles["Normal"]))
+    story.append(Paragraph(f"Received from: {client_name}", styles["Normal"]))
+    story.append(Paragraph(f"For: {title}", styles["Normal"]))
     story.append(Spacer(1, 6 * mm))
     story.append(Paragraph(f"Amount paid: {_kes(payment.amount_cents)}", styles["Normal"]))
     story.append(Paragraph(f"Method: {'M-Pesa' if payment.method == 'mpesa' else 'Manual'}", styles["Normal"]))

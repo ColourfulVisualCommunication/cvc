@@ -55,6 +55,17 @@ def create_balance_invoice(project):
     return invoice
 
 
+def create_for_retainer(retainer) -> Invoice:
+    """Called by retainer_service once a cycle is due. amount_cents is the
+    retainer's own locked monthly_amount_cents — never re-read from
+    Service.price_cents (see Retainer.monthly_amount_cents for why).
+    """
+    invoice = Invoice(retainer_id=retainer.id, kind="retainer", amount_cents=retainer.monthly_amount_cents)
+    db.session.add(invoice)
+    db.session.commit()
+    return invoice
+
+
 def initiate_payment(invoice: Invoice, phone_number: str) -> tuple[Payment, str | None]:
     """Returns (payment, error_message). error_message is None on success.
     On failure, still returns a Payment row (status="failed") so the
@@ -73,12 +84,20 @@ def initiate_payment(invoice: Invoice, phone_number: str) -> tuple[Payment, str 
         return recent_pending, None
 
     try:
-        desc_prefix = "Final balance for" if invoice.kind == "balance" else "Deposit for"
+        # invoice.quote is None for a retainer invoice — this branch used
+        # to be a two-way ternary that unconditionally read invoice.quote.title,
+        # which would raise on the very first retainer invoice.
+        if invoice.kind == "balance":
+            desc_prefix, title = "Final balance for", invoice.quote.title
+        elif invoice.kind == "retainer":
+            desc_prefix, title = "Retainer payment for", invoice.retainer.plan_name
+        else:
+            desc_prefix, title = "Deposit for", invoice.quote.title
         checkout_request_id, merchant_request_id = mpesa_service.initiate_stk_push(
             phone_number=phone_number,
             amount_cents=invoice.amount_cents,
             account_reference=invoice.number,
-            transaction_desc=f"{desc_prefix} {invoice.quote.title}",
+            transaction_desc=f"{desc_prefix} {title}",
         )
     except MpesaError as exc:
         payment = Payment(
@@ -207,6 +226,10 @@ def _after_invoice_paid(invoice, payment):
     elif invoice.kind == "balance":
         token = token_service.issue("project", invoice.quote.project.id)
         email_service.send_files_ready(invoice.quote.project, token)
+    elif invoice.kind == "retainer":
+        pass  # no state change on the retainer itself — an unpaid cycle is
+        # handled at next-generation time (retainer_service.generate_due_invoices
+        # skips a retainer with a still-pending invoice), not here.
 
     email_service.send_payment_received(invoice, payment)
 

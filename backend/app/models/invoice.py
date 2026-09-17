@@ -9,7 +9,11 @@ INVOICE_STATUSES = ("pending", "paid")
 # balance: created the moment the client approves the final deliverables
 # (Phase 6) — whatever's left of quote.total_cents after the deposit (and
 # any other payments) is covered. A quote can have at most one of each.
-INVOICE_KINDS = ("deposit", "balance")
+# retainer: created each billing cycle by retainer_service (Phase 7) — has
+# no quote at all, belongs to a Retainer instead. See the CHECK constraint
+# in the Phase 7 migration: exactly one of quote_id/retainer_id is set,
+# matching kind.
+INVOICE_KINDS = ("deposit", "balance", "retainer")
 
 # pending: STK push sent, waiting on the callback (or a manual payment not
 # yet applicable). success/failed/cancelled: resolved, either by the Daraja
@@ -21,15 +25,21 @@ PAYMENT_METHODS = ("mpesa", "manual")
 
 
 class Invoice(db.Model):
-    """The deposit invoice for an accepted quote. One per quote in this
-    phase — created automatically the moment a quote is accepted, with no
-    action from Njoroge (see invoice_service.create_for_quote).
+    """One billable amount — a quote's deposit, a project's final balance,
+    or (Phase 7) a retainer's monthly charge. Always belongs to exactly
+    one parent: quote_id for deposit/balance, retainer_id for retainer
+    (enforced by a DB CHECK constraint, not just convention). Every kind
+    is created automatically, with no action from Njoroge — see
+    invoice_service.create_for_quote / create_balance_invoice / create_for_retainer.
     """
 
     __tablename__ = "invoices"
 
     id = db.Column(db.Integer, primary_key=True)
-    quote_id = db.Column(db.Integer, db.ForeignKey("quotes.id"), nullable=False)
+    # Nullable as of Phase 7 — a retainer invoice has no quote at all
+    # (was NOT NULL through Phase 6, when every invoice belonged to one).
+    quote_id = db.Column(db.Integer, db.ForeignKey("quotes.id"), nullable=True)
+    retainer_id = db.Column(db.Integer, db.ForeignKey("retainers.id"), nullable=True)
     kind = db.Column(db.String(10), default="deposit", nullable=False)
 
     # A locked snapshot of quote.deposit_cents (or, for a balance invoice,
@@ -60,11 +70,15 @@ class Invoice(db.Model):
             "id": self.id,
             "number": self.number,
             "quote_id": self.quote_id,
+            "retainer_id": self.retainer_id,
             "kind": self.kind,
             # Denormalized for the admin list view, read live via the
             # relationship (not stored) — avoids an N+1 quote lookup per row.
             "quote_title": self.quote.title if self.quote else None,
-            "client_name": self.quote.client_name if self.quote else None,
+            "client_name": (
+                self.quote.client_name if self.quote
+                else (self.retainer.client.name if self.retainer and self.retainer.client else None)
+            ),
             "amount_cents": self.amount_cents,
             "status": self.status,
             "paid_at": self.paid_at.isoformat() if self.paid_at else None,
