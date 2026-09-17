@@ -84,6 +84,24 @@ def admin_check_status(invoice_id):
     except MpesaError as exc:
         return jsonify(error="mpesa_error", message=str(exc)), 502
 
+    # Daraja's query endpoint (unlike the real callback) has a third
+    # outcome beyond success/failure: ResultCode 4999 means the STK push
+    # is still awaiting the customer's PIN — not yet resolved on
+    # Safaricom's side. Calling resolve_payment here would wrongly mark
+    # it "failed" via the same branch a genuine terminal failure takes,
+    # and since resolve_payment's idempotency guard only fires on
+    # status="pending", that would then permanently block the real
+    # callback from ever resolving it correctly later. Leave the payment
+    # untouched and let the admin re-check once Daraja actually finishes.
+    if str(result.get("ResultCode")) == "4999":
+        return (
+            jsonify(
+                message="Still processing on Safaricom's side — check again in a moment.",
+                invoice=invoice.to_dict(include_payments=True),
+            ),
+            202,
+        )
+
     invoice_service.resolve_payment(
         pending,
         result_code=result.get("ResultCode"),
