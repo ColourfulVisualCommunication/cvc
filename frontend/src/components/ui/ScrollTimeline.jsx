@@ -70,7 +70,7 @@ export default function ScrollTimeline({
     // regardless of how coarse the underlying scroll events are.
     let target = 0;
     let current = 0;
-    let raf;
+    let raf = null;
 
     // getBoundingClientRect/offsetHeight both force a synchronous layout
     // recalc. This used to run directly from the 'scroll' event, which
@@ -87,18 +87,37 @@ export default function ScrollTimeline({
       target = Math.min(1, Math.max(0, raw));
     }
 
+    // This used to reschedule itself unconditionally every frame with no
+    // settle check, same bug as ScrollArrow (see its own comment) — the
+    // wipe was mathematically correct but ran its layout-forcing
+    // computeTarget() read forever, competing with every other section's
+    // rAF loop even once fully settled. Now it stops once current has
+    // caught up to target, and only restarts on an actual scroll/resize.
     function loop() {
       computeTarget();
       current += (target - current) * 0.18;
-      if (Math.abs(target - current) < 0.0004) current = target;
+      const settled = Math.abs(target - current) < 0.0004;
+      if (settled) current = target;
       applyAt(current * (n - 1));
-      raf = requestAnimationFrame(loop);
+      if (!settled) raf = requestAnimationFrame(loop);
+      else raf = null;
     }
 
+    function wake() {
+      if (raf == null) raf = requestAnimationFrame(loop);
+    }
+
+    window.addEventListener("scroll", wake, { passive: true });
+    window.addEventListener("resize", wake);
     computeTarget();
     current = target;
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
+    applyAt(current * (n - 1));
+    wake();
+    return () => {
+      window.removeEventListener("scroll", wake);
+      window.removeEventListener("resize", wake);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [items.length]);
 
   return (

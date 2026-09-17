@@ -224,7 +224,6 @@ export default function OrbitWork({ items }) {
     function applyAt(progress) {
       const viewportWidth = viewport.width || window.innerWidth;
       const viewportHeight = viewport.height || window.innerHeight;
-      const cardHeight = CARD_WIDTH / CARD_ASPECT;
 
       const itemCount = items.length;
       const orbitProgress = smootherstep(0.05, 0.68, progress);
@@ -271,18 +270,30 @@ export default function OrbitWork({ items }) {
         const x = lerp(arcCenterX, gridX, flattenProgress);
         const y = lerp(arcCenterY + entranceOffset, gridY, flattenProgress);
         const z = lerp(arcZ, 0, flattenProgress);
-        const width = lerp(CARD_WIDTH, gridCardWidth, flattenProgress);
-        const height = lerp(cardHeight, gridCardHeight, flattenProgress);
+        // gridCardHeight and cardHeight are both gridCardWidth/CARD_WIDTH
+        // divided by the same CARD_ASPECT, so width/CARD_WIDTH ===
+        // height/cardHeight always — the orbit-to-grid resize is a pure
+        // uniform scale, never a stretch. That means it can be folded
+        // straight into the existing transform:scale() below instead of
+        // ever touching the element's actual box size (see sizeScale).
+        const sizeScale = lerp(CARD_WIDTH, gridCardWidth, flattenProgress) / CARD_WIDTH;
         const rotateY = lerp(arcRotateY, 0, flattenProgress);
         const rotateZ = lerp(arcRotateZ, 0, flattenProgress);
-        const scale = lerp(arcScale, 1, flattenProgress);
+        const depthScale = lerp(arcScale, 1, flattenProgress);
         const opacity = Math.min(cardReveal, lerp(arcOpacity, 1, flattenProgress));
 
-        el.style.width = `${width}px`;
-        el.style.height = `${height}px`;
+        // No width/height writes here on purpose — the card's actual box
+        // stays fixed at its rendered CARD_WIDTH x cardHeight size (set
+        // once in JSX, never touched per frame) for the component's whole
+        // lifetime. Every visible size change, orbit depth and grid
+        // flatten alike, comes from transform:scale() instead, which is
+        // compositor-only and never forces a layout recalc — animating
+        // width/height in px here used to force one on every one of these
+        // ~5 elements on every single frame during the flatten phase,
+        // which is what read as stutter/lag on scroll, not the math.
         el.style.opacity = String(opacity);
         el.style.zIndex = String(Math.round(1000 - z));
-        el.style.transform = `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), ${z}px) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${scale})`;
+        el.style.transform = `translate3d(calc(-50% + ${x}px), calc(-50% + ${y}px), ${z}px) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg) scale(${depthScale * sizeScale})`;
       });
 
       // Oversized decorative word, sitting behind the orbiting cards —

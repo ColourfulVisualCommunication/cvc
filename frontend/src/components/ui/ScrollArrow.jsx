@@ -28,7 +28,7 @@ export default function ScrollArrow({ startHeight = 96, headSize = 12, thickness
     let target = startHeight;
     let current = startHeight;
     let lastOnLight = null;
-    let raf;
+    let raf = null;
 
     // Reads scrollHeight and getBoundingClientRect — both force a
     // synchronous layout recalc. Doing this from a 'scroll' event
@@ -65,15 +65,42 @@ export default function ScrollArrow({ startHeight = 96, headSize = 12, thickness
       }
     }
 
+    // Unlike OrbitWork/ScrollTimeline, this loop used to reschedule itself
+    // unconditionally every frame with no settle check — meaning it ran
+    // forever, 60 times a second, for as long as the page was mounted,
+    // regardless of whether the user was scrolling at all. Each iteration
+    // does a querySelectorAll + getBoundingClientRect pass (both force a
+    // layout read), so that's continuous main-thread work competing with
+    // every other section's own rAF loop on every single frame — including
+    // OrbitWork's, whose visible stutter was mostly this, not its own math.
+    // Now it stops the instant the tail has caught up and the surface
+    // probe is stable, and only restarts on an actual scroll/resize.
     function loop() {
       updateProgress();
       current += (target - current) * 0.25;
       tailHeight.set(current);
-      raf = requestAnimationFrame(loop);
+      const settled = Math.abs(target - current) < 0.05;
+      if (settled) {
+        current = target;
+        tailHeight.set(current);
+        raf = null;
+      } else {
+        raf = requestAnimationFrame(loop);
+      }
     }
 
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
+    function wake() {
+      if (raf == null) raf = requestAnimationFrame(loop);
+    }
+
+    window.addEventListener("scroll", wake, { passive: true });
+    window.addEventListener("resize", wake);
+    wake();
+    return () => {
+      window.removeEventListener("scroll", wake);
+      window.removeEventListener("resize", wake);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, [startHeight, tailHeight]);
 
   const color = onLight ? "var(--color-cvc-ink)" : "var(--color-cvc-paper)";
