@@ -106,13 +106,21 @@ Each phase ends in something deployed and usable. Estimates assume part-time bui
 
 ---
 
-## Phase 7 — Retainers & follow-up · ~1 week
+## Phase 7 — Retainers & follow-up · ~1 week · **shipped**
 
 **Ships:** recurring revenue that invoices itself, plus the one automated email that earns money.
 
-Retainer plans (Digital Care, Brand Care, Growth Partner) · monthly invoice generation · retainer request log · scheduled job runner · post-project follow-up six weeks after completion · review request · client history view · email log and preferences.
+- [x] `Client`, `Retainer`, `RetainerRequest`, `EmailLog`, `JobRun` tables added — additive migration, existing `invoices`/`projects` rows untouched (`quote_id` loosened to nullable, `retainer_id` added, a `CHECK` constraint enforces exactly one parent per invoice kind)
+- [x] Retainer plans billed on a locked `monthly_amount_cents` snapshot — never re-derived from `Service.price_cents`, same convention as a quote's deposit
+- [x] Self-generating monthly invoices — `retainer_service.generate_due_invoices()` advances `next_invoice_date` via fresh `(year, month, day)` recomputation each cycle (no drift from repeated relative-month addition), skips a retainer whose previous invoice is still unpaid rather than stacking a second one
+- [x] **Free-tier scheduled job runner, no paid or external dependency**: `JobRun`'s unique `(job_name, run_date)` constraint gates a daily sweep triggered opportunistically off real authenticated `/admin/*` traffic (`before_request` hook) — same INSERT-first/catch-conflict idempotency idiom as payment resolution. `flask run-daily-jobs` CLI for manual runs; swappable for a real Render Cron Job later with zero change to the underlying job functions
+- [x] Post-project follow-up email — six weeks after `Project.completed_at`, only once fully paid, folding in a review-link ask and a soft retainer mention rather than adding a 7th canonical email
+- [x] Retainer request log — public form (honeypot-protected, admin-only notification) + admin list/status, with a "convert to retainer" action that pre-fills the retainer creation form
+- [x] Client history view — `Client` rows populated lazily (find-or-create by email), FK-backed retainer history plus quotes/projects matched by email, clearly labeled as a computed match rather than a real relationship
+- [x] Email log — every send attempt (sent/failed/skipped) across every transactional email function logged from the single place they all funnel through
+- [x] Regression-tested the exact crash class this phase introduced risk of: `initiate_payment`, `send_payment_received`, and both PDF functions previously assumed every invoice had a `quote` — all three now branch correctly for a retainer invoice, with tests
 
-*Learning: background jobs — how a program does something on a schedule when nobody is using the site.*
+*Learning: background jobs — how a program does something on a schedule when nobody is using the site, and how to do it for free before there's a scheduler.*
 
 ---
 

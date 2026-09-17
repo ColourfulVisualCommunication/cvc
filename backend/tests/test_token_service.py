@@ -3,6 +3,7 @@ import time
 import pytest
 
 from app import create_app
+from app.extensions import db
 from app.services import token_service
 from config import Config
 
@@ -16,6 +17,10 @@ def app_context():
     app = create_app(TestConfig)
     with app.app_context():
         yield
+        # See test_invoice_service.py's app_context fixture for why this
+        # dispose() matters — undisposed engines across a full suite run
+        # exhaust Supabase's session-mode connection cap.
+        db.engine.dispose()
 
 
 def test_round_trip(app_context):

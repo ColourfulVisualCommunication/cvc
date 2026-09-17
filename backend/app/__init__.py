@@ -5,7 +5,8 @@ build an app with different config, and so nothing runs on import.
 """
 import click
 import cloudinary
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
+from flask_jwt_extended import verify_jwt_in_request
 
 from config import get_config
 
@@ -38,9 +39,35 @@ def create_app(config_object=None):
 
     app.register_blueprint(api_v1, url_prefix="/api/v1")
 
+    register_daily_jobs_hook(app)
     register_error_handlers(app)
     register_cli(app)
     return app
+
+
+def register_daily_jobs_hook(app):
+    """Phase 7's free-tier scheduled-job trigger (see job_runner_service
+    for the full mechanism). Scoped to authenticated /admin/* requests
+    only — Njoroge using the admin panel during normal business use is
+    what fires this, not public traffic. Best-effort: a failure here must
+    never break the admin request that happened to trigger it.
+    """
+
+    @app.before_request
+    def _maybe_run_daily_jobs():
+        if not request.path.startswith("/api/v1/admin/"):
+            return
+        try:
+            verify_jwt_in_request()
+        except Exception:
+            return  # not an authenticated admin request — let the route's own @jwt_required() handle the 401
+
+        from .services import job_runner_service
+
+        try:
+            job_runner_service.run_daily_jobs_if_due()
+        except Exception:
+            app.logger.exception("daily jobs trigger failed")
 
 
 def register_cli(app):
@@ -62,6 +89,19 @@ def register_cli(app):
         db.session.add(user)
         db.session.commit()
         click.echo(f"Admin created: {user.email}")
+
+    @app.cli.command("run-daily-jobs")
+    def run_daily_jobs():
+        """Manual/local-testing entry point for the Phase 7 daily sweep
+        (retainer invoicing + post-project follow-ups) — bypasses the
+        once-a-day JobRun gate that the opportunistic before_request
+        trigger uses in production. Also the exact command a future paid
+        Render Cron Job would call on a schedule instead.
+        """
+        from .services.job_runner_service import _run_daily_jobs
+
+        _run_daily_jobs()
+        click.echo("Daily jobs run.")
 
 
 def register_error_handlers(app):

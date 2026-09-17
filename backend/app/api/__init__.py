@@ -10,6 +10,8 @@ api_v1 = Blueprint("api_v1", __name__)
 from . import (  # noqa: E402,F401
     auth,
     client_logos,
+    clients,
+    email_log,
     health,
     invoices,
     leads,
@@ -19,6 +21,8 @@ from . import (  # noqa: E402,F401
     posts,
     projects,
     quotes,
+    retainer_requests,
+    retainers,
     services,
     testimonials,
     uploads,

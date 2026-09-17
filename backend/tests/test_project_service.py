@@ -7,12 +7,16 @@ No real Cloudinary calls here — file_service is exercised live separately
 (signed upload signatures and view/download URLs were hand-verified
 against the real API during development).
 """
+from datetime import timedelta
+
 import pytest
 
 from app import create_app
 from app.extensions import db
 from app.models import Quote, QuoteItem
 from app.models.invoice import Invoice, Payment
+from app.models.project import Project
+from app.models.service import utcnow
 from app.services import invoice_service, project_service
 from config import Config
 
@@ -28,6 +32,10 @@ def app_context():
     app = create_app(TestConfig)
     with app.app_context():
         yield
+        # See test_invoice_service.py's app_context fixture for why this
+        # dispose() matters — undisposed engines across a full suite run
+        # exhaust Supabase's session-mode connection cap.
+        db.engine.dispose()
 
 
 @pytest.fixture(autouse=True)
@@ -37,8 +45,27 @@ def no_real_emails(app_context, monkeypatch):
     # boundary so a missing/invalid BREVO_API_KEY can never fail a test.
     from app.services import email_service
 
-    for name in ("send_brief_needed", "send_ready_for_approval", "send_files_ready", "send_payment_received"):
+    for name in (
+        "send_brief_needed",
+        "send_ready_for_approval",
+        "send_files_ready",
+        "send_payment_received",
+        "send_project_followup",
+    ):
         monkeypatch.setattr(email_service, name, lambda *a, **k: True)
+
+
+@pytest.fixture(autouse=True)
+def cleanup_client_row(app_context):
+    # send_due_followups() calls retainer_service._find_or_create_client,
+    # which will create a real Client row for TEST_CLIENT_EMAIL the first
+    # time a follow-up test runs and none exists yet. Clean it up after
+    # every test so no test-created row lingers in the shared database.
+    from app.models import Client
+
+    yield
+    Client.query.filter_by(email=TEST_CLIENT_EMAIL).delete()
+    db.session.commit()
 
 
 @pytest.fixture
@@ -215,3 +242,136 @@ def test_is_fully_paid_flips_once_balance_is_paid(quote):
 
     assert project.is_fully_paid is True
     assert project.balance_due_cents == 0
+
+
+def test_approve_sets_completed_at(quote):
+    project = project_service.create_from_deposit_payment(_paid_deposit_invoice(quote))
+    project_service.add_deliverable(project, f"cvc/projects/{project.id}/a", "image", "a.jpg", "jpg")
+    project_service.publish_for_approval(project)
+
+    assert project.completed_at is None
+    project_service.approve(project)
+    assert project.completed_at is not None
+
+
+# --- Phase 7: post-project follow-up sweep ----------------------------------
+#
+# send_due_followups() does a global Project.query sweep across the whole
+# (shared, production) table — unlike every other fixture-scoped test
+# above. Before mutating anything, each test below confirms no *real*
+# project already matches the sweep's filter; if one does, it skips rather
+# than risk silently marking a real client's project as "already followed
+# up" (permanently, since followup_sent_at is never unset) without ever
+# actually emailing them.
+
+
+def _skip_if_real_projects_already_due(cutoff):
+    preexisting = Project.query.filter(
+        Project.status == "complete",
+        Project.completed_at.isnot(None),
+        Project.completed_at <= cutoff,
+        Project.followup_sent_at.is_(None),
+    ).count()
+    if preexisting:
+        pytest.skip(
+            f"{preexisting} real completed project(s) already match the follow-up sweep filter — "
+            "skipping to avoid touching production data"
+        )
+
+
+def _completed_project(quote, completed_at, fully_paid=True):
+    project = project_service.create_from_deposit_payment(
+        _paid_deposit_invoice(quote, amount_cents=quote.total_cents if fully_paid else None)
+    )
+    project_service.add_deliverable(project, f"cvc/projects/{project.id}/a", "image", "a.jpg", "jpg")
+    project_service.publish_for_approval(project)
+    project_service.approve(project)
+    project.completed_at = completed_at
+    db.session.commit()
+    return project
+
+
+def test_send_due_followups_sends_and_marks_when_due(quote, monkeypatch):
+    cutoff = utcnow() - timedelta(days=project_service.FOLLOWUP_DELAY_DAYS)
+    _skip_if_real_projects_already_due(cutoff)
+
+    project = _completed_project(quote, completed_at=cutoff - timedelta(days=1))
+
+    sent = []
+    from app.services import email_service
+
+    monkeypatch.setattr(email_service, "send_project_followup", lambda proj, tok: sent.append(proj.id) or True)
+
+    result = project_service.send_due_followups()
+
+    assert project.id in [p.id for p in result["sent"]]
+    assert sent == [project.id]
+    assert project.followup_sent_at is not None
+
+
+def test_send_due_followups_skips_not_yet_due(quote, monkeypatch):
+    cutoff = utcnow() - timedelta(days=project_service.FOLLOWUP_DELAY_DAYS)
+    _skip_if_real_projects_already_due(cutoff)
+
+    project = _completed_project(quote, completed_at=utcnow())  # just completed, nowhere near due
+
+    result = project_service.send_due_followups()
+
+    assert project.id not in [p.id for p in result["sent"]]
+    assert project.followup_sent_at is None
+
+
+def test_send_due_followups_skips_unpaid_project_without_resetting_clock(quote, monkeypatch):
+    cutoff = utcnow() - timedelta(days=project_service.FOLLOWUP_DELAY_DAYS)
+    _skip_if_real_projects_already_due(cutoff)
+
+    project = _completed_project(quote, completed_at=cutoff - timedelta(days=1), fully_paid=False)
+    assert project.is_fully_paid is False
+
+    result = project_service.send_due_followups()
+
+    assert project.id not in [p.id for p in result["sent"]]
+    assert project.followup_sent_at is None  # still unset — picked up later once paid
+
+
+def test_send_due_followups_is_idempotent(quote, monkeypatch):
+    cutoff = utcnow() - timedelta(days=project_service.FOLLOWUP_DELAY_DAYS)
+    _skip_if_real_projects_already_due(cutoff)
+
+    project = _completed_project(quote, completed_at=cutoff - timedelta(days=1))
+
+    sent = []
+    from app.services import email_service
+
+    monkeypatch.setattr(email_service, "send_project_followup", lambda proj, tok: sent.append(proj.id) or True)
+
+    project_service.send_due_followups()
+    project_service.send_due_followups()
+
+    assert len(sent) == 1, "a second sweep must never re-email an already-followed-up project"
+
+
+def test_send_due_followups_opt_out_marks_without_emailing(quote, monkeypatch):
+    cutoff = utcnow() - timedelta(days=project_service.FOLLOWUP_DELAY_DAYS)
+    _skip_if_real_projects_already_due(cutoff)
+
+    project = _completed_project(quote, completed_at=cutoff - timedelta(days=1))
+
+    from app.models import Client
+    from app.services import email_service
+
+    client = Client(name="Opted Out", email=TEST_CLIENT_EMAIL, followup_opt_out=True)
+    db.session.add(client)
+    db.session.commit()
+
+    sent = []
+    monkeypatch.setattr(email_service, "send_project_followup", lambda proj, tok: sent.append(proj.id) or True)
+
+    try:
+        result = project_service.send_due_followups()
+        assert sent == []
+        assert project.id in [p.id for p in result["skipped_opted_out"]]
+        assert project.followup_sent_at is not None  # marked handled, never retried
+    finally:
+        db.session.delete(client)
+        db.session.commit()

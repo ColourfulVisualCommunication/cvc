@@ -59,6 +59,11 @@ class Config:
     EMAIL_FROM = os.environ.get("EMAIL_FROM", "njoroge@colourfulvisualcommunication.com")
     EMAIL_FROM_NAME = os.environ.get("EMAIL_FROM_NAME", "CVC")
 
+    # Optional — a Google Business review link, folded into the post-project
+    # follow-up email (Phase 7) when set. Blank is fine; the email just
+    # omits the review ask rather than linking nowhere.
+    GOOGLE_REVIEW_URL = os.environ.get("GOOGLE_REVIEW_URL")
+
     # M-Pesa Daraja — wired from phase 5. Blank until then is fine.
     MPESA_ENVIRONMENT = os.environ.get("MPESA_ENVIRONMENT", "sandbox")
     MPESA_CONSUMER_KEY = os.environ.get("MPESA_CONSUMER_KEY")

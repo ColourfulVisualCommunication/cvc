@@ -94,7 +94,7 @@ These were in an earlier, much larger plan. Each was cut for a reason:
 
 ## Build phases
 
-Current position: **Phase 6 shipped** — Home, About, Our Story, Process, Services + detail pages, Portfolio, Blog, and Contact are all live at colourfulvisualcommunication.com (Cloudflare Workers), with admin CRUD for portfolio/posts/testimonials/client logos, build-time prerendering with meta/OG/JSON-LD, a full typography system, lead capture, quotes, and money (deposit paid via M-Pesa STK Push, Daraja's server-verified callback is what marks it paid, idempotent by design). Now delivery: paying the deposit auto-creates a private Project (brief → in progress → awaiting approval → complete), reached by its own signed link. Clients submit a brief with reference files, admin uploads versioned deliverables for review, the client approves or requests changes (every decision its own audit-trail row), and approving auto-creates a balance invoice for whatever's left — paying it unlocks the original files. Every file lives in Cloudinary as `type=authenticated`, uploaded directly from the browser (never through our server), with every upload report verified against Cloudinary's own signature before being trusted. Services remain public-read-only (edited via seed data, not an admin panel) — the ladder rarely changes and a fixed price list didn't justify the CRUD yet. **Phase 7 next.** See `docs/02-build-plan.md` for full detail.
+Current position: **Phase 7 shipped** — Home, About, Our Story, Process, Services + detail pages, Portfolio, Blog, and Contact are all live at colourfulvisualcommunication.com (Cloudflare Workers), with admin CRUD for portfolio/posts/testimonials/client logos, build-time prerendering with meta/OG/JSON-LD, a full typography system, lead capture, quotes, and money (deposit paid via M-Pesa STK Push, Daraja's server-verified callback is what marks it paid, idempotent by design). Delivery: paying the deposit auto-creates a private Project (brief → in progress → awaiting approval → complete), reached by its own signed link. Clients submit a brief with reference files, admin uploads versioned deliverables for review, the client approves or requests changes (every decision its own audit-trail row), and approving auto-creates a balance invoice for whatever's left — paying it unlocks the original files. Every file lives in Cloudinary as `type=authenticated`, uploaded directly from the browser (never through our server), with every upload report verified against Cloudinary's own signature before being trusted. Services remain public-read-only (edited via seed data, not an admin panel) — the ladder rarely changes and a fixed price list didn't justify the CRUD yet. Now retainers: standing monthly billing arrangements bill themselves via a free-tier-only scheduled job (no paid Render Cron, no external dependency — a `JobRun` uniqueness constraint gates a daily sweep triggered opportunistically off real admin traffic), and a client who's gone quiet for six weeks after a completed, paid project gets the sixth and final canonical email — a follow-up with a soft review/retainer ask. **Phase 8 next.** See `docs/02-build-plan.md` for full detail.
 
 | # | Phase | Ships |
 |---|---|---|
@@ -104,7 +104,7 @@ Current position: **Phase 6 shipped** — Home, About, Our Story, Process, Servi
 | 4 | Quotes | Quote builder, public quote link, accept button |
 | 5 | Money | M-Pesa STK Push, verified callbacks, invoices, receipts |
 | 6 | Projects & delivery | Project page, brief, files, approvals, payment-gated downloads |
-| 7 | Retainers & follow-up | Self-generating monthly invoices, post-project nudge |
+| 7 | Retainers & follow-up | Self-generating monthly invoices, post-project nudge — **shipped** |
 | 8 | Hardening & launch | Real payment tests, backups, monitoring, soft launch |
 
 Phase 2 matters most and ships early on purpose — it is what protects referrals.
@@ -119,12 +119,23 @@ Phase 2 matters most and ships early on purpose — it is what protects referral
 **Plumbing:** `email_log`
 
 **Added beyond the original 16:** `client_logo` — the public "clients we
-work with" strip on the homepage. Deliberately not folded into the future
+work with" strip on the homepage. Deliberately not folded into the
 `client` table (People & Pipeline) — that one is for people with
-projects/invoices, a later-phase concept; this is just a logo + name for
-display, nothing more.
+projects/invoices; this is just a logo + name for display, nothing more.
+Also added in Phase 7: `retainer_request` (the enquiry log, before a
+`retainer` row exists) and `job_run` (marks the free-tier scheduled sweep
+has run for a given day — see `services/job_runner_service.py`).
 
 `payment` carries a **unique constraint on the provider transaction reference** — that constraint is the idempotency guarantee. A retried M-Pesa callback must never produce a second payment row or a second receipt email.
+
+`client` rows are populated lazily (find-or-create by email — see
+`retainer_service._find_or_create_client`), not backfilled: a row appears
+the first time a `Retainer` is set up for that person, or the first time
+the post-project follow-up sweep is about to email them. `quote`/`project`/
+`invoice` were never retrofitted with a `client_id` FK — the client
+history view in the admin instead shows real FK-backed retainer history
+plus quotes/projects matched by email, clearly labeled as a computed
+match rather than a stored relationship.
 
 ## Conventions
 
