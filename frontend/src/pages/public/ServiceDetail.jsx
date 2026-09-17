@@ -7,6 +7,7 @@ import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
 import Breadcrumbs from "../../components/ui/Breadcrumbs.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
+import RetainerRequestForm from "../../components/RetainerRequestForm.jsx";
 import Seo from "../../components/Seo.jsx";
 import { markPrerenderReady } from "../../lib/prerenderReady.js";
 
@@ -118,6 +119,18 @@ export default function ServiceDetail() {
                 message={`Hi CVC, I'd like to know more about ${service.name}.`}
               />
             </motion.div>
+
+            {service.is_retainer && (
+              <motion.div variants={fadeUp} className="mt-14 border-t border-white/10 pt-10">
+                <h2 className="text-2xl font-bold tracking-tight">Or request this plan directly.</h2>
+                <p className="mt-2 text-cvc-muted">
+                  Prefer to write it all out once? Fill this in and we&rsquo;ll follow up — usually on WhatsApp.
+                </p>
+                <div className="mt-6">
+                  <RetainerRequestForm serviceId={service.id} />
+                </div>
+              </motion.div>
+            )}
           </motion.div>
         </Container>
       </section>

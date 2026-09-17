@@ -11,6 +11,9 @@ import {
   FileText,
   Quote,
   Building2,
+  Repeat,
+  Users,
+  Mail,
   LogOut,
   Menu,
   X,
@@ -25,10 +28,14 @@ const LINKS = [
   { to: "/admin/quotes", label: "Quotes", icon: Receipt },
   { to: "/admin/invoices", label: "Invoices", icon: Wallet },
   { to: "/admin/projects", label: "Projects", icon: FolderOpen },
+  { to: "/admin/retainers", label: "Retainers", icon: Repeat },
+  { to: "/admin/retainer-requests", label: "Retainer requests", icon: Inbox },
+  { to: "/admin/clients", label: "Clients", icon: Users },
   { to: "/admin/portfolio", label: "Portfolio", icon: Briefcase },
   { to: "/admin/posts", label: "Blog", icon: FileText },
   { to: "/admin/testimonials", label: "Testimonials", icon: Quote },
-  { to: "/admin/clients", label: "Client logos", icon: Building2 },
+  { to: "/admin/client-logos", label: "Client logos", icon: Building2 },
+  { to: "/admin/email-log", label: "Email log", icon: Mail },
 ];
 
 function SidebarContent({ onNavigate }) {

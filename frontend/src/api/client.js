@@ -193,3 +193,34 @@ export async function uploadFileDirect(file, signatureData) {
 // Auth
 export const login = (email, password) => api.post("/auth/login", { email, password });
 export const me = () => api.get("/auth/me");
+
+// Clients (Phase 7)
+export const adminListClients = () => api.get("/admin/clients");
+export const adminGetClient = (id) => api.get(`/admin/clients/${id}`);
+export const adminCreateClient = (data) => api.post("/admin/clients", data);
+export const adminUpdateClient = (id, data) => api.patch(`/admin/clients/${id}`, data);
+
+// Retainers (Phase 7)
+export const adminListRetainers = () => api.get("/admin/retainers");
+export const adminGetRetainer = (id) => api.get(`/admin/retainers/${id}`);
+export const adminCreateRetainer = (data) => api.post("/admin/retainers", data);
+export const adminUpdateRetainer = (id, data) => api.patch(`/admin/retainers/${id}`, data);
+export const adminDeleteRetainer = (id) => api.delete(`/admin/retainers/${id}`);
+export const adminGenerateRetainerInvoiceNow = (id) => api.post(`/admin/retainers/${id}/generate-now`);
+
+export const getRetainer = (token) => api.get(`/retainers/${token}`);
+export const payRetainerInvoice = (token, phoneNumber) => api.post(`/retainers/${token}/pay`, { phone_number: phoneNumber });
+export const getRetainerPaymentStatus = (token) => api.get(`/retainers/${token}/payment-status`);
+export const downloadRetainerReceipt = (token, filename) => downloadFile(`${BASE}/retainers/${token}/receipt.pdf`, filename);
+
+// Retainer requests (Phase 7)
+export const submitRetainerRequest = (data) => api.post("/retainer-requests", data);
+export const adminListRetainerRequests = () => api.get("/admin/retainer-requests");
+export const adminUpdateRetainerRequest = (id, data) => api.patch(`/admin/retainer-requests/${id}`, data);
+export const adminDeleteRetainerRequest = (id) => api.delete(`/admin/retainer-requests/${id}`);
+
+// Email log (Phase 7)
+export const adminListEmailLog = (params = {}) => {
+  const qs = new URLSearchParams(params).toString();
+  return api.get(`/admin/email-log${qs ? `?${qs}` : ""}`);
+};

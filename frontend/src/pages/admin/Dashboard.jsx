@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Inbox, Receipt, Wallet, FolderOpen, Briefcase, FileText, Quote, Building2, Plus } from "lucide-react";
+import { Inbox, Receipt, Wallet, FolderOpen, Briefcase, FileText, Quote, Building2, Repeat, Users, Plus } from "lucide-react";
 
 import {
   adminListLeads,
@@ -11,6 +11,8 @@ import {
   adminListPosts,
   adminListTestimonials,
   adminListClientLogos,
+  adminListRetainers,
+  adminListRetainerRequests,
 } from "../../api/client.js";
 
 // `highlight` picks out which items count toward the second, smaller
@@ -89,14 +91,34 @@ const SECTIONS = [
     highlightLabel: "published",
   },
   {
-    key: "clients",
+    key: "client-logos",
     label: "Client logos",
     icon: Building2,
     fetch: adminListClientLogos,
-    newHref: "/admin/clients",
+    newHref: "/admin/client-logos",
     color: "bg-cvc-amber/15 text-cvc-amber",
     highlight: (item) => item.published,
     highlightLabel: "published",
+  },
+  {
+    key: "retainers",
+    label: "Retainers",
+    icon: Repeat,
+    fetch: adminListRetainers,
+    newHref: "/admin/retainers",
+    color: "bg-cvc-cyan/15 text-cvc-cyan",
+    highlight: (item) => item.status === "active",
+    highlightLabel: "active",
+  },
+  {
+    key: "retainer-requests",
+    label: "Retainer requests",
+    icon: Users,
+    fetch: adminListRetainerRequests,
+    newHref: "/admin/retainer-requests",
+    color: "bg-cvc-crimson/15 text-cvc-crimson",
+    highlight: (item) => item.status === "new",
+    highlightLabel: "new",
   },
 ];
 
