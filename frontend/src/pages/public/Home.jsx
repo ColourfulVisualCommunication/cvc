@@ -246,7 +246,7 @@ export default function Home() {
         <section className="relative overflow-hidden bg-cvc-ink px-6 py-20">
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-cover bg-center opacity-20"
+            className="pointer-events-none absolute inset-0 bg-cover bg-center"
             style={{ backgroundImage: "url(/backgrounds/we-craft.svg)" }}
           />
           <Container className="relative">
