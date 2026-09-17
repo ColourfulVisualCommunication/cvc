@@ -27,6 +27,11 @@ def client():
         db.session.delete(AdminUser.query.filter_by(email=TEST_EMAIL).first())
         db.session.commit()
 
+        # See test_invoice_service.py's app_context fixture for why this
+        # dispose() matters — undisposed engines across a full suite run
+        # exhaust Supabase's session-mode connection cap.
+        db.engine.dispose()
+
 
 def test_me_requires_login(client):
     assert client.get("/api/v1/auth/me").status_code == 401

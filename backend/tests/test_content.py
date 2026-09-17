@@ -58,6 +58,11 @@ def client():
         db.session.delete(AdminUser.query.filter_by(email=TEST_EMAIL).first())
         db.session.commit()
 
+        # See test_invoice_service.py's app_context fixture for why this
+        # dispose() matters — undisposed engines across a full suite run
+        # exhaust Supabase's session-mode connection cap.
+        db.engine.dispose()
+
 
 def test_unpublished_portfolio_project_is_hidden_from_public(client):
     create = client.post(
@@ -87,6 +92,8 @@ def test_portfolio_write_requires_auth():
     anon = app.test_client()
     res = anon.post("/api/v1/admin/portfolio", json={"slug": "x", "title": "x"})
     assert res.status_code == 401
+    with app.app_context():
+        db.engine.dispose()
 
 
 def test_post_published_at_set_on_publish(client):

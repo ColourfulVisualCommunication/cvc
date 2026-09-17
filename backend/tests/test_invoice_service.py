@@ -6,13 +6,15 @@ HTTP calls are never made here; the live sandbox pass (via ngrok) covers
 the real network round-trip separately.
 """
 import base64
+from datetime import date
 
 import pytest
 
 from app import create_app
 from app.extensions import db
-from app.models import Quote, QuoteItem
+from app.models import Client, Quote, QuoteItem, Service
 from app.models.invoice import Payment
+from app.models.retainer import Retainer
 from app.services import invoice_service, mpesa_service, pdf_service
 from config import Config
 
@@ -28,6 +30,13 @@ def app_context():
     app = create_app(TestConfig)
     with app.app_context():
         yield
+        # Each test spins up its own Flask app (and its own SQLAlchemy
+        # engine/connection pool) against the shared Supabase pooler,
+        # which caps concurrent session-mode connections cluster-wide.
+        # Undisposed engines pile up across a full suite run and exhaust
+        # that cap — dispose explicitly so each test releases its
+        # connection(s) before the next one opens more.
+        db.engine.dispose()
 
 
 @pytest.fixture
@@ -195,3 +204,103 @@ def test_receipt_pdf_is_a_real_pdf(quote_and_invoice):
     pdf_bytes = pdf_service.receipt_pdf_bytes(invoice, payment)
     assert pdf_bytes.startswith(b"%PDF")
     assert len(pdf_bytes) > 100
+
+
+# --- Phase 7: retainer-kind invoices ----------------------------------------
+#
+# Before this phase, initiate_payment / send_payment_received / both
+# pdf_service functions all unconditionally read invoice.quote, which is
+# None for a retainer invoice — these are the regression tests for that
+# exact crash class, now that Invoice has a second kind of parent.
+
+
+@pytest.fixture
+def retainer_and_invoice(app_context):
+    service = Service(slug="pytest-invoice-retainer-plan", name="Pytest Growth Partner", price_type="quoted")
+    client = Client(name="Pytest Retainer Client", email="pytest-retainer-invoice-client@example.com")
+    db.session.add_all([service, client])
+    db.session.commit()
+
+    retainer = Retainer(
+        client_id=client.id,
+        service_id=service.id,
+        plan_name=service.name,
+        monthly_amount_cents=300000,
+        billing_day=1,
+        next_invoice_date=date(2026, 2, 1),
+        started_at=date(2026, 1, 1),
+    )
+    db.session.add(retainer)
+    db.session.commit()
+
+    invoice = invoice_service.create_for_retainer(retainer)
+
+    yield retainer, invoice
+
+    db.session.delete(invoice)
+    db.session.delete(retainer)
+    db.session.delete(client)
+    db.session.delete(service)
+    db.session.commit()
+
+
+def test_create_for_retainer_shape(retainer_and_invoice):
+    retainer, invoice = retainer_and_invoice
+    assert invoice.kind == "retainer"
+    assert invoice.quote_id is None
+    assert invoice.retainer_id == retainer.id
+    assert invoice.amount_cents == 300000
+
+
+def test_initiate_payment_does_not_crash_on_a_retainer_invoice(retainer_and_invoice, monkeypatch):
+    retainer, invoice = retainer_and_invoice
+
+    captured = {}
+
+    def fake_stk_push(phone_number, amount_cents, account_reference, transaction_desc):
+        captured["transaction_desc"] = transaction_desc
+        return "ws_CO_retainer_test", "merchant_retainer_test"
+
+    monkeypatch.setattr(invoice_service.mpesa_service, "initiate_stk_push", fake_stk_push)
+
+    payment, error = invoice_service.initiate_payment(invoice, "0712345678")
+
+    assert error is None
+    assert payment.status == "pending"
+    assert "Retainer payment for" in captured["transaction_desc"]
+    assert retainer.plan_name in captured["transaction_desc"]
+
+
+def test_resolve_payment_on_retainer_invoice_hits_noop_branch_and_emails_once(retainer_and_invoice, monkeypatch):
+    retainer, invoice = retainer_and_invoice
+    payment = Payment(
+        invoice_id=invoice.id, method="mpesa", status="pending",
+        amount_cents=invoice.amount_cents, checkout_request_id="ws_CO_retainer_resolve",
+    )
+    db.session.add(payment)
+    db.session.commit()
+
+    sent = []
+    monkeypatch.setattr(invoice_service.email_service, "send_payment_received", lambda inv, pay: sent.append(pay.id))
+
+    invoice_service.resolve_payment(
+        payment, result_code=0, result_desc="Success",
+        metadata_items=_mpesa_metadata(invoice.amount_cents, receipt="TESTREC-RETAINER"),
+    )
+
+    db.session.refresh(invoice)
+    assert invoice.status == "paid"
+    assert retainer.status == "active"  # _after_invoice_paid's retainer branch is a true no-op
+    assert len(sent) == 1
+
+
+def test_retainer_invoice_pdf_and_receipt_do_not_crash(retainer_and_invoice):
+    retainer, invoice = retainer_and_invoice
+    payment = Payment(invoice_id=invoice.id, method="manual", status="success", amount_cents=invoice.amount_cents, manual_reference="CASH-1")
+    db.session.add(payment)
+    db.session.commit()
+
+    invoice_pdf = pdf_service.invoice_pdf_bytes(invoice)
+    receipt_pdf = pdf_service.receipt_pdf_bytes(invoice, payment)
+    assert invoice_pdf.startswith(b"%PDF")
+    assert receipt_pdf.startswith(b"%PDF")
