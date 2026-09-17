@@ -19,6 +19,7 @@ import BlogPost from "./pages/public/BlogPost.jsx";
 import Contact from "./pages/public/Contact.jsx";
 import QuotePage from "./pages/public/QuotePage.jsx";
 import ProjectPage from "./pages/public/ProjectPage.jsx";
+import RetainerPage from "./pages/public/RetainerPage.jsx";
 
 import Login from "./pages/admin/Login.jsx";
 import Dashboard from "./pages/admin/Dashboard.jsx";
@@ -30,6 +31,10 @@ import PortfolioAdmin from "./pages/admin/Portfolio.jsx";
 import PostsAdmin from "./pages/admin/Posts.jsx";
 import TestimonialsAdmin from "./pages/admin/Testimonials.jsx";
 import ClientLogosAdmin from "./pages/admin/ClientLogos.jsx";
+import RetainersAdmin from "./pages/admin/Retainers.jsx";
+import ClientsAdmin from "./pages/admin/Clients.jsx";
+import RetainerRequestsAdmin from "./pages/admin/RetainerRequests.jsx";
+import EmailLogAdmin from "./pages/admin/EmailLog.jsx";
 
 export default function App() {
   return (
@@ -55,6 +60,7 @@ export default function App() {
 
         <Route path="/quote/:token" element={<QuotePage />} />
         <Route path="/project/:token" element={<ProjectPage />} />
+        <Route path="/retainer/:token" element={<RetainerPage />} />
 
         <Route path="/admin/login" element={<Login />} />
         <Route element={<ProtectedRoute />}>
@@ -64,10 +70,14 @@ export default function App() {
             <Route path="quotes" element={<QuotesAdmin />} />
             <Route path="invoices" element={<InvoicesAdmin />} />
             <Route path="projects" element={<ProjectsAdmin />} />
+            <Route path="retainers" element={<RetainersAdmin />} />
+            <Route path="retainer-requests" element={<RetainerRequestsAdmin />} />
+            <Route path="clients" element={<ClientsAdmin />} />
             <Route path="portfolio" element={<PortfolioAdmin />} />
             <Route path="posts" element={<PostsAdmin />} />
             <Route path="testimonials" element={<TestimonialsAdmin />} />
-            <Route path="clients" element={<ClientLogosAdmin />} />
+            <Route path="client-logos" element={<ClientLogosAdmin />} />
+            <Route path="email-log" element={<EmailLogAdmin />} />
           </Route>
         </Route>
       </Routes>
