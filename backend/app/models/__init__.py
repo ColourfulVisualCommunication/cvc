@@ -6,22 +6,30 @@ original 16. They arrive phase by phase — only what a phase needs gets
 built, so migrations stay readable.
 """
 from .admin_user import AdminUser  # noqa: F401
+from .client import Client  # noqa: F401
 from .client_logo import ClientLogo  # noqa: F401
+from .email_log import EmailLog  # noqa: F401
 from .invoice import Invoice, Payment  # noqa: F401
+from .job_run import JobRun  # noqa: F401
 from .lead import Lead  # noqa: F401
 from .media import Media  # noqa: F401
 from .portfolio_project import PortfolioProject  # noqa: F401
 from .post import Post  # noqa: F401
 from .project import Project, Deliverable, Approval  # noqa: F401
 from .quote import Quote, QuoteItem  # noqa: F401
+from .retainer import Retainer  # noqa: F401
+from .retainer_request import RetainerRequest  # noqa: F401
 from .service import Service  # noqa: F401
 from .testimonial import Testimonial  # noqa: F401
 
 __all__ = [
     "AdminUser",
+    "Client",
     "ClientLogo",
+    "EmailLog",
     "Invoice",
     "Payment",
+    "JobRun",
     "Lead",
     "Media",
     "PortfolioProject",
@@ -31,6 +39,8 @@ __all__ = [
     "Approval",
     "Quote",
     "QuoteItem",
+    "Retainer",
+    "RetainerRequest",
     "Service",
     "Testimonial",
 ]
