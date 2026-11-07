@@ -90,6 +90,22 @@ def register_cli(app):
         db.session.commit()
         click.echo(f"Admin created: {user.email}")
 
+    @app.cli.command("reset-admin-password")
+    @click.option("--email", prompt=True)
+    @click.password_option(prompt="New password")
+    def reset_admin_password(email, password):
+        """Reset the admin password. Deliberately CLI-only — no emailed
+        reset link to phish or abuse. Point DATABASE_URL at the live
+        database to reset the live admin.
+        """
+        from .services import auth_service
+
+        try:
+            user = auth_service.reset_password(email, password)
+        except ValueError as e:
+            raise click.ClickException(str(e))
+        click.echo(f"Password reset for {user.email}.")
+
     @app.cli.command("run-daily-jobs")
     def run_daily_jobs():
         """Manual/local-testing entry point for the Phase 7 daily sweep
