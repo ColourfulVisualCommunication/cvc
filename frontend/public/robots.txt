@@ -3,5 +3,6 @@ Allow: /
 Disallow: /admin/
 Disallow: /quote/
 Disallow: /project/
+Disallow: /retainer/
 
 Sitemap: https://colourfulvisualcommunication.com/sitemap.xml

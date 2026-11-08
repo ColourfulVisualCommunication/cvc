@@ -52,6 +52,22 @@ async function fetchSlugs(endpoint, attempt = 1) {
   }
 }
 
+const SITE_URL = "https://colourfulvisualcommunication.com";
+
+// Built from the same route list we prerender, so every service, case study
+// and blog post in the DB at build time is listed. The old hand-kept
+// public/sitemap.xml only had the 7 static pages and went stale silently.
+async function writeSitemap(routes) {
+  const urls = routes.map((route) => `  <url><loc>${SITE_URL}${route}</loc></url>`).join("\n");
+  const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>
+`;
+  await writeFile(path.join(DIST, "sitemap.xml"), xml);
+  console.log(`Sitemap written with ${routes.length} URLs.`);
+}
+
 async function discoverRoutes() {
   const [services, portfolio, posts] = await Promise.all([
     fetchSlugs("/services"),
@@ -212,6 +228,7 @@ async function main() {
   }
 
   console.log("Prerendering complete.");
+  await writeSitemap(routes);
 }
 
 main().catch((err) => {
