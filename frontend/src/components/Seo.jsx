@@ -21,6 +21,14 @@ export default function Seo({ title, description = DEFAULT_DESCRIPTION, image, p
       <meta property="og:description" content={description} />
       <meta property="og:url" content={url} />
       <meta property="og:image" content={ogImage} />
+      <meta property="og:image:secure_url" content={ogImage} />
+      <meta property="og:image:alt" content={fullTitle} />
+      {/* Declared size lets WhatsApp/Facebook render the large preview on
+          first fetch instead of guessing. Only true for the default image —
+          per-page cover images come from Cloudinary at varying sizes. */}
+      {!image && <meta property="og:image:width" content="1200" />}
+      {!image && <meta property="og:image:height" content="630" />}
+      {!image && <meta property="og:image:type" content="image/jpeg" />}
       <meta property="og:site_name" content={SITE_NAME} />
 
       <meta name="twitter:card" content="summary_large_image" />
