@@ -34,3 +34,8 @@ def test_health_503_when_database_unreachable(app, monkeypatch):
     assert res.status_code == 503
     assert res.json["database"] == "unavailable"
     assert res.json["status"] == "degraded"
+
+
+def test_api_responses_are_noindex(app):
+    res = app.test_client().get("/api/v1/health")
+    assert res.headers["X-Robots-Tag"] == "noindex, nofollow"

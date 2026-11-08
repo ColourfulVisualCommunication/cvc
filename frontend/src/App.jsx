@@ -17,6 +17,7 @@ import PortfolioDetail from "./pages/public/PortfolioDetail.jsx";
 import Blog from "./pages/public/Blog.jsx";
 import BlogPost from "./pages/public/BlogPost.jsx";
 import Contact from "./pages/public/Contact.jsx";
+import NotFound from "./pages/public/NotFound.jsx";
 import QuotePage from "./pages/public/QuotePage.jsx";
 import ProjectPage from "./pages/public/ProjectPage.jsx";
 import RetainerPage from "./pages/public/RetainerPage.jsx";
@@ -56,6 +57,7 @@ export default function App() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="*" element={<NotFound />} />
         </Route>
 
         <Route path="/quote/:token" element={<QuotePage />} />

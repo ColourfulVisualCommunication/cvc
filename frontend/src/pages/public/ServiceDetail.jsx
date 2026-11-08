@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { getService } from "../../api/client.js";
 import { fadeUp, stagger } from "../../motion/variants.js";
 import Container from "../../components/ui/Container.jsx";
+import NoIndex from "../../components/NoIndex.jsx";
 import Breadcrumbs from "../../components/ui/Breadcrumbs.jsx";
 import WhatsAppCTA from "../../components/ui/WhatsAppCTA.jsx";
 import RetainerRequestForm from "../../components/RetainerRequestForm.jsx";
@@ -34,6 +35,7 @@ export default function ServiceDetail() {
   if (notFound) {
     return (
       <Container className="py-32 text-center">
+        <NoIndex />
         <div className="mb-6 flex justify-center">
           <Breadcrumbs items={[{ label: "Services", to: "/#services" }, { label: "Not found" }]} className="mb-0" />
         </div>

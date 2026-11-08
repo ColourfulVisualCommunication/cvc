@@ -1,0 +1,13 @@
+# Second layer of protection for private, token-gated pages (CLAUDE.md SEO
+# section): robots.txt asks crawlers not to visit these; this header tells
+# them not to index one even if they reach it via a shared link.
+/quote/*
+  X-Robots-Tag: noindex, nofollow
+/project/*
+  X-Robots-Tag: noindex, nofollow
+/retainer/*
+  X-Robots-Tag: noindex, nofollow
+/admin
+  X-Robots-Tag: noindex, nofollow
+/admin/*
+  X-Robots-Tag: noindex, nofollow

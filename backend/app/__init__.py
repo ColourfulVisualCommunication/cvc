@@ -41,6 +41,7 @@ def create_app(config_object=None):
 
     register_daily_jobs_hook(app)
     register_error_handlers(app)
+    register_noindex_header(app)
     register_cli(app)
     return app
 
@@ -118,6 +119,18 @@ def register_cli(app):
 
         _run_daily_jobs()
         click.echo("Daily jobs run.")
+
+
+def register_noindex_header(app):
+    """The API is JSON for the frontend, never a page for search results.
+    Googlebot can still stumble onto cvc-api.onrender.com URLs (e.g. links
+    in the prerendered HTML), so every response says don't index it.
+    """
+
+    @app.after_request
+    def _noindex(response):
+        response.headers["X-Robots-Tag"] = "noindex, nofollow"
+        return response
 
 
 def register_error_handlers(app):
