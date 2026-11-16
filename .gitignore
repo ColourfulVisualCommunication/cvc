@@ -33,3 +33,6 @@ Thumbs.db
 
 # Uploads (client files live in object storage, not the repo)
 backend/uploads/
+
+# Private working notes — kept on disk, not published
+CLAUDE.md

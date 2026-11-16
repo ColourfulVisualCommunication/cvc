@@ -4,7 +4,6 @@ The operating system for **CVC — Colourful Visual Communication**: public site
 
 React + Vite + Tailwind + Framer Motion · Flask + SQLAlchemy + PostgreSQL · M-Pesa Daraja
 
-> **Start here:** [`CLAUDE.md`](CLAUDE.md) carries the decisions already made — scope, rules, conventions, and what was deliberately cut. Read it before changing anything.
 > Context is in [`docs/01-context.md`](docs/01-context.md); the phase plan is in [`docs/02-build-plan.md`](docs/02-build-plan.md).
 
 ---
